@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: FoodSelling
+
+  # 1. Cấu hình database
+  datasource:
+    url: jdbc:mysql://localhost:3306/foodshop_db2?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: Manh3425
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # 2. Cấu hình JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update # Dùng 'update' khi dev, chuyển thành 'validate' khi lên production
+    show-sql: true # Hiện câu lệnh SQL dưới console để dễ debug
+    properties:
+      hibernate:
+        format-sql: true
+
+  # 4. Cấu hình upload file ảnh (Ảnh sản phẩm, Banner)
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  output:
+    ansi:
+      enabled: ALWAYS
