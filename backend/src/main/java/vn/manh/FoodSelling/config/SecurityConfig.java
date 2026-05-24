@@ -6,6 +6,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+// Class này để cấu hình bảo mật cho ứng dụng, hiện tại đang tắt bảo mật để Postman gọi API dễ dàng
+// Sau này nếu muốn thêm bảo mật thì sẽ chỉnh sửa class này
+// Để phân quyền cho user thì sẽ cần thêm UserDetailsService, PasswordEncoder, v.v... vào class này
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

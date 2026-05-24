@@ -48,7 +48,7 @@ public class Product {
     private String imageUrl; // Ảnh đại diện chính
 
     // Dùng Decimal vì price cần precision, Double bị floating point error
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
     // Dùng @Builder.Default sử dụng đẻ gán default value cho field
@@ -66,17 +66,21 @@ public class Product {
     private List<ProductImage> images;
 
     // @ManyToOne luôn là nơi giữ FK
+    // Khi gọi sản phẩm thì sẽ không tự động load category, chỉ khi nào gọi getCategory() mới load (LAZY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    // @CreationTimestamp để tự động lưu thời gian tạo của sản phẩm
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     // hoặc private LocalDateTime createAt = LocalDateTime.now();
 
-    // @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    // private List<OrderItem> orderItems;
+
+    // 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<CartItem> cartItems;

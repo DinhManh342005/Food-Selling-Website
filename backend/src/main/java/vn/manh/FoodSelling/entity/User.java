@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.core.annotation.Order;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -36,7 +35,7 @@ import vn.manh.FoodSelling.enums.UserStatus;
 public class User {
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
-     @Column(name = "user_id", nullable = false, unique = true)
+     @Column(name = "user_id", nullable = false)
      private Long id;
 
     @Column(name = "full_name", nullable = false, length = 100)
@@ -66,20 +65,20 @@ public class User {
     private LocalDate createdAt;
 
     // Lưu thông tin người nhận, mỗi người dùng có thể có nhiều địa chỉ nhận hàng
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private List<ReceiverInfo> receiverInfos;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReceiverInfo> receiverInfos;
 
     // Mỗi người dùng có một giỏ hàng, và giỏ hàng này sẽ được liên kết với người dùng thông qua trường "user" trong lớp Cart
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
-    // Mỗi người dùng có thể có nhiều đơn hàng, và mỗi đơn hàng sẽ được liên kết với người dùng thông qua trường "user" trong lớp Order
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private List<Order> orders;
+    //Mỗi người dùng có thể có nhiều đơn hàng, và mỗi đơn hàng sẽ được liên kết với người dùng thông qua trường "user" trong lớp Order
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
 
     // Mỗi người dùng có thể viết nhiều đánh giá, và mỗi đánh giá sẽ được liên kết với người dùng thông qua trường "user" trong lớp Review
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private List<Review> reviews;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Review> reviews;
 
 
 }

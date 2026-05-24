@@ -25,7 +25,7 @@ import lombok.Setter;
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id", nullable = false, unique = true)
+    @Column(name = "image_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +36,8 @@ public class ProductImage {
     private String imageUrl;
 
     // Kiểm tra xem ảnh này có phải là ảnh đại diện chính không
+    @Builder.Default
     @Column(name = "is_thumbnail", nullable = false)
-    private boolean isThumbnail;
+    private boolean isThumbnail = false;
 
 }

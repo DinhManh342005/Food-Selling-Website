@@ -23,12 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-
-// Controller cho upload hình anh cho Product
+// Controller này sẽ xử lý các API liên quan đến Product, bao gồm cả API cho User và Admin
 @RestController
 @RequestMapping("/api/v1")
 public class ProductController {
 
+    // Dependency Injection -đây là Field Injection
+    // @Autowired để tự động tiêm ProductService vào controller, giúp chúng ta có thể gọi các phương thức của service để xử lý logic nghiệp vụ liên quan đến sản phẩm
     @Autowired
     private ProductService productService;
     
