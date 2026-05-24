@@ -62,7 +62,7 @@ public class Product {
     private ProductStatus status;  // Sử dụng kiểu enum ProductStatus
 
     // Danh sách các ảnh phụ 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ProductImage> images;
 
     // @ManyToOne luôn là nơi giữ FK

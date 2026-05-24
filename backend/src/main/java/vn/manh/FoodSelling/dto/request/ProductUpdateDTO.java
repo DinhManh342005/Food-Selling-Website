@@ -5,14 +5,13 @@ import java.util.List;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import vn.manh.FoodSelling.enums.ProductStatus;
 
-// DTO dùng khi admin tạo sản phẩm mới.
+// DTO dùng khi admin cập nhật sản phẩm.
 @Data
-public class ProductCreateDTO {
-    // Validation kiểm tra dữ liệu client gửi lên.
+public class ProductUpdateDTO {
     @NotBlank(message = "Product name is not blank")
     private String name;
 
@@ -31,7 +30,7 @@ public class ProductCreateDTO {
     @NotNull(message = "Product category id is must be chosen")
     private Long categoryId;
 
-    // Danh sách ảnh chi tiết của sản phẩm.
-    @NotEmpty(message = "Product detail images is not empty")
+    private ProductStatus status;
+
     private List<String> detailImages;
 }

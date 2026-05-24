@@ -3,6 +3,7 @@ package vn.manh.FoodSelling.service;
 import java.util.List;
 
 import vn.manh.FoodSelling.dto.request.ProductCreateDTO;
+import vn.manh.FoodSelling.dto.request.ProductUpdateDTO;
 import vn.manh.FoodSelling.dto.response.ProductResponseDTO;
 
 public interface ProductService {
@@ -13,4 +14,8 @@ public interface ProductService {
     public ProductResponseDTO getProductById(Long id);
 
     public ProductResponseDTO addProduct(ProductCreateDTO dto);
+
+    public ProductResponseDTO updateProduct(Long id, ProductUpdateDTO dto);
+
+    public void deleteProduct(Long id);
 }
