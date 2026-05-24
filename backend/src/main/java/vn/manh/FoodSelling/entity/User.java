@@ -62,8 +62,8 @@ public class User {
     // Sử dụng @CreationTimestamp để tự động lưu thời gian tạo của người dùng
     // Trường này sẽ được tự động gán giá trị khi người dùng được tạo và sẽ không thể cập nhật sau đó
     @CreationTimestamp
-    @Column(name = "create_at", nullable = false, updatable = false)
-    private LocalDate createAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDate createdAt;
 
     // Lưu thông tin người nhận, mỗi người dùng có thể có nhiều địa chỉ nhận hàng
     // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

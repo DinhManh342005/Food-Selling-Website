@@ -32,9 +32,19 @@ public class ProductCreateDTO {
     @NotNull(message = "Product category id is must be chosen")
     private Long categoryId;
    
-    @NotBlank(message = "Product detail images is not blank")
+    // @NotBlank(message = "Product detail images is not blank")
     private List<String> detailImages;
 
-
+// {
+//     "categoryId": 1,
+//     "description": "Bánh cuốn nóng nhân thịt ăn cùng chả quế truyền thống.",
+//     "detailImages": [],
+//     "imageUrl": null,
+//     "name": "Bánh Cuốn Thanh Trì",
+//     "price": 45000.00,
+//     "productId": 5,
+//     "status": "available",
+//     "stockQuantity": 60
+// }
 
 }

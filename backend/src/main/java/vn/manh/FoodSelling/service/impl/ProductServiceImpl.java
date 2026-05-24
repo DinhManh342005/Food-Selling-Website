@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
     // 2. Lấy danh sách sản phẩm - chỉ lấy hàng có sẵn trong kho (available)
     @Override
     public List<ProductResponseDTO> getAllAvailableProducts() {
-        List<Product> products = productRepository.findByStatus("available");
+        List<Product> products = productRepository.findByStatus(ProductStatus.available);
         return products.stream().map(this::convertToDTO).collect(Collectors.toList());  
     }
 
@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
         //.imageUrl(dto.getImageUrl())
         .price(dto.getPrice())
         .stockQuantity(dto.getStockQuantity())
-        .status(dto.getStockQuantity() > 0 ?  ProductStatus.AVAILABLE : ProductStatus.UNAVAILABLE) 
+        .status(dto.getStockQuantity() > 0 ?  ProductStatus.available : ProductStatus.unavailable) 
         .category(categoryRepository.findById(dto.getCategoryId()).orElseThrow(() ->  new RuntimeException("Không tồn tại Category có id " + dto.getCategoryId())))
         .build();
 

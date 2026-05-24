@@ -71,8 +71,8 @@ public class Product {
     private Category category;
 
     @CreationTimestamp
-    @Column(name = "create_at", nullable = false, updatable = false)
-    private LocalDateTime createAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
     // hoặc private LocalDateTime createAt = LocalDateTime.now();
 
     // @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
