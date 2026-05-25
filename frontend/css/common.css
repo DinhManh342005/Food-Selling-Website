@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ==============================
+   COMMON CSS - HƯƠNG VỊ BA MIỀN
+   Dùng chung cho toàn bộ frontend
+   ============================== */
+
+/* 1. CSS Variables */
+:root {
+  /* Brand colors */
+  --primary-color: #d35400;
+  --primary-hover: #b84300;
+  --secondary-color: #f39c12;
+  --accent-color: #27ae60;
+
+  /* Background colors */
+  --body-bg: #f8f5f0;
+  --white-color: #ffffff;
+  --light-bg: #fff7ef;
+  --section-bg: #ffffff;
+
+  /* Text colors */
+  --text-color: #2c2c2c;
+  --text-muted: #777777;
+  --heading-color: #1f1f1f;
+
+  /* Border and shadow */
+  --border-color: #e5e5e5;
+  --border-radius-sm: 6px;
+  --border-radius-md: 10px;
+  --border-radius-lg: 16px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+
+  /* Font */
+  --font-main: 'Roboto', sans-serif;
+
+  /* Layout */
+  --container-width: 1200px;
+  --header-height: 72px;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+
+  /* Transition */
+  --transition-fast: 0.2s ease;
+}
+
+/* 2. Reset cơ bản */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 3. Base */
+html {
+  scroll-behavior: smooth;
+  font-size: 62.5%; /* 1rem = 10px */
+  scroll-padding-top: var(--header-height);
+  overflow-x: hidden;
+}
+
+html::-webkit-scrollbar {
+  width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+  background-color:transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 5rem;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--body-bg);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+

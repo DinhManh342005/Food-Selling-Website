@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Đăng nhập / Đăng ký - Hương Vị Ba Miền</title>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+
+  <body class="auth-page">
+    <div class="auth-background">
+      <div class="food-shape shape-1"></div>
+      <div class="food-shape shape-2"></div>
+      <div class="food-shape shape-3"></div>
+    </div>
+
+    <div class="container" id="container">
+      <!-- REGISTER -->
+      <div class="form-container sign-up-container">
+        <form id="registerForm">
+          <h1>Tạo tài khoản</h1>
+
+          <p class="auth-subtitle">Đăng ký để đặt món ăn 3 miền nhanh hơn</p>
+
+          <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="registerFullName" placeholder="Họ và tên" />
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-phone"></i>
+            <input type="text" id="registerPhone" placeholder="Số điện thoại" />
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="registerEmail" placeholder="Email" />
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input
+              type="password"
+              id="registerPassword"
+              placeholder="Mật khẩu"
+            />
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-key"></i>
+            <input
+              type="password"
+              id="registerConfirmPassword"
+              placeholder="Nhập lại mật khẩu"
+            />
+          </div>
+
+          <span class="policy-text">
+            Bằng việc đăng ký, bạn đồng ý với điều khoản và chính sách bảo mật.
+          </span>
+
+          <button type="submit">Đăng ký</button>
+        </form>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="form-container sign-in-container">
+        <form id="loginForm">
+          <h1>Đăng nhập</h1>
+
+          <p class="auth-subtitle">
+            Chào mừng bạn quay lại với Hương Vị Ba Miền
+          </p>
+
+          <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="loginEmail" placeholder="Email" />
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="Mật khẩu" />
+          </div>
+
+          <!-- <a href="#" class="forgot-link">Quên mật khẩu?</a> -->
+
+          <button type="submit">Đăng nhập</button>
+        </form>
+      </div>
+
+      <!-- OVERLAY -->
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <div class="overlay-icon">
+              <img
+                src="../assets/images/logo.png"
+                alt="Hương Vị Ba Miền Logo"
+              />
+            </div>
+
+            <h1>Chào mừng trở lại</h1>
+            <p>Đăng nhập để tiếp tục đặt những món ăn ba miền yêu thích</p>
+
+            <button class="ghost" id="signIn" type="button">Đăng nhập</button>
+          </div>
+
+          <div class="overlay-panel overlay-right">
+            <img
+              class="logo-icon"
+              src="../assets/images/logo.png"
+              alt="Hương Vị Ba Miền Logo"
+            />
+
+            <h1>Xin chào</h1>
+            <p>Tạo tài khoản để khám phá hương vị Bắc - Trung - Nam</p>
+
+            <button class="ghost" id="signUp" type="button">Đăng ký</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+  </body>
+</html>
