@@ -79,6 +79,7 @@
   overflow: hidden;
   z-index: 2;
   border: 1px solid rgba(255, 220, 180, 0.45);
+  /* backdrop-filter: blur(6px); */
 }
 
 /* Text */
@@ -338,6 +339,7 @@
   max-width: 280px;
   margin-bottom: 18px;
   display: block;
+  filter: drop-shadow(0 0 5px white);
 }
 
 .overlay-left {
