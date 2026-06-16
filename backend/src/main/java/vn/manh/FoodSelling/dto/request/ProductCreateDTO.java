@@ -35,6 +35,7 @@ public class ProductCreateDTO {
     // @NotBlank(message = "Product detail images is not blank")
     private List<String> detailImages;
 
+    // Mẫu JSON gửi từ admin để tạo sản phẩm mới:
 // {
 //     "categoryId": 1,
 //     "description": "Bánh cuốn nóng nhân thịt ăn cùng chả quế truyền thống.",

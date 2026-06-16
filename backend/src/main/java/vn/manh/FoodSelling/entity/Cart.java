@@ -40,7 +40,9 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // FetchType.EAGER: Khi lấy Cart từ db Hibernate sẽ gom luôn toàn bộ CartItem đi kèm, và các items đều là thật không phải proxy ảo
+    // orphanRemoval = true: Hibernate sẽ TỰ ĐỘNG bắn DELETE xuông DB để xóa item bị loại bỏ trong Cart
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<CartItem> cartItems;
 
 

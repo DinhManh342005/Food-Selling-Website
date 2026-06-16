@@ -43,8 +43,9 @@ public class OrderItem {
     @Column(name = "product_price", nullable = false, precision = 12, scale = 2)
     private BigDecimal productPrice;
 
-    // Tổng giá của mục này = productPrice * quantity, lưu để dễ dàng tính toán tổng đơn hàng sau này
-    @Column(name = "total_price", nullable = false, precision = 12, scale = 2)
+    // Tổng giá của mục này = productPrice * quantity, lưu để dễ dàng tính toán tổng đơn hàng sau này - được tính tự động dưới DB
+    // insertable và updatable = false để chỉ thực hiện tính tổng tiền ở DB, Hibernate sẽ lờ đi việc cố ý insert, update vào cơ sở dữ liệu
+    @Column(name = "total_price", nullable = false, precision = 12, scale = 2, insertable = false, updatable = false)
     private BigDecimal totalPrice;
 
     // Một OrderItem có thể liên kết với một Product cụ thể, nhưng cũng có thể là một phần của combo hoặc gói sản phẩm

@@ -13,31 +13,22 @@ import org.springframework.web.multipart.MultipartFile;
 // Service này dùng để làm upload hình anh cho Product trên server
 @Service
 public class StorageService {
-  private final Path root =
-            Paths.get("uploads/products");
+        private final Path root = Paths.get("uploads/products");
 
-    public String save(
-            MultipartFile file
-    ) throws IOException {
+        public String save(MultipartFile file) throws IOException {
+                if (!Files.exists(root)) {
+                        Files.createDirectories(root);
+                }
 
-        if (!Files.exists(root)) {
-            Files.createDirectories(root);
+                String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+                Path destination = root.resolve(filename);
+
+                Files.copy(
+                                file.getInputStream(),
+                                destination,
+                                StandardCopyOption.REPLACE_EXISTING);
+
+                return "/uploads/products/" + filename;
         }
-
-        String filename =
-                UUID.randomUUID()
-                + "_"
-                + file.getOriginalFilename();
-
-        Path destination =
-                root.resolve(filename);
-
-        Files.copy(
-                file.getInputStream(),
-                destination,
-                StandardCopyOption.REPLACE_EXISTING
-        );
-
-        return "/uploads/products/" + filename;
-    }
 }

@@ -51,6 +51,15 @@ public class Order {
     @Column(name = "total_amount", precision = 12, scale = 2, nullable = false)
     private BigDecimal totalAmount;
 
+    @Column(name = "receiver_name", nullable = false)
+    private String receiverName;
+
+    @Column(name = "receiver_phone", nullable = false)
+    private String receiverPhone;
+
+    @Column(name = "receiver_address", nullable = false)
+    private String receiverAddress;
+
     // columnDefinition = "TEXT" để lưu ghi chú dài hơn 255 ký tự
     @Column(columnDefinition = "TEXT")
     private String note;
@@ -59,12 +68,7 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Mỗi đơn hàng sẽ được giao đến một địa chỉ nhận hàng cụ thể, liên kết với ReceiverInfo
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_info_id", nullable = false)
-    private ReceiverInfo receiverInfo;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
 }

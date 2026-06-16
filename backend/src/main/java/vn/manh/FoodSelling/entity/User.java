@@ -1,6 +1,6 @@
 package vn.manh.FoodSelling.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,8 +38,11 @@ public class User {
      @Column(name = "user_id", nullable = false)
      private Long id;
 
-    @Column(name = "full_name", nullable = false, length = 100)
+    @Column(name = "full_name", length = 100)
     private String fullName;
+
+    @Column(unique = true, nullable = false, length = 50)
+    private String username;
 
     @Column( nullable = false)
     private String password;
@@ -47,7 +50,7 @@ public class User {
     @Column(unique = true, length = 50)
     private String email;
 
-    @Column(unique = true, nullable = false, length = 15)
+    @Column(unique = true, length = 15)
     private String phone;
 
     @Enumerated(EnumType.STRING)
@@ -62,11 +65,7 @@ public class User {
     // Trường này sẽ được tự động gán giá trị khi người dùng được tạo và sẽ không thể cập nhật sau đó
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDate createdAt;
-
-    // Lưu thông tin người nhận, mỗi người dùng có thể có nhiều địa chỉ nhận hàng
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ReceiverInfo> receiverInfos;
+    private LocalDateTime createdAt;
 
     // Mỗi người dùng có một giỏ hàng, và giỏ hàng này sẽ được liên kết với người dùng thông qua trường "user" trong lớp Cart
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

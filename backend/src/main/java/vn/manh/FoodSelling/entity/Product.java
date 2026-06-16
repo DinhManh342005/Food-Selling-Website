@@ -57,16 +57,17 @@ public class Product {
     private Integer stockQuantity = 0;
 
     // @Enumerated để sử dụng Enum trong database
-    @Enumerated(EnumType.STRING)   // Nên sử dụng STRING
+    @Enumerated(EnumType.STRING) // Nên sử dụng STRING
     @Column(nullable = false)
-    private ProductStatus status;  // Sử dụng kiểu enum ProductStatus
+    private ProductStatus status; // Sử dụng kiểu enum ProductStatus
 
-    // Danh sách các ảnh phụ 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Danh sách các ảnh phụ
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ProductImage> images;
 
     // @ManyToOne luôn là nơi giữ FK
-    // Khi gọi sản phẩm thì sẽ không tự động load category, chỉ khi nào gọi getCategory() mới load (LAZY)
+    // Khi gọi sản phẩm thì sẽ không tự động load category, chỉ khi nào gọi
+    // getCategory() mới load (LAZY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -77,15 +78,20 @@ public class Product {
     private LocalDateTime createdAt;
     // hoặc private LocalDateTime createAt = LocalDateTime.now();
 
-
-    // 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    // Quan hệ với OrderItem và CartItem để biết sản phẩm này đã được đặt trong đơn
+    // hàng nào và có trong giỏ hàng nào
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    // Quan hệ với CartItem để biết sản phẩm này có trong giỏ hàng nào
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CartItem> cartItems;
 
-    // @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private List<Review> reviews;
+    // Danh sách đánh giá của sản phẩm
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Review> reviews;
+
+    @Column(name = "average_rating", columnDefinition = "DOUBLE(3,2) DEFAULT 0.0")
+    private double averageRating;
 
 }
