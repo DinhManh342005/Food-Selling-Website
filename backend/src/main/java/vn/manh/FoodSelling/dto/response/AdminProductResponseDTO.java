@@ -15,4 +15,5 @@ public class AdminProductResponseDTO extends UserProductResponseDTO {
     private ProductStatus status;
     private LocalDateTime createdAt;
     private Long categoryId;
+    private String imagePublicId;
 }

@@ -1,42 +1,54 @@
 package vn.manh.FoodSelling.dto.request;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-// DTO for create product
-// This form will be used by admin to create new product
+// DTO dùng khi admin tạo hoặc cập nhật sản phẩm
 @Data
 public class ProductCreateDTO {
-    // Validation - check data that is sent from client
-    // @NotBlank used to check if the product name is not blank
-    @NotBlank(message = "Product name is not blank")
+
+    @NotBlank(message = "Tên sản phẩm không được để trống")
     private String name;
 
     private String description;
 
-    // @NotNull used to check if the product price is not null
-    // @Min used to check if the product price is greater than 0
-    @NotNull(message = "Product price is not null")
-    @Min(value = 0, message = "Product price must be greater than 0")
+    @NotNull(message = "Giá sản phẩm không được để trống")
+    @DecimalMin(
+            value = "0.0",
+            inclusive = true,
+            message = "Giá sản phẩm phải lớn hơn hoặc bằng 0"
+    )
     private BigDecimal price;
 
-    @NotNull(message = "Product stock quantity is not null")
-    @Min(value = 0, message = "Product stock quantity must be greater than 0")
+    @NotNull(message = "Số lượng tồn kho không được để trống")
+    @jakarta.validation.constraints.Min(
+            value = 0,
+            message = "Số lượng tồn kho phải lớn hơn hoặc bằng 0"
+    )
     private Integer stockQuantity;
 
-    @NotNull(message = "Product category id is must be chosen")
+    @NotNull(message = "Phải chọn danh mục sản phẩm")
     private Long categoryId;
 
-    // @NotBlank(message = "Product detail images is not blank")
-    private List<String> detailImages;
+    // URL HTTPS do Cloudinary trả về, dùng để hiển thị ảnh chính
+    private String imageUrl;
+
+    // Mã Cloudinary dùng để xóa hoặc thay ảnh chính
+    private String imagePublicId;
+
+    // Danh sách URL các ảnh chi tiết
+    private List<String> detailImages = new ArrayList<>();
+
+
+
 
     // Mẫu JSON gửi từ admin để tạo sản phẩm mới:
-    // {
     // "categoryId": 1,
     // "description": "Bánh cuốn nóng nhân thịt ăn cùng chả quế truyền thống.",
     // "detailImages": [],
@@ -46,6 +58,5 @@ public class ProductCreateDTO {
     // "productId": 5,
     // "status": "available",
     // "stockQuantity": 60
-    // }
 
 }
