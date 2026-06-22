@@ -2,7 +2,7 @@ package vn.manh.FoodSelling.enums;
 
 public enum OrderStatus {
     pending,
-    comfirmed,
+    confirmed,
     delivering,
     completed,
     cancelled

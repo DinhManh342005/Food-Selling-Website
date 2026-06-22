@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sản Phẩm Đặc Sản - Việt Vị Ba Miền</title>
+  <meta name="description" content="Khám phá các sản phẩm đặc sản chọn lọc từ ba miền Bắc - Trung - Nam tại Việt Vị Ba Miền.">
+  
+  <!-- Roboto Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/products.css">
+</head>
+<body>
+
+  <!-- TOP BAR & HEADER (Loaded via layout.js) -->
+  <div id="app-header"></div>
+
+  <!-- BREADCRUMBS -->
+  <div class="bg-slate-100 py-3 border-b border-slate-200">
+    <div class="container flex items-center gap-2 text-xs text-slate-500">
+      <a href="index.html" class="hover:text-orange-600 transition-colors">Trang chủ</a>
+      <span class="text-slate-300">/</span>
+      <span class="text-slate-800 font-semibold">Sản phẩm</span>
+    </div>
+  </div>
+
+  <!-- PAGE HEADER HERO BANNER -->
+  <div class="container mt-6">
+    <div class="products-hero-banner">
+      <div class="products-hero-text">
+        <div class="products-hero-label">
+          <span class="products-hero-label-line"></span>
+          <span class="products-hero-label-text">KHÁM PHÁ DI SẢN</span>
+        </div>
+        <h1 class="products-hero-title">Tất Cả Đặc Sản</h1>
+        <p class="products-hero-desc">Khám phá các món ngon và đặc sản được chọn lọc từ 3 miền Việt Nam. Đảm bảo tinh hoa hương vị truyền thống chính gốc.</p>
+      </div>
+      <div class="products-hero-images">
+        <div class="products-hero-circle products-hero-circle--1">
+          <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=300&q=80" alt="Đặc sản Việt Nam">
+        </div>
+        <div class="products-hero-circle products-hero-circle--2">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" alt="Ẩm thực Việt">
+        </div>
+        <div class="products-hero-circle products-hero-circle--3">
+          <img src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=300&q=80" alt="Món ngon ba miền">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN LISTING LAYOUT -->
+  <section class="py-10">
+    <div class="container flex flex-col gap-8 relative">
+      
+      <!-- Region Tabs (Selection Bar) -->
+      <div class="bg-white p-2 rounded-2xl border border-slate-200/80 shadow-sm overflow-x-auto w-full">
+        <div id="filter-region-group" class="flex justify-center items-center min-w-max gap-2">
+          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+            <input type="radio" name="regionFilter" value="all" class="hidden" checked>
+            Tất cả Đặc Sản
+          </label>
+          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+            <input type="radio" name="regionFilter" value="1" class="hidden">
+            Miền Bắc
+          </label>
+          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+            <input type="radio" name="regionFilter" value="2" class="hidden">
+            Miền Trung
+          </label>
+          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+            <input type="radio" name="regionFilter" value="3" class="hidden">
+            Miền Nam
+          </label>
+        </div>
+      </div>
+
+      <!-- PRODUCT AREA -->
+      <main class="flex-grow flex flex-col space-y-6">
+        
+        <!-- 5. Toolbar -->
+        <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-2xl border border-slate-200/80 gap-4 shadow-sm">
+          
+          <div class="text-sm font-bold text-slate-600 w-full sm:w-auto">
+            Hiển thị <span id="count-start" class="text-brand-600">0</span> - <span id="count-end" class="text-brand-600">0</span> / <span id="count-total" class="text-brand-600">0</span> sản phẩm
+          </div>
+          
+          <div class="flex items-center gap-4 w-full sm:w-auto justify-end">
+            <!-- Sorting dropdown -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400 font-bold">Sắp xếp:</span>
+              <select id="sort-select" class="bg-slate-50 border border-slate-200 text-xs rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500 cursor-pointer font-semibold">
+                <option value="featured">Mặc định</option>
+                <option value="price-asc">Giá tăng dần</option>
+                <option value="price-desc">Giá giảm dần</option>
+                <option value="rating">Rating cao nhất</option>
+                <option value="newest">Mới nhất</option>
+              </select>
+            </div>
+
+            <!-- View switch buttons (Grid vs List) -->
+            <div class="flex border rounded-lg overflow-hidden bg-slate-50 text-slate-400">
+              <button id="view-grid-btn" class="p-2 bg-white text-orange-600 font-semibold border-r" title="Lưới">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              </button>
+              <button id="view-list-btn" class="p-2 hover:bg-white transition-colors" title="Danh sách">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 & 7. Product Grid and Empty State Wrapper -->
+        <div id="products-grid-wrapper">
+          <!-- Grid Lưới / Danh sách -->
+          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Rendered by products.js -->
+          </div>
+          
+          <!-- Empty State -->
+          <div id="products-empty" class="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4 hidden">
+            <div class="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center text-3xl mx-auto border shadow-sm">📦</div>
+            <div class="space-y-1">
+              <h3 class="font-bold text-slate-800 text-sm">Không tìm thấy sản phẩm phù hợp.</h3>
+              <p class="text-xs text-slate-400">Vui lòng thay đổi từ khóa hoặc xóa các thiết lập bộ lọc hiện tại.</p>
+            </div>
+            <button id="btn-empty-clear" class="btn btn-primary px-5 py-2 text-xs font-semibold shadow-md">Xóa bộ lọc</button>
+          </div>
+        </div>
+
+        <!-- 8. Pagination Container -->
+        <div id="pagination-container" class="flex justify-center items-center gap-2 pt-6">
+          <!-- Rendered by products.js -->
+        </div>
+
+      </main>
+    </div>
+  </section>
+
+  <!-- PRODUCT DETAIL MODAL (Reused template) -->
+  <div id="product-detail-modal" class="modal-overlay" onclick="closeProductDetailModal()">
+    <div class="modal-container p-6 max-w-2xl relative" onclick="event.stopPropagation()">
+      <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="modal-detail-content">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER (Loaded via layout.js) -->
+  <div id="app-footer"></div>
+
+  <!-- Day.js -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+  <!-- Popper & Tippy -->
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+  <!-- Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+  <!-- SCRIPT LOADING ORDER -->
+  <script src="../js/config.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/products.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+/* CSS dành riêng cho Trang Đăng nhập & Đăng ký Hợp nhất */
+.auth-section {
+  background-color: #f8fafc;
+}
+
+.auth-container {
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
+}
+
+/* Cấu trúc trượt */
+.form-container {
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Đăng nhập mặc định bên trái */
+.login-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+  opacity: 1;
+}
+
+/* Đăng ký mặc định ẩn bên trái bên dưới */
+.register-container {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Khi kích hoạt bảng Đăng ký (Trượt sang phải) */
+.auth-container.right-panel-active .login-container {
+  transform: translateX(100%);
+  opacity: 0;
+  z-index: 1;
+}
+
+.auth-container.right-panel-active .register-container {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+}
+
+/* Tấm phủ trượt (Overlay) */
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 100;
+}
+
+.auth-container.right-panel-active .overlay-container {
+  transform: translateX(-100%);
+}
+
+.overlay {
+  background: linear-gradient(135deg, #10b981, #059669);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.auth-container.right-panel-active .overlay {
+  transform: translateX(50%);
+}
+
+.overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.overlay-left {
+  transform: translateX(-20%);
+}
+
+.auth-container.right-panel-active .overlay-left {
+  transform: translateX(0);
+}
+
+.overlay-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.auth-container.right-panel-active .overlay-right {
+  transform: translateX(20%);
+}
+
+/* CSS lỗi xác thực */
+.border-rose-500 {
+  border-color: #f43f5e !important;
+}
+
+.focus\:ring-rose-500\/20:focus {
+  --tw-ring-color: rgba(244, 63, 94, 0.2) !important;
+  box-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+}
+
+/* Responsive cho thiết bị di động */
+@media (max-width: 767px) {
+  .auth-container {
+    min-height: auto;
+  }
+  
+  .form-container {
+    position: relative !important;
+    width: 100% !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  .register-container {
+    display: none;
+  }
+  
+  .login-container {
+    display: block;
+  }
+  
+  /* Chuyển đổi trạng thái mobile bằng cách ẩn hiện */
+  .auth-container.right-panel-active .register-container {
+    display: block;
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: 5;
+  }
+  
+  .auth-container.right-panel-active .login-container {
+    display: none;
+  }
+}

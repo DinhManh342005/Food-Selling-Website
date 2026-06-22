@@ -8,5 +8,11 @@ public interface UserService {
     public User registerUser(RegisterRequestDTO registerRequestDTO);
 
     // For Admin
+
+
+    //For User
+
+
+    
     
 }

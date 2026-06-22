@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tài Khoản - FreshBite</title>
+
+  <!-- Roboto Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+                                        colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+
+<body class="bg-slate-50">
+
+  <!-- BACK TO HOME HEADER -->
+  <div class="max-w-[950px] mx-auto px-4 pt-8 flex justify-between items-center">
+    <a href="index.html"
+      class="flex items-center gap-2 text-slate-500 hover:text-orange-600 transition-colors font-bold text-sm">
+      <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ
+    </a>
+    <a href="index.html" class="flex items-center gap-3 group">
+      <div
+        class="relative w-8 h-8 rounded-full border-2 border-brand-700 bg-white flex items-center justify-center overflow-hidden transform group-hover:rotate-6 transition-all duration-300">
+        <img src="../assets/img/freshbite_logo.png" alt="FreshBite Logo" class="w-full h-full object-cover">
+      </div>
+      <div class="flex flex-col">
+        <span
+          class="text-lg font-serif italic tracking-widest text-brand-700 leading-none group-hover:text-brand-500 transition-colors">FreshBite</span>
+      </div>
+    </a>
+  </div>
+
+
+  <!-- AUTH FORM SECTION -->
+  <section class="auth-section py-16 bg-slate-50 flex items-center justify-center min-h-[calc(100vh-250px)]">
+    <div
+      class="auth-container relative w-full max-w-[950px] min-h-[600px] bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200/50 mx-4"
+      id="auth-container">
+
+      <!-- REGISTER (Đăng ký) -->
+      <div
+        class="form-container register-container absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-700 ease-in-out opacity-0 z-10">
+        <form id="site-register-form"
+          class="h-full p-8 md:p-12 flex flex-col justify-center space-y-4 bg-white text-slate-800" novalidate>
+          <div class="text-center md:text-left mb-2">
+            <h2
+              class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-brand-500">
+              Đăng ký thành viên</h2>
+            <p class="text-xs text-slate-500 mt-1">Bắt đầu đặt mua những món ăn ngon ba miền chuẩn vị</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="fullName" class="block text-xs font-bold text-slate-700 mb-1">Họ và tên <span
+                  class="text-rose-500">*</span></label>
+              <input type="text" id="fullName" name="fullName" placeholder="Nhập họ và tên"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+              <div id="fullName-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+            </div>
+            <div>
+              <label for="username" class="block text-xs font-bold text-slate-700 mb-1">Tên đăng nhập <span
+                  class="text-rose-500">*</span></label>
+              <input type="text" id="username" name="username" placeholder="Nhập tên đăng nhập"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+              <div id="username-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="email" class="block text-xs font-bold text-slate-700 mb-1">Email</label>
+              <input type="email" id="email" name="email" placeholder="Nhập email"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+              <div id="email-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+            </div>
+            <div>
+              <label for="phone" class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại</label>
+              <input type="tel" id="phone" name="phone" placeholder="Nhập số điện thoại"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+              <div id="phone-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="password" class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu <span
+                  class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input type="password" id="password" name="password" placeholder="Nhập mật khẩu"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+                <button type="button" id="toggle-password"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1">
+                  <i class="fa-regular fa-eye text-sm"></i>
+                </button>
+              </div>
+              <div id="password-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+            </div>
+            <div>
+              <label for="confirmPassword" class="block text-xs font-bold text-slate-700 mb-1">Nhập lại mật khẩu <span
+                  class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Nhập lại mật khẩu"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+                <button type="button" id="toggle-confirmPassword"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1">
+                  <i class="fa-regular fa-eye text-sm"></i>
+                </button>
+              </div>
+              <div id="confirmPassword-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+            </div>
+          </div>
+
+          <div class="pt-1">
+            <label class="flex items-start gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="terms" name="terms"
+                class="mt-0.5 w-4 h-4 text-brand-600 border-slate-200 rounded bg-slate-50 focus:ring-brand-500 accent-brand-600">
+              <span class="text-[10px] text-slate-500 leading-normal">
+                Tôi đồng ý với các <a href="#" class="text-brand-650 hover:underline font-bold">Điều khoản dịch vụ</a>
+                và <a href="#" class="text-brand-650 hover:underline font-bold">Chính sách bảo mật</a>.
+              </span>
+            </label>
+            <div id="terms-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+          </div>
+
+          <div class="pt-1">
+            <button type="submit"
+              class="w-full py-3 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/20 transition-all transform hover:-translate-y-0.5">
+              ĐĂNG KÝ NGAY
+            </button>
+          </div>
+
+          <div class="text-center md:hidden pt-2 text-xs text-slate-500">
+            Đã có tài khoản? <a href="#" class="text-brand-600 font-bold hover:underline toggle-view-btn">Đăng nhập</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- LOGIN (Đăng nhập) -->
+      <div
+        class="form-container login-container absolute top-0 left-0 h-full w-full md:w-1/2 transition-all duration-700 ease-in-out z-20">
+        <form id="login-form" class="h-full p-8 md:p-12 flex flex-col justify-center space-y-5 bg-white text-slate-800">
+          <div class="text-center md:text-left mb-4">
+            <h2
+              class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-brand-500">
+              Chào mừng trở lại</h2>
+            <p class="text-xs text-slate-500 mt-1">Truy cập để quản lý đơn hàng và giỏ hàng của bạn</p>
+          </div>
+
+          <div>
+            <label for="login-username" class="block text-xs font-bold text-slate-700 mb-1.5">Tên Đăng Nhập <span
+                class="text-rose-500">*</span></label>
+            <input type="text" id="login-username" name="username" required
+              placeholder="Nhập tên đăng nhập (ví dụ: user, admin)"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+            <div id="login-username-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <label for="login-password" class="text-xs font-bold text-slate-700">Mật Khẩu <span
+                  class="text-rose-500">*</span></label>
+              <a href="#" class="text-[10px] text-brand-600 hover:underline font-bold">Quên mật khẩu?</a>
+            </div>
+            <div class="relative">
+              <input type="password" id="login-password" name="password" required placeholder="Nhập mật khẩu"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all outline-none">
+              <button type="button" id="toggle-login-password"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1">
+                <i class="fa-regular fa-eye text-sm"></i>
+              </button>
+            </div>
+            <div id="login-password-error" class="text-rose-500 text-[10px] mt-1 font-semibold hidden"></div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit"
+              class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/20 transition-all transform hover:-translate-y-0.5">
+              ĐĂNG NHẬP
+            </button>
+          </div>
+
+          <div class="text-center md:hidden pt-4 text-xs text-slate-500">
+            Chưa có tài khoản? <a href="#" class="text-brand-600 font-bold hover:underline toggle-view-btn">Đăng ký
+              ngay</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- OVERLAY CONTAINER (Desktop only) -->
+      <div
+        class="overlay-container absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out z-100 hidden md:block">
+        <div
+          class="overlay bg-gradient-to-br from-brand-600 via-brand-600 to-brand-500 text-white relative -left-100% h-full w-[200%] transform translate-x-0 transition-transform duration-700 ease-in-out">
+
+          <!-- Left overlay panel (covers register form, shows login prompt) -->
+          <div
+            class="overlay-panel overlay-left absolute top-0 flex flex-col justify-center items-center text-center px-12 h-full w-1/2 transform translate-x-0 transition-transform duration-700 ease-in-out">
+            <!-- Decorative floating elements -->
+            <div class="absolute top-8 left-8 w-16 h-16 border border-white/10 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-12 right-10 w-24 h-24 border border-white/10 rounded-full"
+              style="animation: spin 20s linear infinite;"></div>
+            <div class="absolute top-1/4 right-12 w-3 h-3 bg-white/20 rounded-full"
+              style="animation: float 3s ease-in-out infinite;"></div>
+            <div class="absolute bottom-1/3 left-16 w-2 h-2 bg-brand-300/30 rounded-full"
+              style="animation: float 4s ease-in-out infinite 1s;"></div>
+            <div class="absolute top-16 right-1/3 w-1.5 h-1.5 bg-white/30 rounded-full"
+              style="animation: float 3.5s ease-in-out infinite 0.5s;"></div>
+
+            <!-- Top accent line -->
+            <div
+              class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full">
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10">
+              <div
+                class="relative w-14 h-14 mx-auto mb-5 rounded-full bg-white flex items-center justify-center border-2 border-white/80 overflow-hidden transform hover:rotate-6 transition-all duration-300">
+                <img src="../assets/img/freshbite_logo.png" alt="FreshBite Logo" class="w-full h-full object-cover">
+              </div>
+              <h2 class="text-3xl font-black mb-3">Tiếp Tục Hành Trình</h2>
+              <div class="w-10 h-[2px] bg-white/40 mx-auto mb-4 rounded-full"></div>
+              <p class="text-xs text-brand-100 leading-relaxed mb-7 max-w-[280px]">
+                Hương vị nguyên bản đang chờ đón. Đăng nhập để tiếp tục trải nghiệm mua sắm đặc quyền và quản lý bộ sưu
+                tập ẩm thực của bạn.
+              </p>
+              <button
+                class="auth-ghost-btn border-2 border-white/80 hover:bg-white hover:text-brand-600 text-white font-bold text-xs uppercase px-8 py-3 rounded-full transition-all duration-300 outline-none relative overflow-hidden"
+                id="signInBtn">
+                <span class="relative z-10">Đăng Nhập</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right overlay panel (covers login form, shows register prompt) -->
+          <div
+            class="overlay-panel overlay-right absolute top-0 flex flex-col justify-center items-center text-center px-12 h-full w-1/2 right-0 transform translate-x-0 transition-transform duration-700 ease-in-out">
+            <!-- Decorative floating elements -->
+            <div class="absolute bottom-8 right-8 w-16 h-16 border border-white/10 rounded-full animate-pulse"></div>
+            <div class="absolute top-12 left-10 w-24 h-24 border border-white/10 rounded-full"
+              style="animation: spin 25s linear infinite reverse;"></div>
+            <div class="absolute bottom-1/4 left-12 w-3 h-3 bg-white/20 rounded-full"
+              style="animation: float 3s ease-in-out infinite;"></div>
+            <div class="absolute top-1/3 right-16 w-2 h-2 bg-brand-300/30 rounded-full"
+              style="animation: float 4s ease-in-out infinite 1s;"></div>
+            <div class="absolute bottom-16 left-1/3 w-1.5 h-1.5 bg-white/30 rounded-full"
+              style="animation: float 3.5s ease-in-out infinite 0.5s;"></div>
+
+            <!-- Top accent line -->
+            <div
+              class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full">
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10">
+              <div
+                class="relative w-14 h-14 mx-auto mb-5 rounded-full bg-white flex items-center justify-center border-2 border-white/80 overflow-hidden transform hover:rotate-6 transition-all duration-300">
+                <img src="../assets/img/freshbite_logo.png" alt="FreshBite Logo" class="w-full h-full object-cover">
+              </div>
+              <h2 class="text-3xl font-black mb-3">Khởi Nguồn Hành Trình</h2>
+              <div class="w-10 h-[2px] bg-white/40 mx-auto mb-4 rounded-full"></div>
+              <p class="text-xs text-brand-100 leading-relaxed mb-7 max-w-[280px]">
+                Gia nhập cộng đồng FreshBite để mở khóa những đặc quyền mua sắm riêng biệt và thưởng thức trọn vẹn tinh
+                hoa ẩm thực bản địa.
+              </p>
+              <button
+                class="auth-ghost-btn border-2 border-white/80 hover:bg-white hover:text-brand-600 text-white font-bold text-xs uppercase px-8 py-3 rounded-full transition-all duration-300 outline-none relative overflow-hidden"
+                id="signUpBtn">
+                <span class="relative z-10">Đăng Ký</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER (Loaded via layout.js) -->
+  <div id="app-footer"></div>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Day.js -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+
+  <!-- SCRIPT LOADING ORDER -->
+  <script src="../js/config.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/layout.js"></script>
+</body>
+
+</html>

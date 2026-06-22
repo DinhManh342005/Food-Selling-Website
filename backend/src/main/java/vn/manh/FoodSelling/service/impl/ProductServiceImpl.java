@@ -21,9 +21,9 @@ import vn.manh.FoodSelling.service.ProductService;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    
+
     private final ProductRepository productRepository;
-    
+
     private final CategoryRepository categoryRepository;
 
     // ================================
@@ -98,8 +98,11 @@ public class ProductServiceImpl implements ProductService {
 
     // 4. Tim kiếm theo name
     @Override
-    public List<AdminProductResponseDTO> searchProductByName(String name) { // AdminProductResponseDTO getProductByName(String name) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCase(name);    // Tìm kiếm tất cả sản phẩm có tên chứa chuỗi name, không phân biệt hoa thường
+    public List<AdminProductResponseDTO> searchProductByName(String name) { // AdminProductResponseDTO
+                                                                            // getProductByName(String name) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(name); // Tìm kiếm tất cả sản phẩm có
+                                                                                         // tên chứa chuỗi name, không
+                                                                                         // phân biệt hoa thường
         return products.stream().map(this::convertToDTO_Admin).collect(Collectors.toList());
     }
 
@@ -130,17 +133,19 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID " + id));
 
-        // Không được xóa hoàn toàn sản phẩm, mà chuyển sang xóa mềm (unavailable) để giữ lịch sử doanh thu
-        if(product.getOrderItems() != null && !product.getOrderItems().isEmpty()) {
-                product.setStatus(ProductStatus.unavailable);
-                productRepository.save(product);
-        }        
+        // Không được xóa hoàn toàn sản phẩm, mà chuyển sang xóa mềm (unavailable) để
+        // giữ lịch sử doanh thu
+        if (product.getOrderItems() != null && !product.getOrderItems().isEmpty()) {
+            product.setStatus(ProductStatus.unavailable);
+            productRepository.save(product);
+        }
 
         // Xóa hoàn toàn sản phẩm (do chưa từng có ai mua) - và các quan hệ liên quan
         productRepository.delete(product);
     }
 
-    // 7. Cập nhật trang thái sản phẩm (available/unavailable) - dùng trong trường hợp admin muốn tạm thời ẩn sản phẩm mà không muốn xóa
+    // 7. Cập nhật trang thái sản phẩm (available/unavailable) - dùng trong trường
+    // hợp admin muốn tạm thời ẩn sản phẩm mà không muốn xóa
     @Override
     @Transactional
     public void updateProductStatus(Long id, String status) {
@@ -154,8 +159,6 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Trạng thái không hợp lệ. Vui lòng sử dụng 'available' hoặc 'unavailable'.");
         }
     }
-
-
 
     // ================================
     // II. CÁC HÀM DÀNH CHO USER
@@ -195,7 +198,8 @@ public class ProductServiceImpl implements ProductService {
     // 2. Tìm kiếm sản phẩm theo tên (available)
     @Override
     public List<UserProductResponseDTO> searchAvailableProductByName(String name) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCaseAndStatus(name, ProductStatus.available);
+        List<Product> products = productRepository.findByNameContainingIgnoreCaseAndStatus(name,
+                ProductStatus.available);
         return products.stream().map(this::convertToDTO_User).collect(Collectors.toList());
     }
 
@@ -206,7 +210,7 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(this::convertToDTO_User).collect(Collectors.toList());
     }
 
-    //4. Lấy chi tiết sản phẩm (available)
+    // 4. Lấy chi tiết sản phẩm (available)
     public UserProductResponseDTO getAvailableProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID " + id));
@@ -215,6 +219,5 @@ public class ProductServiceImpl implements ProductService {
         }
         return convertToDTO_User(product);
     }
-
 
 }

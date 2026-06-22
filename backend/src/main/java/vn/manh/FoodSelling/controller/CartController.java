@@ -16,7 +16,7 @@ import vn.manh.FoodSelling.service.CartService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/carts")
+@RequestMapping("/api/v1/carts")
 public class CartController {
     private final CartService cartService;
 

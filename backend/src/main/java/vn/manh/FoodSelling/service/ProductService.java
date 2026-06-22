@@ -12,7 +12,8 @@ public interface ProductService {
 
     public AdminProductResponseDTO getProductById(Long id);
 
-    public List<AdminProductResponseDTO> searchProductByName(String name); // AdminProductResponseDTO getProductByName(String name);
+    public List<AdminProductResponseDTO> searchProductByName(String name); // AdminProductResponseDTO
+                                                                           // getProductByName(String name);
 
     public AdminProductResponseDTO addProduct(ProductCreateDTO dto);
 
@@ -27,7 +28,7 @@ public interface ProductService {
 
     public List<UserProductResponseDTO> searchAvailableProductByName(String name);
 
-    public List<UserProductResponseDTO> getAvailableProductsByCategoryId(Long categoryId); // UserProductResponseDTO getAvailableProductByName(String name);
+    public List<UserProductResponseDTO> getAvailableProductsByCategoryId(Long categoryId);
 
     public UserProductResponseDTO getAvailableProductById(Long id);
 

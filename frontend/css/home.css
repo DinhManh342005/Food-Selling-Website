@@ -1,0 +1,147 @@
+/* CSS dành riêng cho Trang chủ */
+:root {
+  --wheel-size: 440px;
+  --item-size: 80px;
+  --translate-dist: 180px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --wheel-size: 300px;
+    --item-size: 60px;
+    --translate-dist: 110px;
+  }
+}
+
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  background-color: #f8fafc;
+}
+
+.circular-carousel {
+  position: relative;
+  width: var(--wheel-size);
+  height: var(--wheel-size);
+  transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.carousel-center {
+  box-shadow: 0 15px 45px rgba(15, 23, 42, 0.12);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.carousel-center:hover {
+  transform: scale(1.08);
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.18);
+}
+
+.carousel-center img {
+  filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.15));
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+}
+
+.carousel-ring {
+  pointer-events: none;
+}
+
+.carousel-item {
+  position: absolute;
+  width: var(--item-size);
+  height: var(--item-size);
+  top: 50%;
+  left: 50%;
+  margin-top: calc(-1 * var(--item-size) / 2);
+  margin-left: calc(-1 * var(--item-size) / 2);
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  background-color: #ffffff;
+  box-shadow: 0 6px 15px rgba(15, 23, 42, 0.08);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s, box-shadow 0.3s;
+  pointer-events: auto;
+}
+
+.carousel-item:hover {
+  transform: scale(1.15) !important;
+  border-color: #16a34a;
+  box-shadow: 0 0 20px rgba(22, 163, 74, 0.3);
+}
+
+.carousel-item.active {
+  border-color: #16a34a;
+  box-shadow: 0 0 25px rgba(22, 163, 74, 0.45);
+  transform: scale(1.1) !important;
+  z-index: 10;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.carousel-item:hover img {
+  transform: scale(1.1);
+}
+
+.carousel-info-card {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.carousel-info-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.carousel-info-card.hidden-card {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot:hover {
+  background-color: #94a3b8;
+}
+
+.carousel-dot.active {
+  background-color: #16a34a;
+  width: 24px;
+  border-radius: 5px;
+}
+
+/* Tab lọc sản phẩm */
+.filter-tab {
+  transition: all 0.25s ease;
+}
+
+.filter-tab.active {
+  background-color: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+}
+
+/* Category Carousel */
+.category-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  scrollbar-width: none; /* Firefox */
+}
+.category-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

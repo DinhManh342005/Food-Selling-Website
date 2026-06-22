@@ -1,0 +1,24 @@
+/* CSS dành riêng cho Trang cá nhân & Lịch sử đơn hàng */
+.profile-sidebar {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: #475569;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.profile-menu-item:hover,
+.profile-menu-item.active {
+  background: #fff7ed;
+  color: #ea580c;
+}

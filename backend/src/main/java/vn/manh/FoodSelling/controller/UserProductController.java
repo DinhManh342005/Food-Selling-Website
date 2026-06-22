@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.manh.FoodSelling.dto.response.UserProductResponseDTO;
 import vn.manh.FoodSelling.service.ProductService;
 
-
 @RestController
-@RequestMapping("api/v1/products")
+@RequestMapping("/api/v1/products")
 public class UserProductController {
 
     // Tạo contructor tương tự với Field Injection @Autowired
     private final ProductService productService;
-    
+
     public UserProductController(ProductService productService) {
         this.productService = productService;
     }
@@ -27,7 +26,7 @@ public class UserProductController {
     // USER API: Lấy toàn bộ sản phẩm đang bán
     // URL: GET http://localhost:8080/api/v1/products
     @GetMapping()
-     public ResponseEntity<List<UserProductResponseDTO>> getAllAvailableProducts() {
+    public ResponseEntity<List<UserProductResponseDTO>> getAllAvailableProducts() {
         List<UserProductResponseDTO> products = productService.getAllAvailableProducts();
         return ResponseEntity.ok(products);
     }
@@ -43,12 +42,12 @@ public class UserProductController {
     // USER API: Lấy sản phẩm theo categoryId
     // URL: GET http://localhost:8080/api/v1/products/category/{categoryId}
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<UserProductResponseDTO>> getAvailableProductsByCategoryId(@PathVariable Long categoryId) {
+    public ResponseEntity<List<UserProductResponseDTO>> getAvailableProductsByCategoryId(
+            @PathVariable Long categoryId) {
         List<UserProductResponseDTO> products = productService.getAvailableProductsByCategoryId(categoryId);
         return ResponseEntity.ok(products);
     }
 
-    
     // USER API: Lấy chi tiết sản phẩm
     // URL: GET http://localhost:8080/api/v1/products/{id}
     @GetMapping("/{id}")
@@ -56,6 +55,5 @@ public class UserProductController {
         UserProductResponseDTO product = productService.getAvailableProductById(id);
         return ResponseEntity.ok(product);
     }
-    
 
 }

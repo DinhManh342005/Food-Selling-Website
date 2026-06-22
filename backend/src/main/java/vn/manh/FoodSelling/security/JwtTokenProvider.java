@@ -15,9 +15,11 @@ import java.util.Date;
 // Nó sẽ được sử dụng trong quá trình đăng nhập và bảo vệ các endpoint cần xác thực.
 @Component
 public class JwtTokenProvider {
-    // Điểm mới: Sử dụng Keys.hmacShaKeyFor để tạo Key an toàn và Jwts.parserBuilder().
+    // Điểm mới: Sử dụng Keys.hmacShaKeyFor để tạo Key an toàn và
+    // Jwts.parserBuilder().
 
-    // Lấy giá trị secret key và expiration time từ file application.yaml để dễ dàng cấu hình mà không cần sửa code
+    // Lấy giá trị secret key và expiration time từ file application.yaml để dễ dàng
+    // cấu hình mà không cần sửa code
     @Value("${jwt.secret}")
     private String jwtSecret;
     @Value("${jwt.expiration}")
@@ -41,7 +43,10 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getUsername()) // Lưu username vào field 'sub'
+                .setSubject(userPrincipal.getUsername())
+                .claim("role",
+                        userPrincipal.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "")
+                                .toLowerCase())// Lưu username vào field 'sub'
                 .setIssuedAt(now) // Thời điểm tạo
                 .setExpiration(expiryDate) // Thời điểm hết hạn
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256) // Thuật toán ký mới
@@ -67,9 +72,9 @@ public class JwtTokenProvider {
     public boolean validateToken(String authToken) {
         try {
             Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(authToken);
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
             // Token không đúng định dạng

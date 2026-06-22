@@ -16,7 +16,7 @@ public class ProductCreateDTO {
     // @NotBlank used to check if the product name is not blank
     @NotBlank(message = "Product name is not blank")
     private String name;
-    
+
     private String description;
 
     // @NotNull used to check if the product price is not null
@@ -26,26 +26,26 @@ public class ProductCreateDTO {
     private BigDecimal price;
 
     @NotNull(message = "Product stock quantity is not null")
-    @Min(value = 0, message = "Product stock quantity must be greater than 0")  
+    @Min(value = 0, message = "Product stock quantity must be greater than 0")
     private Integer stockQuantity;
-    
+
     @NotNull(message = "Product category id is must be chosen")
     private Long categoryId;
-   
+
     // @NotBlank(message = "Product detail images is not blank")
     private List<String> detailImages;
 
     // Mẫu JSON gửi từ admin để tạo sản phẩm mới:
-// {
-//     "categoryId": 1,
-//     "description": "Bánh cuốn nóng nhân thịt ăn cùng chả quế truyền thống.",
-//     "detailImages": [],
-//     "imageUrl": null,
-//     "name": "Bánh Cuốn Thanh Trì",
-//     "price": 45000.00,
-//     "productId": 5,
-//     "status": "available",
-//     "stockQuantity": 60
-// }
+    // {
+    // "categoryId": 1,
+    // "description": "Bánh cuốn nóng nhân thịt ăn cùng chả quế truyền thống.",
+    // "detailImages": [],
+    // "imageUrl": null,
+    // "name": "Bánh Cuốn Thanh Trì",
+    // "price": 45000.00,
+    // "productId": 5,
+    // "status": "available",
+    // "stockQuantity": 60
+    // }
 
 }

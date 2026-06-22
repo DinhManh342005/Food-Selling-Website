@@ -8,7 +8,7 @@ import vn.manh.FoodSelling.entity.Product;
 import vn.manh.FoodSelling.enums.ProductStatus;
 
 // @Repository - không cần sử dụng Annotation này vì khi kế thừa JpaRepository thì SPB đã tự đki vào Spring Container thành một Bean
-public interface ProductRepository extends JpaRepository<Product, Long>{
+public interface ProductRepository extends JpaRepository<Product, Long> {
     // Tìm các sản phẩm đang online (available) để hiện cho khách xem
     public List<Product> findByStatus(ProductStatus status);
 

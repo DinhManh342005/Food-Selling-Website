@@ -1,0 +1,35 @@
+/* CSS dành riêng cho Bảng quản trị Admin */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 1024px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-sidebar {
+  background-color: #0f172a;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.admin-sidebar-item:hover,
+.admin-sidebar-item.active {
+  background-color: #1e293b;
+  color: #ffffff;
+  border-left-color: #ea580c;
+}

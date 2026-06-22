@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh Toán Đơn Hàng - FreshBite</title>
+  
+  <!-- Roboto Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+                                        colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+  <!-- TOP BAR & HEADER (Loaded via layout.js) -->
+  <div id="app-header"></div>
+
+  <!-- BREADCRUMBS -->
+  <div class="bg-white py-3 border-b border-slate-200">
+    <div class="container max-w-7xl mx-auto px-4 flex items-center gap-2 text-sm text-slate-500">
+      <a href="index.html" class="hover:text-brand-600 transition-colors">Trang chủ</a>
+      <span>/</span>
+      <span class="text-slate-800 font-medium">Thanh toán đơn hàng</span>
+    </div>
+  </div>
+
+  <!-- MAIN SECTION -->
+  <main class="flex-grow py-8 md:py-12">
+    <div class="container max-w-7xl mx-auto px-4">
+      
+      <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-8">Thanh toán đơn hàng</h1>
+
+      <!-- EMPTY STATE -->
+      <div id="checkout-empty-state" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-slate-800 mb-2">Giỏ hàng của bạn đang trống</h2>
+        <p class="text-slate-500 mb-6">Có vẻ như bạn chưa chọn sản phẩm nào để thanh toán.</p>
+        <a href="products.html" class="btn btn-primary px-8 py-3 rounded-lg font-medium inline-block">Tiếp tục mua sắm</a>
+      </div>
+
+      <!-- CHECKOUT CONTENT -->
+      <div id="checkout-content-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT COLUMN: SHIPPING FORM -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+          
+          <form id="checkout-form" class="bg-white p-6 md:p-8 rounded-[18px] border border-slate-200 shadow-sm space-y-6">
+            
+            <!-- Thông tin người nhận -->
+            <div>
+              <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm">1</span>
+                Thông tin nhận hàng
+              </h2>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label for="fullName" class="text-sm font-medium text-slate-700">Họ và tên <span class="text-red-500">*</span></label>
+                  <input type="text" id="fullName" name="fullName" required placeholder="Nhập họ và tên" 
+                    class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors">
+                </div>
+                
+                <div class="space-y-1">
+                  <label for="phone" class="text-sm font-medium text-slate-700">Số điện thoại <span class="text-red-500">*</span></label>
+                  <input type="tel" id="phone" name="phone" required placeholder="Nhập số điện thoại" 
+                    class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors">
+                </div>
+              </div>
+
+              <div class="space-y-1 mt-4">
+                <label for="email" class="text-sm font-medium text-slate-700">Email <span class="text-red-500">*</span></label>
+                <input type="email" id="email" name="email" required placeholder="Nhập địa chỉ email" 
+                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors">
+              </div>
+            </div>
+
+            <hr class="border-slate-100">
+
+            <!-- Địa chỉ giao hàng -->
+            <div>
+              <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm">2</span>
+                Địa chỉ giao hàng
+              </h2>
+              
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="space-y-1">
+                  <label for="province" class="text-sm font-medium text-slate-700">Tỉnh/Thành phố <span class="text-red-500">*</span></label>
+                  <input type="text" id="province" name="province" required placeholder="Tỉnh/Thành phố" 
+                    class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors">
+                </div>
+                
+                <div class="space-y-1">
+                  <label for="district" class="text-sm font-medium text-slate-700">Quận/Huyện <span class="text-red-500">*</span></label>
+                  <input type="text" id="district" name="district" required placeholder="Quận/Huyện" 
+                    class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors">
+                </div>
+
+                <div class="space-y-1">
+                  <label for="ward" class="text-sm font-medium text-slate-700">Phường/Xã <span class="text-red-500">*</span></label>
+                  <input type="text" id="ward" name="ward" required placeholder="Phường/Xã" 
+                    class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors">
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label for="addressDetail" class="text-sm font-medium text-slate-700">Địa chỉ chi tiết <span class="text-red-500">*</span></label>
+                <input type="text" id="addressDetail" name="addressDetail" required placeholder="Số nhà, tên đường..." 
+                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors">
+              </div>
+
+              <div class="space-y-1 mt-4">
+                <label for="note" class="text-sm font-medium text-slate-700">Ghi chú đơn hàng</label>
+                <textarea id="note" name="note" rows="3" placeholder="Ghi chú về thời gian hoặc địa điểm nhận hàng (không bắt buộc)" 
+                  class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none transition-colors"></textarea>
+              </div>
+            </div>
+
+            <hr class="border-slate-100">
+
+            <!-- Phương thức thanh toán -->
+            <div>
+              <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm">3</span>
+                Phương thức thanh toán
+              </h2>
+
+              <div class="space-y-3">
+                <label class="payment-method-option flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors [&:has(input:checked)]:border-brand-500 [&:has(input:checked)]:bg-brand-50">
+                  <input type="radio" name="paymentMethod" value="COD" checked class="w-4 h-4 text-brand-600 border-slate-300 focus:ring-brand-500">
+                  <div class="ml-3 flex flex-col">
+                    <span class="text-sm font-bold text-slate-800">Thanh toán khi nhận hàng (COD)</span>
+                    <span class="text-xs text-slate-500">Thanh toán bằng tiền mặt khi giao hàng tận nơi.</span>
+                  </div>
+                </label>
+
+                <label class="payment-method-option flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors [&:has(input:checked)]:border-brand-500 [&:has(input:checked)]:bg-brand-50">
+                  <input type="radio" name="paymentMethod" value="BANK" class="w-4 h-4 text-brand-600 border-slate-300 focus:ring-brand-500">
+                  <div class="ml-3 flex flex-col">
+                    <span class="text-sm font-bold text-slate-800">Chuyển khoản ngân hàng</span>
+                    <span class="text-xs text-slate-500">Chuyển khoản qua số tài khoản. Vui lòng ghi rõ mã đơn hàng.</span>
+                  </div>
+                </label>
+
+                <label class="payment-method-option flex items-center p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors [&:has(input:checked)]:border-brand-500 [&:has(input:checked)]:bg-brand-50">
+                  <input type="radio" name="paymentMethod" value="WALLET" class="w-4 h-4 text-brand-600 border-slate-300 focus:ring-brand-500">
+                  <div class="ml-3 flex flex-col">
+                    <span class="text-sm font-bold text-slate-800">Ví điện tử (Momo, ZaloPay)</span>
+                    <span class="text-xs text-slate-500">Quét mã QR để thanh toán.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Nút submit ẩn dùng để trigger form submit từ bên ngoài -->
+            <button type="submit" id="hidden-submit-btn" class="hidden"></button>
+          </form>
+        </div>
+
+        <!-- RIGHT COLUMN: ORDER SUMMARY -->
+        <div class="lg:col-span-5 xl:col-span-4 sticky top-24">
+          <div class="bg-white p-6 rounded-[18px] border border-slate-200 shadow-sm flex flex-col">
+            <h2 class="text-lg font-bold text-slate-800 mb-4">Tóm tắt đơn hàng</h2>
+            
+            <div id="checkout-cart-items" class="flex-grow overflow-y-auto max-h-80 space-y-4 mb-6 pr-2 custom-scrollbar">
+              <!-- Rendered by JS -->
+            </div>
+
+            <hr class="border-slate-100 mb-4">
+
+            <div class="space-y-3 text-sm mb-6">
+              <div class="flex justify-between text-slate-600">
+                <span>Tạm tính</span>
+                <span id="checkout-subtotal" class="font-medium text-slate-800">0đ</span>
+              </div>
+              <div class="flex justify-between text-slate-600">
+                <span>Phí vận chuyển</span>
+                <span id="checkout-shipping" class="font-medium text-slate-800">30.000đ</span>
+              </div>
+              <div class="flex justify-between text-slate-600">
+                <span>Giảm giá</span>
+                <span id="checkout-discount" class="font-medium text-brand-600">0đ</span>
+              </div>
+              
+              <hr class="border-slate-100 pt-3">
+              
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-slate-800">Tổng thanh toán</span>
+                <span id="checkout-total" class="text-xl font-bold text-brand-600">0đ</span>
+              </div>
+            </div>
+
+            <!-- "Đặt hàng" trigger hidden form submit -->
+            <button type="button" id="btn-place-order" class="btn btn-primary w-full py-3.5 rounded-xl font-bold text-base shadow-md shadow-brand-500/30 hover:-translate-y-0.5 transition-transform bg-brand-600 hover:bg-brand-700">
+              ĐẶT HÀNG
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (Loaded via layout.js) -->
+  <div id="app-footer"></div>
+
+  
+  <!-- Day.js -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+  <!-- Popper & Tippy -->
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+  <!-- Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+  <!-- SCRIPT LOADING ORDER -->
+  <script src="../js/config.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/checkout.js"></script>
+</body>
+</html>

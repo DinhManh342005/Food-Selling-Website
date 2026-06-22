@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theo Dõi Đơn Hàng - FreshBite</title>
+  
+  <!-- Roboto Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+                                        colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* Timeline styles */
+    .tracking-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .tracking-timeline {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+    }
+    .tracking-step {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      flex: 1;
+    }
+    @media (min-width: 768px) {
+      .tracking-step {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.75rem;
+      }
+      /* Connector line */
+      .tracking-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 1rem;
+        left: 50%;
+        width: 100%;
+        height: 2px;
+        background-color: #cbd5e1; /* slate-300 */
+        z-index: 0;
+      }
+      .tracking-step.completed:not(:last-child)::after {
+        background-color: #16a34a; /* brand-600 */
+      }
+    }
+    /* Mobile connector line */
+    @media (max-width: 767px) {
+      .tracking-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 2rem;
+        bottom: -1rem;
+        left: 1rem;
+        width: 2px;
+        background-color: #cbd5e1;
+        z-index: 0;
+      }
+      .tracking-step.completed:not(:last-child)::after {
+        background-color: #16a34a;
+      }
+    }
+
+    .tracking-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background-color: #f1f5f9; /* slate-100 */
+      border: 2px solid #cbd5e1; /* slate-300 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8; /* slate-400 */
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    .tracking-step.completed .tracking-icon {
+      background-color: #16a34a;
+      border-color: #16a34a;
+      color: white;
+    }
+    .tracking-step.current .tracking-icon {
+      background-color: #fff;
+      border-color: #f97316; /* orange-500 */
+      color: #f97316;
+      box-shadow: 0 0 0 4px #ffedd5;
+    }
+    .tracking-step.cancelled .tracking-icon {
+      background-color: #ef4444; /* red-500 */
+      border-color: #ef4444;
+      color: white;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .status-badge.pending { background-color: #fef08a; color: #854d0e; }
+    .status-badge.confirmed { background-color: #dcfce7; color: #166534; }
+    .status-badge.preparing { background-color: #ffedd5; color: #9a3412; }
+    .status-badge.shipping { background-color: #dbeafe; color: #1e40af; }
+    .status-badge.completed { background-color: #dcfce7; color: #15803d; }
+    .status-badge.cancelled { background-color: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+  <!-- TOP BAR & HEADER (Loaded via layout.js) -->
+  <div id="app-header"></div>
+
+  <!-- BREADCRUMBS -->
+  <div class="bg-white py-3 border-b border-slate-200">
+    <div class="container max-w-[1000px] mx-auto px-4 flex items-center gap-2 text-sm text-slate-500">
+      <a href="index.html" class="hover:text-brand-600 transition-colors">Trang chủ</a>
+      <span>/</span>
+      <span class="text-slate-800 font-medium">Theo dõi đơn hàng</span>
+    </div>
+  </div>
+
+  <!-- MAIN SECTION -->
+  <main class="flex-grow py-8 md:py-12">
+    <div class="container max-w-[1000px] mx-auto px-4">
+      
+      <!-- HERO NHỎ -->
+      <div class="text-center mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Theo dõi đơn hàng</h1>
+        <p class="text-slate-500">Nhập mã đơn hàng để kiểm tra trạng thái giao hàng.</p>
+      </div>
+
+
+
+      <!-- EMPTY STATE (KHÔNG TÌM THẤY) -->
+      <div id="tracking-empty" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-slate-800 mb-1">Không tìm thấy đơn hàng phù hợp.</h3>
+        <p class="text-slate-500 text-sm">Vui lòng kiểm tra lại mã đơn hàng.</p>
+      </div>
+
+      <!-- KẾT QUẢ TÌM THẤY -->
+      <div id="tracking-result-card" class="hidden space-y-6">
+        
+        <!-- Order Card Details -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="bg-slate-50 border-b border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Mã đơn hàng</p>
+              <h2 class="text-xl font-bold text-slate-800" id="result-order-id">ORD-XXXXXXXX</h2>
+            </div>
+            <div id="result-status-badge" class="status-badge pending">
+              ĐANG XỬ LÝ
+            </div>
+          </div>
+          
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4 text-sm">
+              <div class="flex">
+                <span class="w-32 text-slate-500">Ngày đặt:</span>
+                <span class="font-medium text-slate-800" id="result-date">--/--/----</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-slate-500">Khách hàng:</span>
+                <span class="font-medium text-slate-800" id="result-customer">--</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-slate-500">Số điện thoại:</span>
+                <span class="font-medium text-slate-800" id="result-phone">--</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-slate-500">Thanh toán:</span>
+                <span class="font-medium text-slate-800" id="result-payment">--</span>
+              </div>
+            </div>
+            <div class="space-y-4 text-sm">
+              <div class="flex">
+                <span class="w-32 text-slate-500 shrink-0">Địa chỉ:</span>
+                <span class="font-medium text-slate-800" id="result-address">--</span>
+              </div>
+              <div class="flex">
+                <span class="w-32 text-slate-500">Tổng tiền:</span>
+                <span class="font-bold text-brand-600 text-lg" id="result-total">0đ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="bg-white p-6 md:p-10 rounded-2xl border border-slate-200 shadow-sm" id="timeline-container">
+          <h3 class="text-lg font-bold text-slate-800 mb-8">Trạng thái giao hàng</h3>
+          
+          <div class="tracking-timeline">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="text-lg font-bold text-slate-800 mb-4">Sản phẩm trong đơn</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[500px]">
+              <thead>
+                <tr class="border-b border-slate-100 text-xs font-bold text-slate-400 uppercase">
+                  <th class="py-3 px-2">Sản phẩm</th>
+                  <th class="py-3 px-2 text-center">Số lượng</th>
+                  <th class="py-3 px-2 text-right">Đơn giá</th>
+                  <th class="py-3 px-2 text-right">Thành tiền</th>
+                </tr>
+              </thead>
+              <tbody id="result-items" class="divide-y divide-slate-100">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER (Loaded via layout.js) -->
+  <div id="app-footer"></div>
+
+  
+  <!-- Day.js -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+  <!-- Popper & Tippy -->
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+  <!-- Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+  <!-- SCRIPT LOADING ORDER -->
+  <script src="../js/config.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/tracking.js"></script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Điều Khiển Admin - FreshBite</title>
+  
+  <!-- Roboto Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+                                        colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* Admin Specific Styles */
+    .admin-sidebar {
+      width: 260px;
+      background-color: #0f172a; /* slate-900 */
+      color: #e2e8f0; /* slate-200 */
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 50;
+      transition: transform 0.3s ease;
+    }
+    
+    .admin-sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: #94a3b8; /* slate-400 */
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    
+    .admin-sidebar-item:hover {
+      color: #f8fafc;
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .admin-sidebar-item.active {
+      color: #fff;
+      background-color: #16a34a; /* brand green */
+      border-right: 4px solid #bbf7d0;
+    }
+
+    .admin-content {
+      margin-left: 260px;
+      min-height: 100vh;
+      background-color: #f8fafc; /* slate-50 */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .icon-box {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Simple CSS Bar Chart */
+    .bar-chart-container {
+      display: flex;
+      align-items: flex-end;
+      height: 200px;
+      gap: 1rem;
+      padding-top: 1rem;
+    }
+    .bar-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      gap: 0.5rem;
+    }
+    .bar {
+      width: 100%;
+      background-color: #16a34a;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.5s ease;
+      min-height: 2px;
+    }
+    .bar-label {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    /* Status Badges */
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .badge-green { background-color: #dcfce7; color: #15803d; }
+    .badge-red { background-color: #fee2e2; color: #991b1b; }
+    .badge-orange { background-color: #ffedd5; color: #9a3412; }
+    .badge-blue { background-color: #dbeafe; color: #1e40af; }
+    .badge-yellow { background-color: #fef08a; color: #854d0e; }
+
+    @media (max-width: 1023px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.open {
+        transform: translateX(0);
+      }
+      .admin-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="flex">
+    
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar shadow-xl" id="admin-sidebar">
+      <div class="flex items-center justify-between p-6 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold">🇻🇳</div>
+          <span class="text-white font-bold tracking-wide">Việt Vị Admin</span>
+        </div>
+        <button id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <nav class="flex-grow py-6 space-y-1">
+        <a href="admin-dashboard.html" class="admin-sidebar-item active">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+          Dashboard
+        </a>
+
+        <a href="admin-products.html" class="admin-sidebar-item">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+          Sản phẩm
+        </a>
+        <a href="admin-orders.html" class="admin-sidebar-item">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          Đơn hàng
+        </a>
+        <a href="admin-users.html" class="admin-sidebar-item">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          Người dùng
+        </a>
+      </nav>
+
+      <div class="p-6 border-t border-slate-800">
+        <button id="btn-admin-logout" class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors w-full text-left font-medium text-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Đăng xuất
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-content w-full">
+      
+      <!-- HEADER -->
+      <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 sticky top-0 z-40">
+        <div class="flex items-center gap-4">
+          <button id="btn-open-sidebar" class="lg:hidden text-slate-500 hover:text-slate-800">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <h2 class="text-xl font-bold text-slate-800 hidden sm:block">Dashboard</h2>
+        </div>
+        
+        <div class="flex items-center gap-6">
+          <a href="index.html" class="text-sm font-semibold text-brand-600 hover:text-brand-700 hidden sm:block">Xem website →</a>
+          <div class="flex items-center gap-3 border-l border-slate-200 pl-6">
+            <div class="text-right hidden sm:block">
+              <p class="text-sm font-bold text-slate-800" id="header-admin-name">Admin</p>
+              <p class="text-[10px] text-slate-500 font-medium">Quản trị viên</p>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold">A</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- DASHBOARD CONTENT -->
+      <div class="p-6 md:p-8 space-y-8 max-w-7xl mx-auto w-full">
+        
+        <!-- Welcome Card -->
+        <div class="bg-gradient-to-r from-brand-600 to-orange-500 rounded-2xl p-6 md:p-8 text-white shadow-md">
+          <h1 class="text-2xl md:text-3xl font-bold mb-2">Xin chào Admin! 👋</h1>
+          <p class="text-brand-50 opacity-90">Đây là tổng quan hoạt động của Việt Vị Ba Miền hôm nay.</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+          <div class="stat-card">
+            <div class="icon-box bg-blue-100 text-blue-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg></div>
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase">Tổng sản phẩm</p>
+              <h3 class="text-xl font-bold text-slate-800" id="stat-total-products">0</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="icon-box bg-brand-100 text-brand-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase">Còn bán</p>
+              <h3 class="text-xl font-bold text-slate-800" id="stat-available-products">0</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="icon-box bg-rose-100 text-rose-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div>
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase">Hết hàng</p>
+              <h3 class="text-xl font-bold text-slate-800" id="stat-out-stock">0</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="icon-box bg-purple-100 text-purple-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase">Tổng đơn hàng</p>
+              <h3 class="text-xl font-bold text-slate-800" id="stat-total-orders">0</h3>
+            </div>
+          </div>
+          <div class="stat-card sm:col-span-2 lg:col-span-1 xl:col-span-2">
+            <div class="icon-box bg-orange-100 text-orange-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase">Doanh thu tạm tính</p>
+              <h3 class="text-xl font-bold text-brand-600" id="stat-revenue">0đ</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm col-span-1 lg:col-span-2 flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-slate-800 text-lg">Doanh thu 7 ngày qua</h3>
+              <select class="bg-slate-50 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:border-brand-500 outline-none">
+                <option>Tuần này</option>
+                <option>Tháng này</option>
+              </select>
+            </div>
+            <div id="revenue-chart" class="flex-grow w-full relative min-h-[300px]">
+              <!-- Rendered by Chart.js -->
+              <div class="absolute inset-0 flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Orders Table -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-slate-800 text-lg">Đơn hàng gần đây</h3>
+              <a href="admin-orders.html" class="text-sm font-semibold text-brand-600 hover:underline">Xem tất cả</a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm border-collapse min-w-[600px]">
+                <thead>
+                  <tr class="border-b border-slate-100 text-slate-400 text-xs uppercase font-bold">
+                    <th class="py-3 px-2">Mã đơn</th>
+                    <th class="py-3 px-2">Khách hàng</th>
+                    <th class="py-3 px-2">Ngày đặt</th>
+                    <th class="py-3 px-2 text-right">Tổng tiền</th>
+                    <th class="py-3 px-2 text-center">Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-orders-list" class="divide-y divide-slate-50">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Revenue Chart & Low Stock -->
+          <div class="space-y-8">
+            
+            <!-- Revenue Chart -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+              <h3 class="font-bold text-slate-800 text-lg mb-2">Doanh thu 7 ngày</h3>
+              <div class="bar-chart-container" id="revenue-chart">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Low Stock -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-800 text-lg">Sắp hết hàng</h3>
+              </div>
+              <div class="space-y-4" id="low-stock-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  
+  <!-- Day.js -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+  <!-- Popper & Tippy -->
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+  <!-- Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+  
+  <!-- FullCalendar JS -->
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SortableJS -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+  <!-- SCRIPT LOADING ORDER -->
+  <script src="../js/config.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
