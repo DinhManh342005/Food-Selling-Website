@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadUserInfo(user) {
-  const nameInput = document.getElementById("checkout-name");
-  const phoneInput = document.getElementById("checkout-phone");
-  const emailInput = document.getElementById("checkout-email");
+  const nameInput = document.getElementById("fullName");
+  const phoneInput = document.getElementById("phone");
+  const emailInput = document.getElementById("email");
 
   if (nameInput) nameInput.value = user.fullName || "";
   if (phoneInput) phoneInput.value = user.phone || "";
@@ -34,10 +34,10 @@ function loadUserInfo(user) {
   // Tải địa chỉ nếu có lưu trước đó
   const savedAddress = JSON.parse(localStorage.getItem("userAddress"));
   if (savedAddress) {
-    const prov = document.getElementById("checkout-province");
-    const dist = document.getElementById("checkout-district");
-    const ward = document.getElementById("checkout-ward");
-    const detail = document.getElementById("checkout-address");
+    const prov = document.getElementById("province");
+    const dist = document.getElementById("district");
+    const ward = document.getElementById("ward");
+    const detail = document.getElementById("addressDetail");
 
     if (prov) prov.value = savedAddress.province || "";
     if (dist) dist.value = savedAddress.district || "";
@@ -47,19 +47,29 @@ function loadUserInfo(user) {
 }
 
 async function loadCheckoutData() {
-  const listContainer = document.getElementById("checkout-items-list");
+  const listContainer = document.getElementById("checkout-cart-items");
   const subtotalEl = document.getElementById("checkout-subtotal");
   const shippingEl = document.getElementById("checkout-shipping");
   const totalEl = document.getElementById("checkout-total");
-  const btnSubmit = document.getElementById("btn-submit-order");
+  const btnSubmit = document.getElementById("btn-place-order");
 
   if (!listContainer) return;
 
   try {
     // Ưu tiên dùng API Cart nếu đã login
-    const cartItems = await CartApi.getCart();
+    const serverCart = await CartApi.getCart();
+    const cartItems = (serverCart && Array.isArray(serverCart.items))
+      ? serverCart.items.map(item => ({
+          id: item.cartItemId,
+          productId: item.productId,
+          productName: item.productName,
+          imageUrl: item.productImageUrl,
+          price: Number(item.unitPrice),
+          quantity: item.quantity
+        }))
+      : [];
 
-    if (!cartItems || cartItems.length === 0) {
+    if (cartItems.length === 0) {
       listContainer.innerHTML = `
         <div class="text-center py-6">
           <p class="text-slate-500 mb-4">Giỏ hàng của bạn đang trống</p>
@@ -118,6 +128,17 @@ function initCheckoutEvents() {
     });
   }
 
+  // Kích hoạt nút đặt hàng bên ngoài click nút submit ẩn bên trong form
+  const btnPlaceOrder = document.getElementById("btn-place-order");
+  if (btnPlaceOrder) {
+    btnPlaceOrder.addEventListener("click", () => {
+      const hiddenSubmit = document.getElementById("hidden-submit-btn");
+      if (hiddenSubmit) {
+        hiddenSubmit.click();
+      }
+    });
+  }
+
   // Nút áp dụng mã giảm giá (Chưa có API, chỉ mockup)
   const btnApplyCoupon = document.getElementById("btn-apply-coupon");
   if (btnApplyCoupon) {
@@ -134,22 +155,22 @@ function initCheckoutEvents() {
  * Xử lý thanh toán sử dụng API thực tế
  */
 async function handleServerCheckout() {
-  const btnSubmit = document.getElementById("btn-submit-order");
+  const btnSubmit = document.getElementById("btn-place-order");
   const originalText = btnSubmit.innerHTML;
 
   // Thu thập dữ liệu
-  const receiverName = document.getElementById("checkout-name").value.trim();
-  const receiverPhone = document.getElementById("checkout-phone").value.trim();
+  const receiverName = document.getElementById("fullName").value.trim();
+  const receiverPhone = document.getElementById("phone").value.trim();
   
   // Nối địa chỉ
-  const prov = document.getElementById("checkout-province").value.trim();
-  const dist = document.getElementById("checkout-district").value.trim();
-  const ward = document.getElementById("checkout-ward").value.trim();
-  const detail = document.getElementById("checkout-address").value.trim();
+  const prov = document.getElementById("province").value.trim();
+  const dist = document.getElementById("district").value.trim();
+  const ward = document.getElementById("ward").value.trim();
+  const detail = document.getElementById("addressDetail").value.trim();
   const fullAddress = `${detail}, ${ward}, ${dist}, ${prov}`.replace(/^[,\s]+|[,\s]+$/g, '');
   
-  const note = document.getElementById("checkout-note") ? document.getElementById("checkout-note").value.trim() : "";
-  const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || "COD";
+  const note = document.getElementById("note") ? document.getElementById("note").value.trim() : "";
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || "COD";
 
   // Validate
   if (!receiverName || !receiverPhone || !fullAddress) {
@@ -174,9 +195,9 @@ async function handleServerCheckout() {
     // Lấy ID trả về từ API (response.id là Long)
     const orderId = response.id;
     
-    // Redirect sang trang tracking với param
+    // Redirect sang trang đơn hàng của tôi
     setTimeout(() => {
-      window.location.href = `tracking.html?orderCode=ORD-${orderId}`;
+      window.location.href = "profile.html?tab=orders";
     }, 1500);
 
   } catch (error) {

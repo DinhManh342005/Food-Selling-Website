@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // Áp dụng cho mọi API có tiền tố /api
                         .allowedOriginPatterns("*") // Cho phép mọi domain, bao gồm cả file:/// và các IP mạng LAN
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Giới hạn các phương thức
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS") // Giới hạn các phương thức
                         .allowedHeaders("*")
                         .allowCredentials(true); // Cho phép gửi kèm Cookie/Token nếu cần
             }

@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     tbody.innerHTML = orders.map(order => {
       const st = statusMap[order.status] || { text: order.status, class: "bg-slate-100 text-slate-800" };
       return `
-        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+        <tr class="hover:bg-slate-50 cursor-pointer transition-colors border-b border-slate-100" data-order-id="${order.id}">
           <td class="py-3 px-4 font-bold text-slate-700">${order.code}</td>
           <td class="py-3 px-4 font-medium text-slate-800 truncate max-w-[150px]" title="${order.customerName}">${order.customerName}</td>
           <td class="py-3 px-4 text-slate-600">${order.customerPhone}</td>
@@ -161,17 +161,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td class="py-3 px-4 text-center">
             <span class="px-2 py-1 rounded-full text-[10px] font-bold ${st.class}">${st.text}</span>
           </td>
-          <td class="py-3 px-4 text-center">
-            <button type="button" data-order-id="${order.id}" data-tippy-content="Xem chi tiết" class="btn-view-order w-8 h-8 rounded bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors" title="Chi tiết">
-              <i class="fa-solid fa-eye"></i>
-            </button>
-          </td>
         </tr>
       `;
     }).join("");
 
-    tbody.querySelectorAll(".btn-view-order").forEach(button => {
-      button.addEventListener("click", () => openOrderModal(button.dataset.orderId));
+    tbody.querySelectorAll("tr[data-order-id]").forEach(row => {
+      row.addEventListener("click", () => openOrderModal(row.dataset.orderId));
     });
 
     if (stats) stats.textContent = `Đang hiển thị ${orders.length} đơn hàng`;
@@ -185,7 +180,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("modal-order-code").textContent = selectedOrder.code;
     document.getElementById("modal-customer-name").textContent = selectedOrder.customerName;
     document.getElementById("modal-customer-phone").textContent = selectedOrder.customerPhone;
-    document.getElementById("modal-customer-email").textContent = selectedOrder.customerEmail;
     document.getElementById("modal-customer-address").textContent = selectedOrder.receiverAddress;
     document.getElementById("modal-customer-note").textContent = selectedOrder.note || "--";
     document.getElementById("modal-payment-method").textContent = selectedOrder.paymentMethod;
@@ -260,6 +254,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h3 class="font-bold text-slate-800 text-lg"><i class="fa-regular fa-calendar-days text-brand-600 mr-2"></i>Lịch giao hàng</h3>
       </div>
       <div id="calendar-container" class="w-full min-h-[400px]"></div>
+      
+      <!-- Lớp giải thích màu sắc (Legend) -->
+      <div class="flex flex-wrap gap-4 mt-6 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-500 justify-center">
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-yellow-500"></span> Chờ xử lý</div>
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Đã xác nhận</div>
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Đang giao hàng</div>
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-green-500"></span> Hoàn thành</div>
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> Đã hủy</div>
+      </div>
     `;
     tableContainer.parentNode.insertBefore(calCard, tableContainer);
   }
@@ -276,7 +279,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const events = orders
       .filter(order => order.orderDate)
       .map(order => ({
-        title: order.code,
+        id: order.id,
+        title: `${order.code} - ${order.customerName}`,
         start: String(order.orderDate).split("T")[0],
         color: getStatusColor(order.status),
         extendedProps: {
@@ -288,6 +292,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     calendar = new FullCalendar.Calendar(calEl, {
       initialView: "dayGridMonth",
+      height: 650,
+      dayMaxEvents: 3, // display at most 3 event rows, 4th line will be '+n more' if it overflows
+      locale: "vi",
+      buttonText: {
+        today: "Hôm nay",
+        month: "Tháng",
+        week: "Tuần"
+      },
       headerToolbar: {
         left: "prev,next today",
         center: "title",
@@ -295,20 +307,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       events,
       eventClick(info) {
-        const props = info.event.extendedProps;
-        Swal.fire({
-          title: `Đơn hàng ${info.event.title}`,
-          html: `
-            <div class="text-left mt-4 text-sm space-y-2">
-              <p><strong>Khách hàng:</strong> ${props.customerName}</p>
-              <p><strong>Trạng thái:</strong> <span class="font-bold">${props.status}</span></p>
-              <p><strong>Tổng tiền:</strong> <span class="text-brand-600 font-bold">${props.total}</span></p>
-            </div>
-          `,
-          icon: "info",
-          confirmButtonText: "Đóng",
-          confirmButtonColor: "#16a34a"
-        });
+        openOrderModal(info.event.id);
       }
     });
 

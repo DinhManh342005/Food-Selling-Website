@@ -222,3 +222,43 @@ const AdminOrderApi = {
     });
   }
 };
+
+/**
+ * API Người dùng (Thông tin cá nhân & Đổi mật khẩu)
+ */
+const UserApi = {
+  getProfile() {
+    return ApiClient.request("/profile");
+  },
+  updateProfile(payload) {
+    return ApiClient.request("/profile", {
+      method: "PUT",
+      body: JSON.stringify(payload)
+    });
+  },
+  changePassword(oldPassword, newPassword, confirmPassword) {
+    return ApiClient.request("/profile/password", {
+      method: "PUT",
+      body: JSON.stringify({ oldPassword, newPassword, confirmPassword })
+    });
+  }
+};
+
+/**
+ * API Admin quản lý người dùng
+ */
+const AdminUserApi = {
+  getAllUsers(page = 0, size = 100) {
+    return ApiClient.request(`/admin/users?page=${page}&size=${size}`);
+  },
+  getUserById(id) {
+    return ApiClient.request(`/admin/users/${id}`);
+  },
+  updateUser(id, payload) {
+    return ApiClient.request(`/admin/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload)
+    });
+  }
+};
+

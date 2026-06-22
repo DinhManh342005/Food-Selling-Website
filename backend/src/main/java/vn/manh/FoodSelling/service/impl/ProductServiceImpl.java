@@ -14,6 +14,8 @@ import vn.manh.FoodSelling.dto.response.UserProductResponseDTO;
 import vn.manh.FoodSelling.entity.Product;
 import vn.manh.FoodSelling.entity.ProductImage;
 import vn.manh.FoodSelling.enums.ProductStatus;
+import vn.manh.FoodSelling.exception.BadRequestException;
+import vn.manh.FoodSelling.exception.ResourceNotFoundException;
 import vn.manh.FoodSelling.repository.CategoryRepository;
 import vn.manh.FoodSelling.repository.ProductRepository;
 import vn.manh.FoodSelling.service.ProductService;
@@ -72,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public AdminProductResponseDTO getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm với ID " + id));
         return convertToDTO_Admin(product);
     }
 
@@ -89,7 +91,8 @@ public class ProductServiceImpl implements ProductService {
                 .stockQuantity(dto.getStockQuantity())
                 .status(dto.getStockQuantity() > 0 ? ProductStatus.available : ProductStatus.unavailable)
                 .category(categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new RuntimeException("Không tồn tại Category có id " + dto.getCategoryId())))
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Không tồn tại Category có id " + dto.getCategoryId())))
                 .build();
 
         Product savedProduct = productRepository.save(p);
@@ -111,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public AdminProductResponseDTO updateProduct(Long id, ProductCreateDTO dto) {
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm với ID " + id));
 
         existingProduct.setName(dto.getName());
         existingProduct.setDescription(dto.getDescription());
@@ -120,7 +123,8 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setStockQuantity(dto.getStockQuantity());
         existingProduct.setStatus(dto.getStockQuantity() > 0 ? ProductStatus.available : ProductStatus.unavailable);
         existingProduct.setCategory(categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Không tồn tại Category có id " + dto.getCategoryId())));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Không tồn tại Category có id " + dto.getCategoryId())));
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO_Admin(updatedProduct);
@@ -131,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm với ID " + id));
 
         // Không được xóa hoàn toàn sản phẩm, mà chuyển sang xóa mềm (unavailable) để
         // giữ lịch sử doanh thu
@@ -150,13 +154,13 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProductStatus(Long id, String status) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm với ID " + id));
         try {
             ProductStatus newStatus = ProductStatus.valueOf(status);
             product.setStatus(newStatus);
             productRepository.save(product);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Trạng thái không hợp lệ. Vui lòng sử dụng 'available' hoặc 'unavailable'.");
+            throw new BadRequestException("Trạng thái không hợp lệ. Vui lòng sử dụng 'available' hoặc 'unavailable'.");
         }
     }
 
@@ -213,9 +217,9 @@ public class ProductServiceImpl implements ProductService {
     // 4. Lấy chi tiết sản phẩm (available)
     public UserProductResponseDTO getAvailableProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm với ID " + id));
         if (product.getStatus() != ProductStatus.available) {
-            throw new RuntimeException("Sản phẩm không có sẵn");
+            throw new BadRequestException("Sản phẩm không có sẵn");
         }
         return convertToDTO_User(product);
     }

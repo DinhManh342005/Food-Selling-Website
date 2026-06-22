@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import vn.manh.FoodSelling.entity.CartItem;
 import vn.manh.FoodSelling.entity.Product;
 import vn.manh.FoodSelling.entity.User;
 import vn.manh.FoodSelling.enums.ProductStatus;
+import vn.manh.FoodSelling.exception.BadRequestException;
+import vn.manh.FoodSelling.exception.ResourceNotFoundException;
 import vn.manh.FoodSelling.repository.CartItemRepository;
 import vn.manh.FoodSelling.repository.CartRepository;
 import vn.manh.FoodSelling.repository.ProductRepository;
@@ -27,11 +30,11 @@ import vn.manh.FoodSelling.service.CartService;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    private  final CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
     private final UserRepository userRepository;
 
-    private final  ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     private final CartItemRepository cartItemRepository;
 
@@ -42,7 +45,7 @@ public class CartServiceImpl implements CartService {
     public User getAuthenticatedUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
     }
 
     // Chuyển đổi từ Cart Entity sang CartResponseDTO để trả về cho client
@@ -125,11 +128,11 @@ public class CartServiceImpl implements CartService {
 
         // Kiểm tra sản phẩm có tồn tại?
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại. ID: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Sản phẩm không tồn tại. ID: " + productId));
 
         // Kiểm tra trạng thái bán
         if (product.getStatus() == ProductStatus.unavailable) {
-            throw new RuntimeException("Sản phẩm hiện không có sẵn để bán: " + product.getName());
+            throw new BadRequestException("Sản phẩm hiện không có sẵn để bán: " + product.getName());
         }
 
         // Kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa?
@@ -143,8 +146,9 @@ public class CartServiceImpl implements CartService {
 
         // Kiểm tra hàng tồn kho có đủ không?
         if (newQuantity > product.getStockQuantity()) {
-            throw new RuntimeException(
-                    "Vượt quá số lượng tồn kho của sản phẩm. Sản phẩm: " + product.getName() + ", chỉ còn : " + product.getStockQuantity());
+            throw new BadRequestException(
+                    "Vượt quá số lượng tồn kho của sản phẩm. Sản phẩm: " + product.getName() + ", chỉ còn : "
+                            + product.getStockQuantity());
         }
 
         // Thêm item vào cart
@@ -170,31 +174,32 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional  // Dùng @Transactional để bảo đảm an toàn dữ liệu khi lưu nhiều bảng
+    @Transactional // Dùng @Transactional để bảo đảm an toàn dữ liệu khi lưu nhiều bảng
     public CartResponseDTO updateItemQuantity(Long cartItemId, String action) {
         User user = getAuthenticatedUser();
         Cart cart = getOrCreateCartForUser(user);
 
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Món ăn không tồn tại trong giỏ hàng"));
+                .orElseThrow(() -> new ResourceNotFoundException("Món ăn không tồn tại trong giỏ hàng"));
 
         // Kiểm tra xem user này có quyền sửa đổi CartItem nay không?
         if (!cartItem.getCart().getId().equals(cart.getId())) {
-            throw new RuntimeException("Bạn không có quyền sửa đổi cửa hàng này!!");
+            throw new AccessDeniedException("Bạn không có quyền sửa đổi món ăn này trong giỏ hàng!!");
         }
 
         Integer newQuantity = 0;
         if (action.equalsIgnoreCase("increase")) {
             newQuantity = cartItem.getQuantity() + 1;
             if (newQuantity > cartItem.getProduct().getStockQuantity()) {
-                throw new RuntimeException("Vượt quá số lượng tồn kho của sản phẩm. Sản phẩm " + cartItem.getProduct().getName() + " Chỉ còn : "
+                throw new BadRequestException("Vượt quá số lượng tồn kho của sản phẩm. Sản phẩm "
+                        + cartItem.getProduct().getName() + " Chỉ còn : "
                         + cartItem.getProduct().getStockQuantity());
             }
         } else if (action.equalsIgnoreCase("decrease")) {
             newQuantity = cartItem.getQuantity() - 1;
         }
         cartItem.setQuantity(newQuantity);
-        
+
         // Nếu số lượng về 0 thì xóa hẳn Item khỏi Cart
         if (newQuantity <= 0) {
             cart.getCartItems().remove(cartItem);
@@ -211,21 +216,22 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public CartResponseDTO removeItemFromCart(Long cartItemId) {
-       User user = getAuthenticatedUser();
-       Cart cart = getOrCreateCartForUser(user);
+        User user = getAuthenticatedUser();
+        Cart cart = getOrCreateCartForUser(user);
 
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Món ăn không tồn tại trong giỏ hàng"));
-                
+                .orElseThrow(() -> new ResourceNotFoundException("Món ăn không tồn tại trong giỏ hàng"));
+
         // Check is user has permission to delete this item?
-        if(!cartItem.getCart().getId().equals(cart.getId())) {
-            throw new RuntimeException("You don't have permission to delete this item");
-        }        
+        if (!cartItem.getCart().getId().equals(cart.getId())) {
+            throw new AccessDeniedException("You don't have permission to delete this item");
+        }
 
         // Delete in memory and database
-        // Dùng removeIf để chắc chắn đói tượng bị xóa khỏi RAM (bằng id) - trong trường hợp không có hashcode, equals sử dụng id
+        // Dùng removeIf để chắc chắn đói tượng bị xóa khỏi RAM (bằng id) - trong trường
+        // hợp không có hashcode, equals sử dụng id
         cart.getCartItems().removeIf(item -> item.getId().equals(cartItemId));
-        cartItem.setCart(null);   // Xóa luôn Cart của CartItem - liên kết 2 chiều
+        cartItem.setCart(null); // Xóa luôn Cart của CartItem - liên kết 2 chiều
 
         cartItemRepository.delete(cartItem);
 

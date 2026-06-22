@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ import vn.manh.FoodSelling.entity.Product;
 import vn.manh.FoodSelling.entity.User;
 import vn.manh.FoodSelling.enums.OrderStatus;
 import vn.manh.FoodSelling.enums.ProductStatus;
+import vn.manh.FoodSelling.exception.BadRequestException;
+import vn.manh.FoodSelling.exception.ResourceNotFoundException;
 import vn.manh.FoodSelling.repository.CartRepository;
 import vn.manh.FoodSelling.repository.OrderRepository;
 import vn.manh.FoodSelling.repository.ProductRepository;
@@ -57,15 +60,15 @@ public class OrderServiceImpl implements OrderService {
     public OrderPreviewResponseDTO getCheckoutPreview() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tài khoản không tồn tại!!"));
 
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Giỏ hàng không tồn tại"));
+                .orElseThrow(() -> new ResourceNotFoundException("Giỏ hàng không tồn tại"));
 
         List<CartItem> cartItems = cart.getCartItems();
 
         if (cartItems == null || cartItems.isEmpty()) {
-            throw new RuntimeException("Giỏ hàng trống, không có gì để xem trước");
+            throw new BadRequestException("Giỏ hàng trống, không có gì để xem trước");
         }
 
         List<OrderPreviewItemDTO> previewItems = new ArrayList<>();
@@ -77,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
             // Validate sớm: Nếu trong khi đang xem trước mà có người khác đặt hàng thì sẽ
             // báo lỗi luôn
             if (item.getQuantity() > product.getStockQuantity()) {
-                throw new RuntimeException("Sản phẩm " + product.getName() + " không còn đủ số lượng trong kho");
+                throw new BadRequestException("Sản phẩm " + product.getName() + " không còn đủ số lượng trong kho");
             }
 
             previewItems.add(OrderPreviewItemDTO.builder()
@@ -104,14 +107,14 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseDTO checkout(OrderRequestDTO dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tài khoản không tồn tại!!"));
 
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Giỏ hàng không tồn tại"));
+                .orElseThrow(() -> new ResourceNotFoundException("Giỏ hàng không tồn tại"));
 
         List<CartItem> cartItems = cart.getCartItems();
         if (cartItems == null || cartItems.isEmpty()) {
-            throw new RuntimeException("Giỏ hàng trống !!!");
+            throw new BadRequestException("Giỏ hàng trống !!!");
         }
 
         Order order = Order.builder()
@@ -131,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
             Product product = item.getProduct();
 
             if (product.getStockQuantity() < item.getQuantity()) {
-                throw new RuntimeException("Sản phẩm " + product.getName() + " không đủ số lượng trong kho");
+                throw new BadRequestException("Sản phẩm " + product.getName() + " không đủ số lượng trong kho");
             }
 
             OrderItem orderItem = OrderItem.builder()
@@ -184,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderResponseDTO> getOrdersHistory() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+                .orElseThrow(() -> new ResourceNotFoundException("User không tồn tại"));
 
         // Lấy tất cả order của user, sắp xếp giảm dần theo ID (mới nhất trước)
         List<Order> orders = orderRepository.findByUserOrderByOrderDateDesc(user);
@@ -229,13 +232,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseDTO getMyOrderById(Long orderId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+                .orElseThrow(() -> new ResourceNotFoundException("User không tồn tại"));
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order không tồn tại"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order không tồn tại"));
 
         if (!order.getUser().equals(user)) {
-            throw new RuntimeException("Bạn không có quyền xem đơn hàng này");
+            throw new AccessDeniedException("Bạn không có quyền xem đơn hàng này");
         }
 
         OrderResponseDTO orderDTO = modelMapper.map(order, OrderResponseDTO.class);
@@ -311,7 +314,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public AdminOrderResponseDTO getOrderByIdForAdmin(Long orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order không tồn tại"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order không tồn tại"));
 
         AdminOrderResponseDTO adminOrderDTO = modelMapper.map(order, AdminOrderResponseDTO.class);
 
@@ -351,17 +354,17 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public AdminOrderResponseDTO updateOrderStatusForAdmin(Long orderId, String status) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order không tồn tại"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order không tồn tại"));
 
         if (status == null || status.trim().isEmpty()) {
-            throw new RuntimeException("Trạng thái không được để trống");
+            throw new BadRequestException("Trạng thái không được để trống");
         }
 
         OrderStatus newStatus;
         try {
             newStatus = OrderStatus.valueOf(status.trim());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Trạng thái không hợp lệ");
+            throw new BadRequestException("Trạng thái không hợp lệ");
         }
 
         order.setStatus(newStatus);

@@ -16,7 +16,7 @@
     tailwind.config = {
       theme: {
         extend: {
-                                        colors: {
+          colors: {
             brand: {
               50: '#f0fdf4',
               100: '#dcfce7',
@@ -177,8 +177,10 @@
     <aside class="admin-sidebar shadow-xl" id="admin-sidebar">
       <div class="flex items-center justify-between p-6 border-b border-slate-800">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold">🇻🇳</div>
-          <span class="text-white font-bold tracking-wide">Việt Vị Admin</span>
+          <div class="relative w-8 h-8 rounded-full border border-brand-500 bg-white flex items-center justify-center overflow-hidden">
+            <img src="../assets/img/freshbite_logo.png" alt="FreshBite Logo" class="w-full h-full object-cover">
+          </div>
+          <span class="text-white font-serif italic tracking-wider text-base">FreshBite Admin</span>
         </div>
         <button id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-white">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -243,7 +245,7 @@
         <!-- Welcome Card -->
         <div class="bg-gradient-to-r from-brand-600 to-orange-500 rounded-2xl p-6 md:p-8 text-white shadow-md">
           <h1 class="text-2xl md:text-3xl font-bold mb-2">Xin chào Admin! 👋</h1>
-          <p class="text-brand-50 opacity-90">Đây là tổng quan hoạt động của Việt Vị Ba Miền hôm nay.</p>
+          <p class="text-brand-50 opacity-90">Đây là tổng quan hoạt động của FreshBite hôm nay.</p>
         </div>
 
         <!-- Stats Grid -->
@@ -286,7 +288,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm col-span-1 lg:col-span-2 flex flex-col">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm col-span-1 lg:col-span-2 flex flex-col">
             <div class="flex justify-between items-center mb-6">
               <h3 class="font-bold text-slate-800 text-lg">Doanh thu 7 ngày qua</h3>
               <select class="bg-slate-50 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:border-brand-500 outline-none">

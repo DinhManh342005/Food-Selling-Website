@@ -23,17 +23,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Load Mock Data
   let allUsers = [];
-  if (!localStorage.getItem("adminMockUsers")) {
-    if (typeof MOCK_USERS !== "undefined") {
-      localStorage.setItem("adminMockUsers", JSON.stringify(MOCK_USERS));
-    } else {
-      localStorage.setItem("adminMockUsers", JSON.stringify([currentUser]));
-    }
-  }
-  allUsers = JSON.parse(localStorage.getItem("adminMockUsers"));
 
   bindToolbarEvents();
-  applyFiltersAndRender();
+  loadUsers();
+
+  async function loadUsers() {
+    const tbody = document.getElementById("users-table-body");
+    if (tbody && allUsers.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-500 font-medium">Đang tải dữ liệu...</td></tr>`;
+    }
+    try {
+      const response = await AdminUserApi.getAllUsers(0, 1000);
+      allUsers = response.content || [];
+      // Chuẩn hóa phone
+      allUsers.forEach(u => {
+        u.phone = u.phoneNumber;
+      });
+      applyFiltersAndRender();
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách người dùng từ API:", error);
+      UTILS.showToast(error.message || "Không thể tải danh sách người dùng.", "danger");
+    }
+  }
 
   // ==========================================
   // Xử lý bộ lọc
@@ -53,8 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(searchInput) searchInput.value = "";
         if(roleSelect) roleSelect.value = "";
         if(statusSelect) statusSelect.value = "";
-        allUsers = JSON.parse(localStorage.getItem("adminMockUsers"));
-        applyFiltersAndRender();
+        loadUsers();
       });
     }
   }
@@ -74,10 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }
     if (roleVal) {
-      filtered = filtered.filter(u => u.role === roleVal);
+      filtered = filtered.filter(u => String(u.role).toLowerCase() === roleVal.toLowerCase());
     }
     if (statusVal) {
-      filtered = filtered.filter(u => u.status === statusVal);
+      filtered = filtered.filter(u => {
+        const uStatus = String(u.status).toLowerCase();
+        const fStatus = statusVal.toLowerCase();
+        if (fStatus === 'active') return uStatus === 'active';
+        if (fStatus === 'locked' || fStatus === 'inactive') return uStatus === 'inactive' || uStatus === 'locked';
+        return uStatus === fStatus;
+      });
     }
 
     renderTable(filtered);
@@ -87,40 +103,38 @@ document.addEventListener("DOMContentLoaded", () => {
   // Render Bảng Người dùng
   // ==========================================
   function renderTable(users) {
-    const tbody = document.getElementById("admin-users-body");
+    const tbody = document.getElementById("users-table-body"); // Sửa: đúng ID trong HTML
     const stats = document.getElementById("table-stats");
     
     if (!tbody) return;
 
     if (users.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500 font-medium">Không tìm thấy người dùng nào.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-500 font-medium">Không tìm thấy người dùng nào.</td></tr>`;
       if (stats) stats.textContent = "Đang hiển thị 0 người dùng";
       return;
     }
 
     let html = "";
     users.forEach(u => {
-      const roleBadge = u.role === "admin" 
+      const uRole = String(u.role).toUpperCase();
+      const roleBadge = uRole === "ADMIN" 
         ? `<span class="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold">ADMIN</span>`
         : `<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded-full text-[10px] font-bold">USER</span>`;
       
-      const statusBadge = u.status === "Active"
+      const uStatus = String(u.status).toUpperCase();
+      const statusBadge = uStatus === "ACTIVE"
         ? `<span class="bg-brand-100 text-brand-700 px-2 py-1 rounded-full text-[10px] font-bold">Hoạt động</span>`
         : `<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded-full text-[10px] font-bold">Đã khóa</span>`;
 
-      const formattedDate = UTILS.formatDate(u.createdAt, "DD/MM/YYYY");
-
       html += `
         <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-          <td class="py-3 px-4 font-bold text-slate-700">#${u.id}</td>
-          <td class="py-3 px-4 font-medium text-slate-800">${u.fullName}</td>
-          <td class="py-3 px-4 text-slate-600 text-sm">
-            <div class="font-semibold">${u.username}</div>
-            <div class="text-xs text-slate-400">${u.email}</div>
-          </td>
+          <td class="py-3 px-4 text-center font-bold text-slate-700">#${u.id}</td>
+          <td class="py-3 px-4 font-medium text-slate-800">${u.fullName || '--'}</td>
+          <td class="py-3 px-4 font-semibold text-slate-700 text-sm">${u.username}</td>
+          <td class="py-3 px-4 text-slate-600 text-sm">${u.email || '--'}</td>
+          <td class="py-3 px-4 text-slate-600 text-sm">${u.phone || '--'}</td>
           <td class="py-3 px-4 text-center">${roleBadge}</td>
           <td class="py-3 px-4 text-center">${statusBadge}</td>
-          <td class="py-3 px-4 text-center text-slate-500 text-sm">${formattedDate}</td>
           <td class="py-3 px-4 text-center space-x-2">
             <button onclick="viewUserDetails(${u.id})" data-tippy-content="Xem chi tiết" class="w-8 h-8 rounded bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors">
               <i class="fa-solid fa-eye"></i>
@@ -128,8 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <button onclick="toggleRole(${u.id})" data-tippy-content="Đổi quyền" class="w-8 h-8 rounded bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white transition-colors">
               <i class="fa-solid fa-user-shield"></i>
             </button>
-            <button onclick="toggleLock(${u.id}, '${u.status}')" data-tippy-content="${u.status === 'Active' ? 'Khóa tài khoản' : 'Mở khóa'}" class="w-8 h-8 rounded bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors">
-              <i class="fa-solid ${u.status === 'Active' ? 'fa-lock' : 'fa-unlock'}"></i>
+            <button onclick="toggleLock(${u.id}, '${u.status}')" data-tippy-content="${uStatus === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}" class="w-8 h-8 rounded bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors">
+              <i class="fa-solid ${uStatus === 'ACTIVE' ? 'fa-lock' : 'fa-unlock'}"></i>
             </button>
           </td>
         </tr>
@@ -203,12 +217,24 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const isConfirmed = await UTILS.confirm("Thay đổi phân quyền?", `Đổi quyền của ${user.fullName} thành ${user.role === 'ADMIN' ? 'USER' : 'ADMIN'}`);
+    const currentRole = String(user.role).toLowerCase();
+    const nextRole = currentRole === 'admin' ? 'user' : 'admin';
+
+    const isConfirmed = await UTILS.confirm(
+      "Thay đổi phân quyền?", 
+      `Đổi quyền của ${user.fullName || user.username} thành ${nextRole.toUpperCase()}`
+    );
+    
     if (isConfirmed) {
-      user.role = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
-      localStorage.setItem("adminMockUsers", JSON.stringify(allUsers));
-      UTILS.showToast("Cập nhật quyền thành công", "success");
-      applyFiltersAndRender();
+      try {
+        await AdminUserApi.updateUser(id, { role: nextRole });
+        user.role = nextRole;
+        UTILS.showToast("Cập nhật quyền thành công", "success");
+        applyFiltersAndRender();
+      } catch (error) {
+        console.error("Lỗi đổi quyền user:", error);
+        UTILS.showToast(error.message || "Không thể cập nhật phân quyền.", "danger");
+      }
     }
   };
 
@@ -221,15 +247,25 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const nextStatus = currentStatus === 'Active' ? 'Locked' : 'Active';
-    const actionName = currentStatus === 'Active' ? 'Khóa' : 'Mở khóa';
+    const isCurrentActive = String(currentStatus).toLowerCase() === 'active';
+    const nextStatus = isCurrentActive ? 'inactive' : 'active';
+    const actionName = isCurrentActive ? 'Khóa' : 'Mở khóa';
 
-    const isConfirmed = await UTILS.confirm(`Xác nhận ${actionName}?`, `Bạn muốn ${actionName} tài khoản ${user.fullName}?`);
+    const isConfirmed = await UTILS.confirm(
+      `Xác nhận ${actionName}?`, 
+      `Bạn muốn ${actionName} tài khoản ${user.fullName || user.username}?`
+    );
+    
     if (isConfirmed) {
-      user.status = nextStatus;
-      localStorage.setItem("adminMockUsers", JSON.stringify(allUsers));
-      UTILS.showToast(`Đã ${actionName} tài khoản`, "success");
-      applyFiltersAndRender();
+      try {
+        await AdminUserApi.updateUser(id, { status: nextStatus });
+        user.status = nextStatus;
+        UTILS.showToast(`Đã ${actionName} tài khoản thành công`, "success");
+        applyFiltersAndRender();
+      } catch (error) {
+        console.error("Lỗi thay đổi trạng thái user:", error);
+        UTILS.showToast(error.message || `Không thể ${actionName} tài khoản.`, "danger");
+      }
     }
   };
 

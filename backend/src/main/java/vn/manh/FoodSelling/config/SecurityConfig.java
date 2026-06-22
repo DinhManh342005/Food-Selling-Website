@@ -74,6 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll() // Cho phép Login/Register
                         .requestMatchers("/api/v1/carts/**").authenticated() // Bắt buộc Token cho Giỏ hàng
                         .requestMatchers("/api/v1/orders/**").authenticated()
+                        .requestMatchers("/api/v1/profile/**").authenticated()
                         .requestMatchers("/api/v1/admin/**").hasAuthority("admin") // Chỉ admin mới có quyền truy cập
 
                         .anyRequest().permitAll());

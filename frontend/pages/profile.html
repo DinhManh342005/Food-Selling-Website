@@ -130,10 +130,6 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
               Đơn hàng của tôi
             </button>
-            <button class="profile-sidebar-item w-full text-left" data-target="tab-address">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              Địa chỉ nhận hàng
-            </button>
             <button class="profile-sidebar-item w-full text-left" data-target="tab-password">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
               Đổi mật khẩu
@@ -210,42 +206,6 @@
             </div>
           </div>
 
-          <!-- TAB 3: ĐỊA CHỈ NHẬN HÀNG -->
-          <div id="tab-address" class="profile-tab-content bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hidden">
-            <h2 class="text-xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Địa chỉ nhận hàng (Mặc định)</h2>
-            
-            <form id="profile-address-form" class="max-w-2xl space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="space-y-1.5">
-                  <label class="text-sm font-semibold text-slate-700">Tỉnh/Thành phố</label>
-                  <input type="text" id="addr-province" required placeholder="Tỉnh/Thành phố" 
-                    class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-sm font-semibold text-slate-700">Quận/Huyện</label>
-                  <input type="text" id="addr-district" required placeholder="Quận/Huyện" 
-                    class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-sm font-semibold text-slate-700">Phường/Xã</label>
-                  <input type="text" id="addr-ward" required placeholder="Phường/Xã" 
-                    class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
-                </div>
-              </div>
-              
-              <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-700">Địa chỉ chi tiết</label>
-                <input type="text" id="addr-detail" required placeholder="Số nhà, tên đường..." 
-                  class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
-              </div>
-
-              <div class="pt-4 border-t border-slate-100">
-                <button type="submit" class="btn btn-primary px-8 py-2.5 rounded-lg font-bold shadow-md shadow-brand-500/30 hover:-translate-y-0.5 transition-transform bg-brand-600 hover:bg-brand-700">
-                  Lưu địa chỉ
-                </button>
-              </div>
-            </form>
-          </div>
 
           <!-- TAB 4: ĐỔI MẬT KHẨU -->
           <div id="tab-password" class="profile-tab-content bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hidden">
@@ -254,18 +214,33 @@
             <form id="profile-password-form" class="max-w-md space-y-6">
               <div class="space-y-1.5">
                 <label class="text-sm font-semibold text-slate-700">Mật khẩu hiện tại</label>
-                <input type="password" required placeholder="Nhập mật khẩu hiện tại" 
-                  class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                <div class="relative">
+                  <input type="password" id="old-password" required placeholder="Nhập mật khẩu hiện tại" 
+                    class="w-full pl-4 pr-10 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                  <button type="button" class="btn-toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                    <i class="fa-regular fa-eye-slash"></i>
+                  </button>
+                </div>
               </div>
               <div class="space-y-1.5">
                 <label class="text-sm font-semibold text-slate-700">Mật khẩu mới</label>
-                <input type="password" required placeholder="Nhập mật khẩu mới" 
-                  class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                <div class="relative">
+                  <input type="password" id="new-password" required placeholder="Nhập mật khẩu mới" 
+                    class="w-full pl-4 pr-10 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                  <button type="button" class="btn-toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                    <i class="fa-regular fa-eye-slash"></i>
+                  </button>
+                </div>
               </div>
               <div class="space-y-1.5">
                 <label class="text-sm font-semibold text-slate-700">Nhập lại mật khẩu mới</label>
-                <input type="password" required placeholder="Xác nhận mật khẩu mới" 
-                  class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                <div class="relative">
+                  <input type="password" id="confirm-password" required placeholder="Xác nhận mật khẩu mới" 
+                    class="w-full pl-4 pr-10 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                  <button type="button" class="btn-toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                    <i class="fa-regular fa-eye-slash"></i>
+                  </button>
+                </div>
               </div>
 
               <div class="pt-4 border-t border-slate-100">

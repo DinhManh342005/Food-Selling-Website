@@ -115,18 +115,6 @@ function injectHeaderFooter() {
   const pathPrefix = "";
   if (appHeader) {
     appHeader.innerHTML = `
-      <!-- TOP BAR -->
-      <div class="top-bar">
-        <div class="container top-bar-content flex justify-between items-center">
-          <div class="hidden sm:block">Chào mừng bạn đến với FreshBite - Bản sắc & chuẩn mực!</div>
-          <div class="flex items-center gap-4">
-            <span>Hotline: <strong class="text-orange-500">1900 6868</strong></span>
-            <span class="text-slate-500">|</span>
-            <a href="${pathPrefix}tracking.html" class="hover:text-orange-400"><i class="fa-solid fa-truck-fast mr-1"></i> Tra cứu đơn hàng</a>
-          </div>
-        </div>
-      </div>
-
       <!-- MAIN HEADER -->
       <header>
         <div class="main-header">
@@ -259,7 +247,6 @@ function injectHeaderFooter() {
             <div>
               <h3 class="footer-title">Chính sách</h3>
               <ul class="footer-links">
-                <li><a href="${pathPrefix}tracking.html">Theo dõi đơn hàng</a></li>
                 <li><a href="#">Chính sách đổi trả</a></li>
                 <li><a href="#">Hình thức thanh toán</a></li>
                 <li><a href="#">Liên hệ hỗ trợ</a></li>
@@ -345,7 +332,6 @@ function injectCommonComponents() {
           <li><a href="${pathPrefix}products.html?category=1"><i class="fa-solid fa-map-location w-6 text-center text-slate-400"></i> Miền Bắc</a></li>
           <li><a href="${pathPrefix}products.html?category=2"><i class="fa-solid fa-map-location w-6 text-center text-slate-400"></i> Miền Trung</a></li>
           <li><a href="${pathPrefix}products.html?category=3"><i class="fa-solid fa-map-location w-6 text-center text-slate-400"></i> Miền Nam</a></li>
-          <li><a href="${pathPrefix}tracking.html"><i class="fa-solid fa-truck-fast w-6 text-center text-slate-400"></i> Theo Dõi Đơn Hàng</a></li>
           ${isAdmin ? `<li><a href="${pathPrefix}admin-dashboard.html" class="text-brand-600 font-bold"><i class="fa-solid fa-chart-pie w-6 text-center"></i> Trang Quản Trị</a></li>` : ""}
         </ul>
         <div class="mt-auto border-t pt-4" id="mobile-auth-section">

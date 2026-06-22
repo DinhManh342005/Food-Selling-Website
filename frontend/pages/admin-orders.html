@@ -17,7 +17,7 @@
     tailwind.config = {
       theme: {
         extend: {
-                                        colors: {
+          colors: {
             brand: {
               50: '#f0fdf4',
               100: '#dcfce7',
@@ -176,6 +176,159 @@
         margin-left: 0;
       }
     }
+
+    /* Custom FullCalendar styling to make it premium */
+    #calendar-container {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .fc {
+      font-family: inherit;
+    }
+    .fc-theme-standard td, .fc-theme-standard th {
+      border-color: #f1f5f9 !important;
+    }
+    .fc-col-header-cell {
+      background-color: #f8fafc;
+      padding: 8px 0 !important;
+      font-weight: 600;
+      color: #475569;
+      font-size: 0.85rem;
+    }
+    .fc-daygrid-day-number {
+      font-weight: 500;
+      color: #64748b;
+      font-size: 0.85rem;
+      padding: 6px 8px !important;
+    }
+    .fc-daygrid-day.fc-day-today {
+      background-color: #f0fdf4 !important; /* light brand green */
+    }
+    .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+      color: #16a34a !important;
+      font-weight: bold;
+    }
+    .fc-event {
+      border: none !important;
+      padding: 3px 6px !important;
+      border-radius: 6px !important;
+      font-size: 0.75rem !important;
+      font-weight: 600 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .fc-event:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    /* Reset và tinh chỉnh chung cho các nút bấm trong lịch */
+    .fc .fc-button {
+      padding: 6px 12px !important;
+      font-size: 0.85rem !important;
+      font-weight: 600 !important;
+      border-radius: 8px !important;
+      transition: all 0.2s ease !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+      text-transform: capitalize !important;
+      border: 1px solid transparent !important;
+      outline: none !important;
+    }
+
+    /* Nút "Hôm nay" (Today) - kiểu Outlined nổi bật */
+    .fc .fc-today-button {
+      background-color: #ffffff !important;
+      border: 1px solid #d1d5db !important;
+      color: #374151 !important;
+    }
+    .fc .fc-today-button:hover:not(:disabled) {
+      background-color: #f9fafb !important;
+      border-color: #9ca3af !important;
+      color: #111827 !important;
+    }
+    .fc .fc-today-button:disabled {
+      background-color: #f3f4f6 !important;
+      color: #9ca3af !important;
+      opacity: 0.6;
+    }
+
+    /* Các nút di chuyển Prev / Next - dạng Icon tròn hoặc gọn nhẹ */
+    .fc .fc-prev-button, .fc .fc-next-button {
+      background-color: #ffffff !important;
+      border: 1px solid #e5e7eb !important;
+      color: #4b5563 !important;
+      width: 34px !important;
+      height: 34px !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important; /* Tròn hẳn */
+    }
+    .fc .fc-prev-button:hover, .fc .fc-next-button:hover {
+      background-color: #f3f4f6 !important;
+      color: #1f2937 !important;
+      border-color: #d1d5db !important;
+    }
+
+    /* Các nút chuyển view: Tháng / Tuần (View Toggle Buttons) */
+    .fc .fc-dayGridMonth-button, .fc .fc-timeGridWeek-button {
+      background-color: #ffffff !important;
+      border: 1px solid #16a34a !important; /* Viền xanh lá */
+      color: #16a34a !important; /* Chữ xanh lá */
+      margin-left: 2px !important;
+    }
+    .fc .fc-dayGridMonth-button:hover, .fc .fc-timeGridWeek-button:hover {
+      background-color: #f0fdf4 !important; /* Hover nền xanh lá nhạt */
+    }
+    
+    /* Khi nút view được kích hoạt (Active View) */
+    .fc .fc-button-primary.fc-button-active {
+      background-color: #16a34a !important; /* Nền xanh lá */
+      border-color: #16a34a !important;
+      color: #ffffff !important; /* Chữ trắng */
+      box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.2), 0 2px 4px -1px rgba(22, 163, 74, 0.1) !important;
+    }
+    .fc-toolbar-title {
+      font-size: 1.15rem !important;
+      font-weight: 700 !important;
+      color: #1e293b;
+    }
+    
+    /* Popover (bung ra khi bấm +more) và link xem thêm */
+    .fc-popover {
+      background-color: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1) !important;
+      z-index: 100 !important;
+    }
+    .fc-popover-header {
+      background-color: #f8fafc !important;
+      padding: 8px 12px !important;
+      border-top-left-radius: 12px !important;
+      border-top-right-radius: 12px !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      font-weight: bold !important;
+      color: #334155 !important;
+      font-size: 0.85rem !important;
+    }
+    .fc-popover-body {
+      padding: 8px !important;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .fc-more-link {
+      color: #16a34a !important; /* brand green */
+      font-weight: 650 !important;
+      font-size: 0.75rem !important;
+      text-decoration: none !important;
+      cursor: pointer;
+    }
+    .fc-more-link:hover {
+      text-decoration: underline !important;
+    }
   </style>
 </head>
 
@@ -187,8 +340,10 @@
     <aside class="admin-sidebar shadow-xl" id="admin-sidebar">
       <div class="flex items-center justify-between p-6 border-b border-slate-800">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold">🇻🇳</div>
-          <span class="text-white font-bold tracking-wide">Việt Vị Admin</span>
+          <div class="relative w-8 h-8 rounded-full border border-brand-500 bg-white flex items-center justify-center overflow-hidden">
+            <img src="../assets/img/freshbite_logo.png" alt="FreshBite Logo" class="w-full h-full object-cover">
+          </div>
+          <span class="text-white font-serif italic tracking-wider text-base">FreshBite Admin</span>
         </div>
         <button id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-white">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -335,7 +490,6 @@
                   <th class="py-4 px-4 text-right">Tổng tiền</th>
                   <th class="py-4 px-4 text-center">Thanh toán</th>
                   <th class="py-4 px-4 text-center">Trạng thái</th>
-                  <th class="py-4 px-4 text-center">Hành động</th>
                 </tr>
               </thead>
               <tbody id="orders-table-body" class="divide-y divide-slate-100">
@@ -381,7 +535,6 @@
               <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Thông tin khách hàng</h4>
               <p class="font-bold text-slate-800" id="modal-customer-name">--</p>
               <p class="text-sm text-slate-600 mt-1" id="modal-customer-phone">--</p>
-              <p class="text-sm text-slate-600" id="modal-customer-email">--</p>
             </div>
             <div>
               <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Địa chỉ giao hàng</h4>

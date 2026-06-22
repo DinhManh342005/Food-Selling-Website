@@ -1,16 +1,39 @@
 // Script xử lý Trang cá nhân (profile.html)
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // 1. Kiểm tra đăng nhập – sửa: dùng Storage.getToken() thay vì getAccessToken()
-  const currentUser = Storage.getCurrentUser();
+  // 1. Kiểm tra đăng nhập
   const token = Storage.getToken();
 
-  if (!currentUser || !token) {
+  if (!token) {
     UTILS.showToast("Bạn cần đăng nhập để truy cập trang này.", "warning");
     setTimeout(() => {
-      window.location.href = "auth.html"; // Sửa: đúng URL auth page
+      window.location.href = "auth.html";
     }, 1500);
     return;
+  }
+
+  let currentUser = Storage.getCurrentUser();
+
+  // Gọi API lấy thông tin mới nhất của User từ Backend
+  try {
+    const freshUser = await UserApi.getProfile();
+    if (freshUser) {
+      // Chuẩn hóa trường phoneNumber của BE (dto) sang phone của FE
+      freshUser.phone = freshUser.phoneNumber;
+      currentUser = freshUser;
+      Storage.saveCurrentUser(freshUser);
+    }
+  } catch (error) {
+    console.error("Lỗi khi tải thông tin cá nhân từ API:", error);
+    // Nếu token hết hạn hoặc lỗi xác thực, hướng người dùng về login
+    if (error.message.includes("401") || error.message.includes("token") || error.message.includes("xác thực")) {
+      Storage.clearAuth();
+      UTILS.showToast("Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.", "warning");
+      setTimeout(() => {
+        window.location.href = "auth.html";
+      }, 1500);
+      return;
+    }
   }
 
   // Hiển thị nội dung khi đã pass check
@@ -57,18 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (emailInput) emailInput.value = user.email || "";
     if (phoneInput) phoneInput.value = user.phone || "";
 
-    // Điền form địa chỉ nếu có
-    const addr = JSON.parse(localStorage.getItem("userAddress"));
-    if (addr) {
-      const addrProvince = document.getElementById("addr-province");
-      const addrDistrict = document.getElementById("addr-district");
-      const addrWard = document.getElementById("addr-ward");
-      const addrDetail = document.getElementById("addr-detail");
-      if (addrProvince) addrProvince.value = addr.province || "";
-      if (addrDistrict) addrDistrict.value = addr.district || "";
-      if (addrWard) addrWard.value = addr.ward || "";
-      if (addrDetail) addrDetail.value = addr.addressDetail || "";
-    }
+
 
     // Render orders – dùng API khi đã login
     renderUserOrders();
@@ -114,67 +126,94 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. Form thông tin cá nhân
     const infoForm = document.getElementById("profile-info-form");
     if (infoForm) {
-      infoForm.addEventListener("submit", (e) => {
+      infoForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
         const fullNameInput = document.getElementById("info-fullName");
         const emailInput = document.getElementById("info-email");
         const phoneInput = document.getElementById("info-phone");
 
-        // Cập nhật user data
-        if (fullNameInput) user.fullName = fullNameInput.value.trim();
-        if (emailInput) user.email = emailInput.value.trim();
-        if (phoneInput) user.phone = phoneInput.value.trim();
+        const fullName = fullNameInput ? fullNameInput.value.trim() : "";
+        const email = emailInput ? emailInput.value.trim() : "";
+        const phoneNumber = phoneInput ? phoneInput.value.trim() : "";
 
-        Storage.saveCurrentUser(user);
-        
-        // Cập nhật sidebar
-        const sidebarFullname = document.getElementById("sidebar-fullname");
-        const sidebarEmail = document.getElementById("sidebar-email");
-        const sidebarAvatar = document.getElementById("sidebar-avatar");
+        try {
+          // Gọi API cập nhật thông tin cá nhân
+          const updatedUser = await UserApi.updateProfile({ fullName, email, phoneNumber });
+          
+          // Chuẩn hóa và lưu lại
+          updatedUser.phone = updatedUser.phoneNumber;
+          Object.assign(user, updatedUser);
+          Storage.saveCurrentUser(updatedUser);
+          
+          // Cập nhật sidebar
+          const sidebarFullname = document.getElementById("sidebar-fullname");
+          const sidebarEmail = document.getElementById("sidebar-email");
+          const sidebarAvatar = document.getElementById("sidebar-avatar");
 
-        if (sidebarFullname) sidebarFullname.textContent = user.fullName;
-        if (sidebarEmail) sidebarEmail.textContent = user.email;
-        if (sidebarAvatar && user.fullName) sidebarAvatar.textContent = user.fullName.charAt(0).toUpperCase();
+          if (sidebarFullname) sidebarFullname.textContent = updatedUser.fullName;
+          if (sidebarEmail) sidebarEmail.textContent = updatedUser.email;
+          if (sidebarAvatar && updatedUser.fullName) {
+            sidebarAvatar.textContent = updatedUser.fullName.charAt(0).toUpperCase();
+          }
 
-        UTILS.showToast("Cập nhật thông tin thành công.", "success");
+          UTILS.showToast("Cập nhật thông tin cá nhân thành công.", "success");
+        } catch (error) {
+          console.error("Lỗi khi cập nhật thông tin cá nhân:", error);
+          UTILS.showToast(error.message || "Không thể cập nhật thông tin cá nhân.", "danger");
+        }
       });
     }
 
-    // 2. Form địa chỉ
-    const addrForm = document.getElementById("profile-address-form");
-    if (addrForm) {
-      addrForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const addressData = {
-          province: (document.getElementById("addr-province")?.value || "").trim(),
-          district: (document.getElementById("addr-district")?.value || "").trim(),
-          ward: (document.getElementById("addr-ward")?.value || "").trim(),
-          addressDetail: (document.getElementById("addr-detail")?.value || "").trim()
-        };
-        localStorage.setItem("userAddress", JSON.stringify(addressData));
-        UTILS.showToast("Cập nhật địa chỉ nhận hàng thành công.", "success");
-      });
-    }
+
 
     // 3. Form đổi mật khẩu
     const passForm = document.getElementById("profile-password-form");
     if (passForm) {
-      passForm.addEventListener("submit", (e) => {
+      passForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const inputs = passForm.querySelectorAll("input[type='password']");
-        const newPass = inputs[1].value;
-        const confirmPass = inputs[2].value;
+        const oldPass = document.getElementById("old-password")?.value || "";
+        const newPass = document.getElementById("new-password")?.value || "";
+        const confirmPass = document.getElementById("confirm-password")?.value || "";
 
         if (newPass !== confirmPass) {
           UTILS.showToast("Mật khẩu mới không khớp.", "error");
           return;
         }
 
-        UTILS.showToast("Chức năng sẽ hoạt động sau khi kết nối backend.", "info");
-        passForm.reset();
+        try {
+          // Gọi API đổi mật khẩu
+          await UserApi.changePassword(oldPass, newPass, confirmPass);
+          UTILS.showToast("Đổi mật khẩu thành công.", "success");
+          passForm.reset();
+        } catch (error) {
+          console.error("Lỗi đổi mật khẩu:", error);
+          UTILS.showToast(error.message || "Đổi mật khẩu thất bại.", "danger");
+        }
       });
     }
+
+    // 4. Đăng ký chức năng ẩn/hiện mật khẩu
+    document.querySelectorAll(".btn-toggle-password").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const input = btn.previousElementSibling;
+        if (input) {
+          const isPassword = input.type === "password";
+          input.type = isPassword ? "text" : "password";
+          
+          const icon = btn.querySelector("i");
+          if (icon) {
+            if (isPassword) {
+              icon.classList.remove("fa-eye-slash");
+              icon.classList.add("fa-eye");
+            } else {
+              icon.classList.remove("fa-eye");
+              icon.classList.add("fa-eye-slash");
+            }
+          }
+        }
+      });
+    });
   }
 
   /**

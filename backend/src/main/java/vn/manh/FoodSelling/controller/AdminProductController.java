@@ -46,7 +46,7 @@ public class AdminProductController {
 
     // USER API: Lấy chi tiết 1 sản phẩm
     // URL: GET http://localhost:8080/api/v1/admin/products/{id}
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AdminProductResponseDTO> getProductById(@PathVariable Long id) {
         AdminProductResponseDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
@@ -104,9 +104,9 @@ public class AdminProductController {
 
     // Image upload
     private StorageService storageService; // Đã tự tiêm phụ thuộc qua RequiredArgsConstructor
+
     // USER API: Upload hình anh cho Product
     // URL: POST http://localhost:8080/api/v1/admin/products/upload - chưa test
-
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws IOException {
         String imageUrl = storageService.save(file);

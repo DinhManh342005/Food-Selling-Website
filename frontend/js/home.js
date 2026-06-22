@@ -29,21 +29,24 @@ const HERO_ITEMS = [
     region: "Miền Trung",
     rating: 5,
     categoryId: 2,
-    imageUrl: "https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=600&q=80"
+    //imageUrl: "https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=600&q=80"
+    imageUrl: "https://i2.ex-cdn.com/crystalbay.com/files/content/2024/08/15/bun-bo-hue-6-0935.jpeg"
   },
   {
     name: "Cơm Tấm Sườn Bì Chả",
     region: "Miền Nam",
     rating: 5,
     categoryId: 3,
-    imageUrl: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80"
+    //imageUrl: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80"
+    imageUrl: "https://cdn.hstatic.net/files/200000700229/article/com-tam-suon-bi-cha-chay-1_99356b3b594740f793b4d570925b0572.jpg"
   },
   {
     name: "Bún Chả Hà Nội",
     region: "Miền Bắc",
     rating: 5,
     categoryId: 1,
-    imageUrl: "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=600&q=80"
+    //imageUrl: "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=600&q=80"
+    imageUrl: "https://nguoiviettaiuc.com/uploads/jg/imgs/202403/1664/bun-cha-ha-noi-thom-ngon-chuan-vi-gia-chi-15-2403071449402.jpg"
   },
   {
     name: "Hủ Tiếu Nam Vang",
@@ -69,15 +72,15 @@ function initCircularCarousel() {
     el.className = "carousel-item" + (k === 0 ? " active" : "");
     el.setAttribute("data-index", k);
     el.innerHTML = `<img src="${item.imageUrl}" alt="${item.name}">`;
-    
+
     // Đặt vị trí ban đầu theo hệ tọa độ góc sử dụng biến CSS --translate-dist
     el.style.transform = `rotate(${k * 72}deg) translate(var(--translate-dist)) rotate(${-k * 72}deg)`;
-    
+
     // Click vào item để xoay
     el.addEventListener("click", () => {
       selectCarouselItem(k);
     });
-    
+
     ring.appendChild(el);
   });
 
@@ -112,7 +115,7 @@ function updateCarouselUI(index) {
   const dots = document.querySelectorAll(".carousel-dot");
   const activeImg = document.getElementById("carousel-active-img");
   const infoCard = document.getElementById("carousel-info-card");
-  
+
   const infoTitle = document.getElementById("carousel-info-title");
   const infoTag = document.getElementById("carousel-info-tag");
   const infoRating = document.getElementById("carousel-info-rating");
@@ -136,7 +139,7 @@ function updateCarouselUI(index) {
     activeImg.classList.remove("opacity-100", "scale-100");
     activeImg.classList.add("opacity-0", "scale-90");
   }
-  
+
   if (infoCard) {
     infoCard.classList.remove("visible");
     infoCard.classList.add("hidden-card");
@@ -144,7 +147,7 @@ function updateCarouselUI(index) {
 
   setTimeout(() => {
     const itemData = HERO_ITEMS[index];
-    
+
     // Cập nhật đĩa lớn
     if (activeImg) {
       activeImg.src = itemData.imageUrl;
@@ -218,7 +221,7 @@ async function loadFeaturedProducts() {
 
     // All products cho best sellers (không cần categoryId)
     allProducts = (allRaw || []).map(p => UTILS.normalizeProduct(p));
-    
+
     // Merge category products vào allProducts (với categoryId) cho modal sử dụng
     const mergedWithCategory = [...northProducts, ...centralProducts, ...southProducts];
     // Cập nhật allProducts: nếu sản phẩm có trong mergedWithCategory thì gán categoryId
@@ -377,7 +380,7 @@ function handleQuickAddToCart(productId, btnElement) {
   const product = allProducts.find(p => p.id === productId);
   if (product) {
     Cart.addToCart(product, 1);
-    
+
     // Thêm animate.css vào badge giỏ hàng
     const badge = document.querySelector('.cart-badge');
     if (badge) {
@@ -485,7 +488,7 @@ window.addModalProductToCart = (productId) => {
   if (product && qtyInput) {
     const qty = Number(qtyInput.value);
     Cart.addToCart(product, qty);
-    
+
     // Animate cart badge
     const badge = document.querySelector('.cart-badge');
     if (badge) {
@@ -493,7 +496,7 @@ window.addModalProductToCart = (productId) => {
       void badge.offsetWidth; // trigger reflow
       badge.classList.add('animate__animated', 'animate__rubberBand');
     }
-    
+
     closeProductModal();
   }
 };
