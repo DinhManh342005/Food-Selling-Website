@@ -1,6 +1,7 @@
 package vn.manh.FoodSelling.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,4 +17,5 @@ public class AdminProductResponseDTO extends UserProductResponseDTO {
     private LocalDateTime createdAt;
     private Long categoryId;
     private String imagePublicId;
+    private List<String> detailImagePublicIds;
 }

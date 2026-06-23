@@ -35,6 +35,9 @@ public class ProductImage {
     @Column(name = "image_url", nullable = false, length = 255)
     private String imageUrl;
 
+    @Column(name = "image_public_id")
+    private String imagePublicId;
+
     // Kiểm tra xem ảnh này có phải là ảnh đại diện chính không
     @Builder.Default
     @Column(name = "is_thumbnail", nullable = false)

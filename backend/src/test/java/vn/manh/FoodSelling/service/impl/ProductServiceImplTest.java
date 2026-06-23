@@ -153,6 +153,31 @@ class ProductServiceImplTest {
         verify(productRepository).delete(existing);
     }
 
+    @Test
+    void addProductStoresDetailImagesAndMarksPrimaryThumbnail() {
+        Category category = Category.builder().id(1L).name("Mon an").build();
+        ProductCreateDTO request = productRequest("https://cdn.test/main.jpg", "public-main");
+        request.setDetailImages(java.util.List.of(
+                "https://cdn.test/main.jpg",
+                "https://cdn.test/side-1.jpg",
+                "https://cdn.test/side-2.jpg"));
+
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> {
+            Product product = invocation.getArgument(0);
+            product.setId(10L);
+            return product;
+        });
+
+        AdminProductResponseDTO response = productService.addProduct(request);
+
+        assertThat(response.getImageUrl()).isEqualTo("https://cdn.test/main.jpg");
+        assertThat(response.getDetailImages()).containsExactly(
+                "https://cdn.test/main.jpg",
+                "https://cdn.test/side-1.jpg",
+                "https://cdn.test/side-2.jpg");
+    }
+
     private ProductCreateDTO productRequest(String imageUrl, String imagePublicId) {
         ProductCreateDTO request = new ProductCreateDTO();
         request.setName("Banh mi");

@@ -453,10 +453,19 @@ function openProductModal(productId) {
 
   modalContent.innerHTML = `
     <!-- Left side: Image -->
-    <div class="gallery-main relative border rounded-xl overflow-hidden aspect-square flex items-center justify-center bg-slate-50">
-      <img src="${UTILS.getImageUrl(product.imageUrl)}" alt="${product.name}" class="w-full h-full object-cover">
+    <div id="productDetailCarousel" class="gallery-main product-detail-carousel relative border rounded-xl overflow-hidden aspect-square flex items-center justify-center bg-slate-50" tabindex="0" aria-label="Hinh anh san pham">
+      <div class="product-detail-carousel__viewport">
+        <div id="productDetailCarouselTrack" class="product-detail-carousel__track"></div>
+      </div>
+      <button type="button" id="productDetailPreviousImage" class="product-detail-carousel__nav product-detail-carousel__nav--prev" aria-label="Xem anh truoc" title="Anh truoc">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button type="button" id="productDetailNextImage" class="product-detail-carousel__nav product-detail-carousel__nav--next" aria-label="Xem anh tiep theo" title="Anh tiep theo">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <div id="productDetailImageCounter" class="product-detail-carousel__counter"></div>
+      <div id="productDetailCarouselIndicators" class="product-detail-carousel__indicators" aria-label="Danh sach anh san pham"></div>
     </div>
-
     <!-- Right side: Details -->
     <div class="flex flex-col justify-between space-y-4">
       <div class="space-y-2">
@@ -504,6 +513,7 @@ function openProductModal(productId) {
     </div>
   `;
 
+  ProductDetailCarousel.setProduct(product);
   modal.classList.add("active");
   document.body.style.overflow = "hidden";
   renderHomeReviewForm(product.id);
@@ -607,6 +617,7 @@ function closeProductModal() {
   if (modal) {
     modal.classList.remove("active");
     document.body.style.overflow = "";
+    ProductDetailCarousel.reset();
   }
 }
 

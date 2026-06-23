@@ -48,6 +48,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
   <style>
     /* Admin Specific Styles */
     .admin-sidebar {
@@ -348,25 +349,23 @@
 
             <!-- Col 2 -->
             <div class="space-y-4">
-              <div class="space-y-1.5">
-                <label class="block text-sm font-semibold text-slate-700">Hình ảnh đại diện</label>
-                <div class="flex gap-2">
-                  <input type="text" id="form-imageUrl" placeholder="URL ảnh hoặc tải lên..." 
-                    class="flex-grow px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
-                  <label class="btn btn-outline px-4 py-2 rounded-lg text-sm font-bold cursor-pointer shrink-0">
-                    Tải lên
-                    <input type="file" id="form-image-file" class="hidden" accept="image/*">
-                  </label>
+              <div class="product-images-section">
+                <div class="product-images-header">
+                  <label class="block text-sm font-semibold text-slate-700">Hình ảnh sản phẩm</label>
+                  <span id="productImageCount" class="image-count">0/6 ảnh</span>
                 </div>
-                <div class="mt-2 flex items-end gap-3">
-                  <div class="w-24 h-24 border rounded bg-slate-50 flex items-center justify-center overflow-hidden">
-                    <img id="form-image-preview" src="" alt="Preview" class="w-full h-full object-cover hidden">
-                    <span id="form-image-placeholder" class="text-xs text-slate-400">Preview</span>
-                  </div>
-                  <button type="button" id="btn-remove-image" class="btn px-3 py-2 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white text-xs font-bold hidden">
-                    Xoa anh
+
+                <div class="product-image-upload">
+                  <input type="file" id="form-image-file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+                  <button type="button" class="image-upload-trigger" id="imageUploadTrigger">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Chọn hình ảnh</span>
                   </button>
+                  <p class="image-upload-hint">Tối đa 6 ảnh, JPG/PNG/WebP, mỗi ảnh không quá 5 MB</p>
                 </div>
+
+                <div id="productImagePreviewList" class="product-image-preview-list"></div>
+                <p id="productImageError" class="product-image-error" hidden></p>
               </div>
 
               <div class="space-y-1.5">
@@ -414,7 +413,7 @@
       <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">Xác nhận xóa?</h3>
+      <h3 class="text-lg font-bold text-slate-800 mb-2">Xác nhận xóa</h3>
       <p class="text-sm text-slate-500 mb-6">Bạn có chắc chắn muốn xóa sản phẩm này không? Hành động này không thể hoàn tác.</p>
       <div class="flex gap-3">
         <button id="btn-cancel-delete" class="flex-1 btn bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg py-2 font-bold text-sm">Hủy</button>

@@ -45,6 +45,8 @@ public class ProductCreateDTO {
     // Danh sách URL các ảnh chi tiết
     private List<String> detailImages = new ArrayList<>();
 
+    private List<String> detailImagePublicIds = new ArrayList<>();
+
 
 
 
