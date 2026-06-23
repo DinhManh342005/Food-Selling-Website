@@ -1,8 +1,14 @@
-﻿// Script xử lý Trang sản phẩm (products.html)
+// Script xử lý Trang sản phẩm (products.html)
 let rawAllProducts = [];
 let filteredProducts = [];
 let currentPage = 1;
 const itemsPerPage = 8;
+
+function renderRatingStars(rating) {
+  const safeRating = Math.max(0, Math.min(5, Math.round(Number(rating || 0))));
+  return '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(safeRating)
+    + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - safeRating);
+}
 
 function escapeHtml(value) {
   return String(value || "")
@@ -11,12 +17,6 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function renderRatingStars(rating) {
-  const safeRating = Math.max(0, Math.min(5, Math.round(Number(rating || 0))));
-  return '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(safeRating)
-    + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - safeRating);
 }
 
 function formatRatingValue(rating) {
@@ -29,7 +29,7 @@ function renderSelectableReviewStars(selectedRating) {
     const rating = index + 1;
     const filled = rating <= selected;
     return `
-      <button type="button" class="review-star-btn text-xl leading-none transition-transform hover:scale-110 ${filled ? 'text-amber-400' : 'text-slate-300'}" onclick="setSelectedReviewRating(${rating})" aria-label="${rating} sao" aria-pressed="${filled}">
+      <button type="button" class="text-xl leading-none transition-transform hover:scale-110 ${filled ? 'text-amber-400' : 'text-slate-300'}" onclick="setSelectedReviewRating(${rating})" aria-label="${rating} sao">
         <i class="${filled ? 'fa-solid' : 'fa-regular'} fa-star"></i>
       </button>
     `;
@@ -40,7 +40,6 @@ window.setSelectedReviewRating = (rating) => {
   const input = document.getElementById("review-rating-input");
   const stars = document.getElementById("review-star-selector");
   const value = Math.max(1, Math.min(5, Number(rating || 5)));
-
   if (input) input.value = value;
   if (stars) stars.innerHTML = renderSelectableReviewStars(value);
 };
@@ -169,7 +168,7 @@ async function initProductsPage() {
 /**
  * Gọi API nạp sản phẩm
  * Nếu categoryVal === "all", gọi API lấy tất cả sản phẩm
- * Nếu có categoryId cụ thỒ, gọi ProductApi.getProductsByCategory(categoryId)
+ * Nếu có categoryId cụ thể, gọi ProductApi.getProductsByCategory(categoryId)
  */
 async function fetchProductsData(categoryVal = "all") {
   try {
@@ -197,7 +196,7 @@ async function fetchProductsData(categoryVal = "all") {
     filteredProducts = [...rawAllProducts];
   } catch (error) {
     console.error("Lỗi nạp sản phẩm trang products:", error);
-    UTILS.showToast("Không thỒ tải danh sách sản phẩm.", "danger");
+    UTILS.showToast("Không thể tải danh sách sản phẩm.", "danger");
   }
 }
 
@@ -420,7 +419,7 @@ function renderProductsList(list) {
     const ratingStars = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(Math.round(product.averageRating)) + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - Math.round(product.averageRating));
 
     html += `
-      <div class="product-card card cursor-pointer" data-product-id="${product.id}" onclick="openProductDetailModal(${product.id})">
+      <div class="product-card card cursor-pointer" onclick="openProductDetailModal(${product.id})">
         <!-- Badge vùng miền & Ảnh -->
         <div class="img-wrapper relative overflow-hidden aspect-video">
           <span class="absolute top-3.5 left-3.5 z-10 badge ${colorClass} shadow-sm">${categoryName}</span>
@@ -430,9 +429,9 @@ function renderProductsList(list) {
         <!-- Thông tin chi tiết -->
         <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
           <div class="space-y-1">
-            <div class="product-card-rating flex items-center text-amber-400 text-xs font-bold gap-0.5">
-              <span class="product-card-rating-stars">${ratingStars}</span>
-              <span class="product-card-rating-value text-slate-400 font-medium text-[10px] ml-1">(${formatRatingValue(product.averageRating)})</span>
+            <div class="flex items-center text-amber-400 text-xs font-bold gap-0.5">
+              <span>${ratingStars}</span>
+              <span class="text-slate-400 font-medium text-[10px] ml-1">(${product.averageRating})</span>
             </div>
             <h3 class="font-bold text-slate-800 text-sm hover:text-brand-600 transition-colors line-clamp-2" title="${product.name}">
               ${product.name}
@@ -488,7 +487,7 @@ window.openProductDetailModal = (productId) => {
     modal.className = "modal-overlay";
     modal.onclick = () => closeProductDetailModal();
     modal.innerHTML = `
-      <div class="modal-container p-6 max-w-3xl relative" onclick="event.stopPropagation()">
+      <div class="modal-container p-6 max-w-2xl relative" onclick="event.stopPropagation()">
         <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -502,39 +501,31 @@ window.openProductDetailModal = (productId) => {
     document.body.appendChild(modal);
   }
 
-  const modalContainer = modal.querySelector(".modal-container");
-  if (modalContainer) {
-    modalContainer.classList.remove("max-w-2xl");
-    modalContainer.classList.add("max-w-3xl");
-  }
-
   const modalContent = document.getElementById("modal-detail-content");
   const colorClass = UTILS.getCategoryColorClass(product.categoryId);
   const categoryName = UTILS.getCategoryName(product.categoryId);
-  const ratingStars = renderRatingStars(product.averageRating);
-  const safeProductName = escapeHtml(product.name);
-  const safeDescription = escapeHtml(product.description || "Chưa có mô tả chi tiết.");
+  const ratingStars = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(Math.round(product.averageRating)) + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - Math.round(product.averageRating));
 
   modalContent.innerHTML = `
     <!-- Left: Image -->
     <div class="gallery-main relative border rounded-xl overflow-hidden aspect-square flex items-center justify-center bg-slate-50">
-      <img src="${UTILS.getImageUrl(product.imageUrl)}" alt="${safeProductName}" class="w-full h-full object-cover">
+      <img src="${UTILS.getImageUrl(product.imageUrl)}" alt="${product.name}" class="w-full h-full object-cover">
     </div>
 
     <!-- Right: Details -->
     <div class="flex flex-col justify-between space-y-4">
       <div class="space-y-2">
-        <span class="badge ${colorClass} inline-flex">${escapeHtml(categoryName)}</span>
-        <h2 class="text-xl md:text-2xl font-bold text-slate-800 leading-tight">${safeProductName}</h2>
+        <span class="badge ${colorClass} inline-flex">${categoryName}</span>
+        <h2 class="text-xl md:text-2xl font-bold text-slate-800 leading-tight">${product.name}</h2>
         
-        <div id="modal-rating-summary" class="flex items-center text-amber-400 text-sm font-bold gap-0.5">
+        <div class="flex items-center text-amber-400 text-sm font-bold gap-0.5">
           ${ratingStars}
-          <span class="text-slate-400 font-medium text-xs ml-2">(${formatRatingValue(product.averageRating)})</span>
+          <span class="text-slate-400 font-medium text-xs ml-2">(${product.averageRating} đánh giá)</span>
         </div>
 
         <div class="text-2xl font-extrabold text-brand-600 mt-2">${UTILS.formatCurrency(product.price)}</div>
         
-        <p class="text-sm text-slate-500 leading-relaxed pt-2 border-t">${safeDescription}</p>
+        <p class="text-sm text-slate-500 leading-relaxed pt-2 border-t">${product.description || "Chưa có mô tả chi tiết."}</p>
       </div>
 
       <!-- Quantity & Add to Cart -->
@@ -579,11 +570,7 @@ function renderReviewForm(productId) {
   if (!wrapper) return;
 
   if (!Storage.getToken()) {
-    wrapper.innerHTML = `
-      <div class="rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-500">
-        Đăng nhập để gửi đánh giá cho món ăn này.
-      </div>
-    `;
+    wrapper.innerHTML = `<div class="rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-500">Đăng nhập để gửi đánh giá cho món ăn này.</div>`;
     return;
   }
 
@@ -592,23 +579,17 @@ function renderReviewForm(productId) {
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <input type="hidden" id="review-rating-input" value="5">
-          <div id="review-star-selector" class="flex items-center gap-1">
-            ${renderSelectableReviewStars(5)}
-          </div>
+          <div id="review-star-selector" class="flex items-center gap-1">${renderSelectableReviewStars(5)}</div>
           <span class="text-[11px] font-semibold text-slate-400">Chọn số sao</span>
         </div>
-        <button type="submit" class="btn btn-primary px-4 py-2 text-xs font-bold">
-          Gửi đánh giá
-        </button>
+        <button type="submit" class="btn btn-primary px-4 py-2 text-xs font-bold">Gửi đánh giá</button>
       </div>
       <textarea id="review-comment-input" rows="2" maxlength="1000" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:ring-orange-500 focus:border-orange-500" placeholder="Chia sẻ cảm nhận của bạn..."></textarea>
     </form>
   `;
 
   const form = document.getElementById("product-review-form");
-  if (form) {
-    form.addEventListener("submit", (event) => submitProductReview(event, productId));
-  }
+  if (form) form.addEventListener("submit", (event) => submitProductReview(event, productId));
 }
 
 async function loadProductReviews(productId) {
@@ -619,21 +600,15 @@ async function loadProductReviews(productId) {
   try {
     const reviews = await ReviewApi.getByProduct(productId);
     const safeReviews = Array.isArray(reviews) ? reviews : [];
-
-    if (count) {
-      count.textContent = `${safeReviews.length} đánh giá`;
-    }
-
+    if (count) count.textContent = `${safeReviews.length} đánh giá`;
     if (safeReviews.length === 0) {
       list.innerHTML = `<div class="text-xs text-slate-400">Chưa có đánh giá nào.</div>`;
       return;
     }
-
     list.innerHTML = safeReviews.map(review => {
       const reviewerName = escapeHtml(review.fullName || review.username || "Người dùng");
       const comment = escapeHtml(review.comment || "");
       const dateText = review.createdAt ? UTILS.formatDate(review.createdAt, "DD/MM/YYYY") : "";
-
       return `
         <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
           <div class="flex items-start justify-between gap-3">
@@ -656,11 +631,9 @@ async function loadProductReviews(productId) {
 
 async function submitProductReview(event, productId) {
   event.preventDefault();
-
   const ratingInput = document.getElementById("review-rating-input");
   const commentInput = document.getElementById("review-comment-input");
   const submitButton = event.target.querySelector("button[type='submit']");
-
   const rating = Number(ratingInput ? ratingInput.value : 5);
   const comment = commentInput ? commentInput.value.trim() : "";
 
@@ -669,7 +642,6 @@ async function submitProductReview(event, productId) {
       submitButton.disabled = true;
       submitButton.textContent = "Đang gửi...";
     }
-
     await ReviewApi.save(productId, rating, comment);
     UTILS.showToast("Đã lưu đánh giá của bạn.", "success");
 
@@ -682,11 +654,7 @@ async function submitProductReview(event, productId) {
         averageRating: normalizedProduct.averageRating
       };
       const filteredIndex = filteredProducts.findIndex(p => p.id === productId);
-      if (filteredIndex >= 0) {
-        filteredProducts[filteredIndex].averageRating = normalizedProduct.averageRating;
-      }
-      updateModalRatingSummary(normalizedProduct.averageRating);
-      updateProductCardsRating(productId, normalizedProduct.averageRating);
+      if (filteredIndex >= 0) filteredProducts[filteredIndex].averageRating = normalizedProduct.averageRating;
     }
 
     await loadProductReviews(productId);
@@ -702,24 +670,6 @@ async function submitProductReview(event, productId) {
   }
 }
 
-function updateModalRatingSummary(averageRating) {
-  const summary = document.getElementById("modal-rating-summary");
-  if (!summary) return;
-  summary.innerHTML = `
-    ${renderRatingStars(averageRating)}
-    <span class="text-slate-400 font-medium text-xs ml-2">(${formatRatingValue(averageRating)})</span>
-  `;
-}
-
-function updateProductCardsRating(productId, averageRating) {
-  document.querySelectorAll(`.product-card[data-product-id="${productId}"]`).forEach(card => {
-    const stars = card.querySelector(".product-card-rating-stars");
-    const value = card.querySelector(".product-card-rating-value");
-
-    if (stars) stars.innerHTML = renderRatingStars(averageRating);
-    if (value) value.textContent = `(${formatRatingValue(averageRating)})`;
-  });
-}
 window.closeProductDetailModal = () => {
   const modal = document.getElementById("product-detail-modal");
   if (modal) {
@@ -760,4 +710,3 @@ window.addProductsModalToCart = (productId) => {
     closeProductDetailModal();
   }
 };
-
