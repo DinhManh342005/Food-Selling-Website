@@ -49,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
         dto.setCreatedAt(product.getCreatedAt());
         dto.setCategoryId(product.getCategory().getId());
         dto.setDetailImages(toDetailImageUrls(product));
+        dto.setDetailImagePublicIds(toDetailImagePublicIds(product));
         return dto;
     }
 
@@ -86,6 +87,7 @@ public class ProductServiceImpl implements ProductService {
                 .status(dto.getStockQuantity() > 0 ? ProductStatus.available : ProductStatus.unavailable)
                 .category(category)
                 .build();
+        product.setImages(toProductImages(dto, product));
 
         Product savedProduct = productRepository.save(product);
         return convertToDTO_Admin(savedProduct);
@@ -102,16 +104,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public AdminProductResponseDTO updateProduct(Long id, ProductCreateDTO dto) {
-        validateMainImage(dto); // Ảnh không được để trống khi update
-
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm với ID " + id));
 
         String oldPublicId = existingProduct.getImagePublicId();
+        List<String> oldDetailPublicIds = toDetailImagePublicIds(existingProduct);
 
         existingProduct.setName(dto.getName());
         existingProduct.setDescription(dto.getDescription());
-        existingProduct.setImageUrl(dto.getImageUrl());
+        existingProduct.setImageUrl(normalizeBlank(dto.getImageUrl()));
         existingProduct.setImagePublicId(normalizeBlank(dto.getImagePublicId()));
         existingProduct.setPrice(dto.getPrice());
         existingProduct.setStockQuantity(dto.getStockQuantity());
@@ -120,8 +121,16 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Không tồn tại Category có id " + dto.getCategoryId())));
 
+        if (existingProduct.getImages() == null) {
+            existingProduct.setImages(new ArrayList<>());
+        }
+        existingProduct.getImages().clear();
+        existingProduct.getImages().addAll(toProductImages(dto, existingProduct));
         Product updatedProduct = productRepository.save(existingProduct);
-        deleteOldImageIfChanged(oldPublicId, dto.getImagePublicId());
+        if (oldDetailPublicIds.isEmpty()) {
+            deleteOldImageIfChanged(oldPublicId, dto.getImagePublicId());
+        }
+        deleteRemovedDetailImages(oldDetailPublicIds, dto.getDetailImagePublicIds());
         return convertToDTO_Admin(updatedProduct);
     }
 
@@ -137,8 +146,12 @@ public class ProductServiceImpl implements ProductService {
             return;
         }
 
+        List<String> detailPublicIds = toDetailImagePublicIds(product);
         productRepository.delete(product);
         deleteCloudinaryImage(product.getImagePublicId());
+        detailPublicIds.stream()
+                .filter(publicId -> !Objects.equals(publicId, product.getImagePublicId()))
+                .forEach(this::deleteCloudinaryImage);
     }
 
     @Override
@@ -215,6 +228,48 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    private List<String> toDetailImagePublicIds(Product product) {
+        if (product.getImages() == null) {
+            return new ArrayList<>();
+        }
+        return product.getImages()
+                .stream()
+                .map(ProductImage::getImagePublicId)
+                .collect(Collectors.toList());
+    }
+
+    private List<ProductImage> toProductImages(ProductCreateDTO dto, Product product) {
+        List<String> urls = dto.getDetailImages() == null ? new ArrayList<>() : dto.getDetailImages();
+        List<String> publicIds = dto.getDetailImagePublicIds() == null ? new ArrayList<>() : dto.getDetailImagePublicIds();
+        List<ProductImage> productImages = new ArrayList<>();
+
+        for (int i = 0; i < urls.size(); i++) {
+            String imageUrl = normalizeBlank(urls.get(i));
+            if (imageUrl == null) {
+                continue;
+            }
+
+            String publicId = i < publicIds.size() ? normalizeBlank(publicIds.get(i)) : null;
+            productImages.add(ProductImage.builder()
+                    .product(product)
+                    .imageUrl(imageUrl)
+                    .imagePublicId(publicId)
+                    .isThumbnail(Objects.equals(imageUrl, dto.getImageUrl()))
+                    .build());
+        }
+
+        if (productImages.isEmpty() && !isBlank(dto.getImageUrl())) {
+            productImages.add(ProductImage.builder()
+                    .product(product)
+                    .imageUrl(normalizeBlank(dto.getImageUrl()))
+                    .imagePublicId(normalizeBlank(dto.getImagePublicId()))
+                    .isThumbnail(true)
+                    .build());
+        }
+
+        return productImages;
+    }
+
     private void validateMainImage(ProductCreateDTO dto) {
         if (isBlank(dto.getImageUrl())) {
             throw new IllegalArgumentException("Ảnh đại diện sản phẩm không được để trống");
@@ -225,6 +280,14 @@ public class ProductServiceImpl implements ProductService {
         if (!isBlank(oldPublicId) && !Objects.equals(oldPublicId, newPublicId)) {
             deleteCloudinaryImage(oldPublicId);
         }
+    }
+
+    private void deleteRemovedDetailImages(List<String> oldPublicIds, List<String> newPublicIds) {
+        List<String> safeNewPublicIds = newPublicIds == null ? new ArrayList<>() : newPublicIds;
+        oldPublicIds.stream()
+                .filter(publicId -> !isBlank(publicId))
+                .filter(publicId -> !safeNewPublicIds.contains(publicId))
+                .forEach(this::deleteCloudinaryImage);
     }
 
     private void deleteCloudinaryImage(String publicId) {

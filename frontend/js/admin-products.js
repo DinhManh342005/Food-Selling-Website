@@ -28,20 +28,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnCloseViewModal = document.getElementById("btn-close-view-modal");
   const btnCloseViewFooter = document.getElementById("btn-close-view-footer");
   
-  const uploadArea = null; // No dedicated drag drop area in HTML
-  const imgInput = document.getElementById("form-image-file");
-  const imgPreview = document.getElementById("form-image-preview");
-  const imgPlaceholder = document.getElementById("form-image-placeholder");
-  const btnRemoveImage = document.getElementById("btn-remove-image");
+  const productImagesInput = document.getElementById("form-image-file");
+  const imageUploadTrigger = document.getElementById("imageUploadTrigger");
+  const productImagePreviewList = document.getElementById("productImagePreviewList");
+  const productImageCount = document.getElementById("productImageCount");
+  const productImageError = document.getElementById("productImageError");
   const btnSaveModal = document.getElementById("btn-save-modal");
 
   // State
   let allProducts = [];
   let currentEditId = null;
-  let selectedFile = null;
-  let currentImageUrl = "";
-  let currentImagePublicId = "";
-  let removeCurrentImage = false;
+  let productImageState = [];
 
   // 3. Bind Events
   if (btnOpenSidebar && sidebar) btnOpenSidebar.addEventListener("click", () => sidebar.classList.add("open"));
@@ -92,15 +89,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Image Upload Events
-  if (imgInput) {
-    imgInput.addEventListener("change", (e) => {
-      if (e.target.files && e.target.files[0]) {
-        handleImageSelection(e.target.files[0]);
-      }
-    });
+  if (imageUploadTrigger && productImagesInput) {
+    imageUploadTrigger.addEventListener("click", () => productImagesInput.click());
   }
-
-  if (btnRemoveImage) btnRemoveImage.addEventListener("click", () => clearImageSelection(true));
+  if (productImagesInput) {
+    productImagesInput.addEventListener("change", handleProductImagesSelected);
+  }
+  if (productImagePreviewList) {
+    productImagePreviewList.addEventListener("click", handleProductImageAction);
+  }
 
   // 4. Initial Load
   await loadProducts();
@@ -281,38 +278,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       const categoryId = Number(document.getElementById("form-categoryId").value);
       const stockQuantity = Number(document.getElementById("form-stockQuantity").value);
       const description = document.getElementById("form-description").value.trim();
-      const imageUrlInput = document.getElementById("form-imageUrl").value.trim();
 
       // Validate
       if (!name || isNaN(price) || isNaN(categoryId) || isNaN(stockQuantity)) {
         throw new Error("Vui lòng điền đầy đủ các thông tin bắt buộc (tên, giá, danh mục, số lượng).");
       }
 
-      // Upload or keep the main product image.
-      let finalImageUrl = currentImageUrl;
-      let finalImagePublicId = currentImagePublicId;
+      if (!currentEditId && productImageState.length === 0) {
+        throw new Error("Vui lòng chọn ít nhất 1 ảnh sản phẩm.");
+      }
 
-      if (selectedFile) {
-        try {
-          const uploadRes = await AdminProductApi.uploadProductImage(selectedFile);
-          finalImageUrl = typeof uploadRes === "string" ? uploadRes : uploadRes.imageUrl || uploadRes.url || "";
-          finalImagePublicId = typeof uploadRes === "string" ? "" : uploadRes.publicId || uploadRes.imagePublicId || "";
-          if (!finalImageUrl) throw new Error("Upload khong tra ve URL anh.");
-        } catch (uploadErr) {
-          console.error("Loi upload anh:", uploadErr);
-          throw new Error("Tai anh len that bai: " + uploadErr.message);
+      for (const image of productImageState) {
+        if (image.source === "new" && image.file) {
+          const uploadRes = await AdminProductApi.uploadProductImage(image.file);
+          image.url = typeof uploadRes === "string" ? uploadRes : uploadRes.imageUrl || uploadRes.url || "";
+          image.publicId = typeof uploadRes === "string" ? "" : uploadRes.publicId || uploadRes.imagePublicId || "";
+          image.source = "existing";
+          image.file = null;
+          if (!image.url) throw new Error("Không thể tải lên ảnh sản phẩm.");
         }
-      } else if (removeCurrentImage) {
-        finalImageUrl = "";
-        finalImagePublicId = "";
-      } else if (imageUrlInput && imageUrlInput !== currentImageUrl) {
-        finalImageUrl = imageUrlInput;
-        finalImagePublicId = "";
       }
 
-      if (!currentEditId && !finalImageUrl) {
-        throw new Error("Vui long chon anh dai dien cho san pham.");
-      }
+      ensureOnePrimaryImage();
+      const primaryImage = productImageState.find(image => image.isPrimary) || productImageState[0] || null;
+      const finalImageUrl = primaryImage ? primaryImage.url : "";
+      const finalImagePublicId = primaryImage ? primaryImage.publicId || "" : "";
 
       const payload = {
         name,
@@ -322,7 +312,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         description,
         imageUrl: finalImageUrl,
         imagePublicId: finalImagePublicId,
-        detailImages: []
+        detailImages: productImageState.map(image => image.url).filter(Boolean),
+        detailImagePublicIds: productImageState.map(image => image.publicId || "")
       };
 
       if (currentEditId) {
@@ -392,11 +383,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Modal UI Logic
   function openModal(id = null) {
     currentEditId = id;
-    selectedFile = null;
-    removeCurrentImage = false;
-    currentImageUrl = "";
-    currentImagePublicId = "";
-
+    resetProductImageState();
     if (modalTitle) modalTitle.textContent = id ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm mới";
 
     if (id) {
@@ -407,16 +394,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("form-categoryId").value = p.categoryId;
         document.getElementById("form-stockQuantity").value = p.stockQuantity;
         document.getElementById("form-description").value = p.description || "";
-        const displayImage = p.imageUrl || (p.detailImages && p.detailImages.length > 0 ? p.detailImages[0] : "");
-        currentImageUrl = displayImage;
-        currentImagePublicId = p.imagePublicId || "";
-        const imageUrlEl = document.getElementById("form-imageUrl");
-        if (imageUrlEl) imageUrlEl.value = displayImage;
-        renderImagePreview(displayImage);
+        hydrateProductImageState(p);
       }
     } else {
       if (productForm) productForm.reset();
-      renderImagePreview("");
+      renderProductImagePreviews();
     }
 
     if (modal) modal.classList.add("active");
@@ -429,42 +411,191 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (productForm) productForm.reset();
     currentEditId = null;
-    selectedFile = null;
-    currentImageUrl = "";
-    currentImagePublicId = "";
-    removeCurrentImage = false;
-    renderImagePreview("");
+    resetProductImageState();
   }
 
-  function renderImagePreview(imageUrl) {
-    if (imgPreview && imageUrl) {
-      imgPreview.src = UTILS.getImageUrl(imageUrl);
-      imgPreview.classList.remove("hidden");
-      if (imgPlaceholder) imgPlaceholder.classList.add("hidden");
-      if (btnRemoveImage) btnRemoveImage.classList.remove("hidden");
-    } else {
-      if (imgPreview) {
-        imgPreview.src = "";
-        imgPreview.classList.add("hidden");
+  function resetProductImageState() {
+    productImageState.forEach(image => {
+      if (image.objectUrl) URL.revokeObjectURL(image.objectUrl);
+    });
+    productImageState = [];
+    if (productImagesInput) productImagesInput.value = "";
+    clearProductImageError();
+    renderProductImagePreviews();
+  }
+
+  function hydrateProductImageState(product) {
+    const urls = Array.isArray(product.detailImages) && product.detailImages.length > 0
+      ? product.detailImages
+      : (product.imageUrl ? [product.imageUrl] : []);
+    const publicIds = Array.isArray(product.detailImagePublicIds) ? product.detailImagePublicIds : [];
+
+    productImageState = urls.filter(Boolean).map((url, index) => ({
+      id: `existing-${index}-${url}`,
+      source: "existing",
+      file: null,
+      imageId: null,
+      publicId: publicIds[index] || (url === product.imageUrl ? product.imagePublicId || "" : ""),
+      url,
+      name: getImageNameFromUrl(url),
+      isPrimary: url === product.imageUrl,
+      objectUrl: null
+    }));
+    ensureOnePrimaryImage();
+    renderProductImagePreviews();
+  }
+
+  function handleProductImagesSelected(event) {
+    const files = Array.from(event.target.files || []);
+    for (const file of files) {
+      const validationMessage = validateProductImageFile(file);
+      if (validationMessage) {
+        showProductImageError(validationMessage);
+        continue;
       }
-      if (imgPlaceholder) imgPlaceholder.classList.remove("hidden");
-      if (btnRemoveImage) btnRemoveImage.classList.add("hidden");
+      if (productImageState.length >= 6) {
+        showProductImageError("Chỉ được chọn tối đa 6 ảnh.");
+        break;
+      }
+      if (isDuplicateProductImage(file)) {
+        showProductImageError("Ảnh này đã được chọn.");
+        continue;
+      }
+      productImageState.push({
+        id: `new-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        source: "new",
+        file,
+        imageId: null,
+        publicId: "",
+        url: "",
+        name: file.name,
+        isPrimary: !productImageState.some(image => image.isPrimary),
+        objectUrl: URL.createObjectURL(file)
+      });
+    }
+    ensureOnePrimaryImage();
+    renderProductImagePreviews();
+    event.target.value = "";
+  }
+
+  function validateProductImageFile(file) {
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) return "Chỉ hỗ trợ JPG, PNG hoặc WebP.";
+    if (file.size > 5 * 1024 * 1024) return "ỗi ảnh không được quá 5 MB.";
+    return "";
+  }
+
+  function isDuplicateProductImage(file) {
+    return productImageState.some(image => image.file
+      && image.file.name === file.name
+      && image.file.size === file.size
+      && image.file.lastModified === file.lastModified);
+  }
+
+  function handleProductImageAction(event) {
+    const button = event.target.closest("button[data-image-action]");
+    const card = event.target.closest(".product-image-card");
+    if (!card) return;
+    const imageId = card.dataset.imageKey;
+    if (button?.dataset.imageAction === "delete") {
+      removeProductImage(imageId);
+      return;
+    }
+    if (button?.dataset.imageAction === "primary" || !button) {
+      setPrimaryProductImage(imageId);
     }
   }
 
-  function clearImageSelection(markForRemoval = false) {
-    selectedFile = null;
-    if (imgInput) imgInput.value = "";
-    if (markForRemoval) {
-      removeCurrentImage = true;
-      currentImageUrl = "";
-      currentImagePublicId = "";
-      const imageUrlInput = document.getElementById("form-imageUrl");
-      if (imageUrlInput) imageUrlInput.value = "";
-    }
-    renderImagePreview("");
+  function setPrimaryProductImage(imageId) {
+    productImageState = productImageState.map(image => ({ ...image, isPrimary: image.id === imageId }));
+    renderProductImagePreviews();
   }
 
+  function removeProductImage(imageId) {
+    const image = productImageState.find(item => item.id === imageId);
+    if (!image) return;
+    if (image.objectUrl) URL.revokeObjectURL(image.objectUrl);
+    productImageState = productImageState.filter(item => item.id !== imageId);
+    ensureOnePrimaryImage();
+    renderProductImagePreviews();
+  }
+
+  function ensureOnePrimaryImage() {
+    if (productImageState.length === 0) return;
+    if (!productImageState.some(image => image.isPrimary)) {
+      productImageState[0].isPrimary = true;
+    }
+    let foundPrimary = false;
+    productImageState.forEach(image => {
+      if (image.isPrimary && !foundPrimary) {
+        foundPrimary = true;
+      } else if (image.isPrimary) {
+        image.isPrimary = false;
+      }
+    });
+  }
+
+  function renderProductImagePreviews() {
+    if (productImageCount) productImageCount.textContent = `${productImageState.length}/6 anh`;
+    if (!productImagePreviewList) return;
+    if (productImageState.length === 0) {
+      productImagePreviewList.innerHTML = "";
+      return;
+    }
+    productImagePreviewList.innerHTML = productImageState.map(image => {
+      const src = image.objectUrl || UTILS.getImageUrl(image.url);
+      const badge = image.isPrimary ? "Ảnh chính" : "Ảnh phụ";
+      return `
+        <div class="product-image-card ${image.isPrimary ? "is-primary" : ""}" data-image-key="${image.id}">
+          <div class="product-image-card__preview">
+            <img src="${src}" alt="Ảnh sản phẩm">
+            <span class="product-image-badge">${badge}</span>
+            <div class="product-image-card__actions">
+              <button type="button" class="product-image-action set-primary ${image.isPrimary ? "is-active" : ""}" data-image-action="primary" title="Đặt làm ảnh chính" aria-label="Đặt làm ảnh chính">
+                <i class="fa-solid fa-star"></i>
+              </button>
+              <button type="button" class="product-image-action delete-image" data-image-action="delete" title="Xoá ảnh" aria-label="Xoá ảnh">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="product-image-card__name" title="${escapeHtml(image.name)}">${escapeHtml(image.name)}</div>
+        </div>`;
+    }).join("");
+  }
+
+  function showProductImageError(message) {
+    if (productImageError) {
+      productImageError.textContent = message;
+      productImageError.hidden = false;
+    }
+    if (window.UTILS?.showToast) UTILS.showToast(message, "warning");
+  }
+
+  function clearProductImageError() {
+    if (productImageError) {
+      productImageError.textContent = "";
+      productImageError.hidden = true;
+    }
+  }
+
+  function getImageNameFromUrl(url) {
+    try {
+      return decodeURIComponent(String(url).split("/").pop().split("?")[0]) || "image";
+    } catch (_) {
+      return "image";
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>'"]/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "'": "&#39;",
+      '"': "&quot;"
+    }[char]));
+  }
   function openViewModal(id) {
     const p = allProducts.find(x => String(x.id) === String(id));
     if (!p) return;
@@ -531,37 +662,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (viewModal) {
       viewModal.classList.remove("active");
       document.body.style.overflow = "";
-    }
-  }
-
-  function handleImageSelection(file) {
-    if (!file.type.startsWith('image/')) {
-      UTILS.showToast("Vui lòng chọn file hình ảnh.", "warning");
-      return;
-    }
-    
-    if (file.size > 5 * 1024 * 1024) { // Tối đa 5MB
-      UTILS.showToast("Kích thước ảnh không được vượt quá 5MB.", "warning");
-      return;
-    }
-
-    selectedFile = file;
-    removeCurrentImage = false;
-    
-    // Hiển thị preview
-    if (imgPreview) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        imgPreview.src = e.target.result;
-        imgPreview.classList.remove("hidden");
-        if (imgPlaceholder) imgPlaceholder.classList.add("hidden");
-        if (btnRemoveImage) btnRemoveImage.classList.remove("hidden");
-        
-        // Cũng update the input text form-imageUrl để show filename (optional)
-        const imageUrlInput = document.getElementById("form-imageUrl");
-        if (imageUrlInput) imageUrlInput.value = file.name;
-      };
-      reader.readAsDataURL(file);
     }
   }
 
