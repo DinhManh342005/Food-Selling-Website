@@ -28,6 +28,25 @@ const UTILS = {
   },
 
   /**
+   * Render ngôi sao đánh giá (hỗ trợ nửa sao)
+   */
+  renderRatingStars(rating) {
+    const value = Number(rating || 0);
+    const safeRating = Math.max(0, Math.min(5, value));
+    const fullStars = Math.floor(safeRating);
+    const hasHalfStar = (safeRating - fullStars) >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    let html = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(fullStars);
+    if (hasHalfStar) {
+      html += '<i class="fa-solid fa-star-half-stroke text-amber-400"></i>';
+    }
+    html += '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(emptyStars);
+    
+    return html;
+  },
+
+  /**
    * Lấy tên vùng miền theo categoryId
    */
   getCategoryName(categoryId) {

@@ -22,6 +22,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnLogout = document.getElementById("btn-admin-logout");
   if (btnLogout) btnLogout.addEventListener("click", () => Auth.logout());
 
+  // Revenue Time Filter
+  const revenueFilter = document.getElementById("revenue-time-filter");
+  if (revenueFilter) {
+    revenueFilter.addEventListener("change", (e) => {
+      const days = parseInt(e.target.value, 10);
+      renderRevenueChart(globalValidOrders, days);
+    });
+  }
+
   // 3. Load & Calculate Stats
   await loadDashboardStats();
 });
@@ -33,37 +42,60 @@ async function loadDashboardStats() {
   try {
     // 1. Lấy tất cả products từ Admin API
     const products = await AdminProductApi.getProducts();
-    const totalProducts = products.length;
-    const activeProducts = products.filter(p => p.status === 'available').length;
-    const lowStockProducts = products.filter(p => p.stockQuantity < 10);
+    const safeProducts = Array.isArray(products) ? products : [];
+    const totalProducts = safeProducts.length;
+    const activeProducts = safeProducts.filter(p => p.status === 'available').length;
+    const lowStockProducts = safeProducts.filter(p => p.stockQuantity < 10);
 
-    // 2. Lấy orders từ Admin API (thay vì localStorage)
+    // 2. Lấy orders từ Admin API
     let orders = [];
     try {
-      orders = await AdminOrderApi.getOrders();
+      const resOrders = await AdminOrderApi.getOrders();
+      orders = Array.isArray(resOrders) ? resOrders : [];
     } catch (e) {
       console.warn("Không thể tải orders từ API:", e);
     }
     const totalOrders = orders.length;
-    // Doanh thu chỉ tính đơn hàng đã hoàn thành (khớp BE OrderStatus.completed)
-    const completedOrders = orders.filter(o => {
+    // Doanh thu tính tất cả đơn hàng trừ đơn đã hủy
+    const validOrders = orders.filter(o => {
       const status = String(o.status || "").toLowerCase();
-      return status === "completed";
+      return status !== "cancelled";
     });
-    const totalRevenue = completedOrders.reduce((sum, o) => sum + Number(o.totalAmount || 0), 0);
+    const totalRevenue = validOrders.reduce((sum, o) => sum + Number(o.totalAmount || 0), 0);
 
-    // 3. Lấy users từ mock (UserController BE trống, chưa có API)
-    const users = JSON.parse(localStorage.getItem("adminMockUsers")) || (typeof MOCK_USERS !== 'undefined' ? MOCK_USERS : []);
-    const totalUsers = users.length;
+    // 3. Lấy users từ API thực tế
+    let totalUsers = 0;
+    try {
+      const userPage = await AdminUserApi.getAllUsers(0, 1);
+      if (userPage) {
+        totalUsers = userPage.totalElements || (userPage.content && userPage.content.length) || userPage.length || 0;
+      }
+    } catch (e) {
+      console.warn("Không thể tải users từ API:", e);
+    }
 
-    // Cập nhật lên UI
-    document.getElementById("stat-revenue").textContent = UTILS.formatCurrency(totalRevenue);
-    document.getElementById("stat-orders").textContent = totalOrders;
-    document.getElementById("stat-products").textContent = `${activeProducts} / ${totalProducts}`;
-    document.getElementById("stat-users").textContent = totalUsers;
+    // Cập nhật lên UI (Safely update if elements exist)
+    const elRevenue = document.getElementById("stat-revenue");
+    if (elRevenue) elRevenue.textContent = UTILS.formatCurrency(totalRevenue);
+
+    const elOrders = document.getElementById("stat-total-orders");
+    if (elOrders) elOrders.textContent = totalOrders;
+
+    const elTotalProducts = document.getElementById("stat-total-products");
+    if (elTotalProducts) elTotalProducts.textContent = totalProducts;
+
+    const elAvailableProducts = document.getElementById("stat-available-products");
+    if (elAvailableProducts) elAvailableProducts.textContent = activeProducts;
+
+    const elOutStock = document.getElementById("stat-out-stock");
+    if (elOutStock) elOutStock.textContent = lowStockProducts.length;
 
     // Vẽ biểu đồ Chart.js
-    renderRevenueChart(completedOrders);
+    globalValidOrders = validOrders;
+    renderRevenueChart(validOrders, 7);
+    
+    // Vẽ biểu đồ Vùng miền
+    renderRegionChart(validOrders, safeProducts);
 
     // Render Recent Orders
     renderRecentOrders(orders);
@@ -77,26 +109,37 @@ async function loadDashboardStats() {
   }
 }
 
+let globalRevenueChart = null;
+let globalRegionChart = null;
+let globalValidOrders = [];
+
 /**
- * Render Biểu đồ doanh thu 7 ngày gần nhất bằng Chart.js
+ * Render Biểu đồ doanh thu bằng Chart.js
  */
-function renderRevenueChart(completedOrders) {
+function renderRevenueChart(completedOrders, days = 7) {
   const chartContainer = document.getElementById("revenue-chart");
+  const chartTitle = document.getElementById("revenue-chart-title");
   if (!chartContainer) return;
+
+  if (chartTitle) chartTitle.textContent = `Doanh thu ${days} ngày qua`;
 
   // Xóa css-chart cũ và tạo canvas
   chartContainer.innerHTML = '<canvas id="revenueCanvas" class="w-full h-full"></canvas>';
   const ctx = document.getElementById('revenueCanvas').getContext('2d');
 
-  // Lấy mảng 7 ngày gần nhất
-  const last7Days = [];
+  if (globalRevenueChart) {
+    globalRevenueChart.destroy();
+  }
+
+  // Lấy mảng days ngày gần nhất
+  const dateLabels = [];
   const revenueData = [];
 
-  for (let i = 6; i >= 0; i--) {
+  for (let i = days - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const dateStr = d.toLocaleDateString("vi-VN", { day: '2-digit', month: '2-digit' });
-    last7Days.push(dateStr);
+    dateLabels.push(dateStr);
 
     const dIso = d.toISOString().split('T')[0];
     const dailyRev = completedOrders.filter(o => {
@@ -105,14 +148,13 @@ function renderRevenueChart(completedOrders) {
       return orderDateStr.startsWith(dIso);
     }).reduce((sum, o) => sum + Number(o.totalAmount || 0), 0);
 
-    // Fallback data demo nếu 0đ để chart đẹp
-    revenueData.push(dailyRev > 0 ? dailyRev : Math.floor(Math.random() * 500000) + 100000);
+    revenueData.push(dailyRev);
   }
 
-  new Chart(ctx, {
+  globalRevenueChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: last7Days,
+      labels: dateLabels,
       datasets: [{
         label: 'Doanh thu (VNĐ)',
         data: revenueData,
@@ -233,6 +275,82 @@ function renderLowStock(products) {
   });
 
   tbody.innerHTML = html;
+}
+
+/**
+ * Render Biểu đồ tỷ lệ mua hàng theo vùng miền (Dựa trên Danh mục sản phẩm)
+ */
+function renderRegionChart(validOrders, allProducts = []) {
+  const chartContainer = document.getElementById("regionCanvas");
+  if (!chartContainer) return;
+
+  const ctx = chartContainer.getContext('2d');
+  if (globalRegionChart) {
+    globalRegionChart.destroy();
+  }
+
+  // Tạo map productId -> categoryId từ danh sách sản phẩm thực tế
+  const productCategoryMap = {};
+  allProducts.forEach(p => {
+    productCategoryMap[p.id] = p.categoryId;
+  });
+
+  // categoryId: 1 = Miền Bắc, 2 = Miền Trung, 3 = Miền Nam
+  let north = 0, central = 0, south = 0;
+  
+  // Tính tổng số lượng sản phẩm bán ra theo từng vùng miền
+  validOrders.forEach(o => {
+    const items = o.orderItems || [];
+    items.forEach(item => {
+      const quantity = Number(item.quantity || 1);
+      
+      // Lấy categoryId từ productCategoryMap (tra cứu chéo), nếu không có thì fallback sang 0
+      const catId = Number(productCategoryMap[item.productId] || 0);
+
+      if (catId === 1) {
+        north += quantity;
+      } else if (catId === 2) {
+        central += quantity;
+      } else if (catId === 3) {
+        south += quantity;
+      } else {
+        // Phân tích fallback từ tên sản phẩm
+        const pName = String(item.productName || "").toLowerCase();
+        if (pName.includes("bắc") || pName.includes("hà nội") || pName.includes("cốm")) north += quantity;
+        else if (pName.includes("trung") || pName.includes("huế") || pName.includes("đà nẵng") || pName.includes("mì quảng")) central += quantity;
+        else south += quantity; // Mặc định Nam
+      }
+    });
+  });
+
+  // Hiển thị dữ liệu mẫu nếu chưa có đơn hàng nào có sản phẩm
+  if (north === 0 && central === 0 && south === 0) {
+    north = 35; central = 20; south = 45;
+  }
+
+  globalRegionChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Miền Bắc', 'Miền Trung', 'Miền Nam'],
+      datasets: [{
+        data: [north, central, south],
+        backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 12, padding: 15, font: { size: 11, family: "'Roboto', sans-serif" } }
+        }
+      },
+      cutout: '70%'
+    }
+  });
 }
 
 /**

@@ -5,9 +5,7 @@ let currentPage = 1;
 const itemsPerPage = 8;
 
 function renderRatingStars(rating) {
-  const safeRating = Math.max(0, Math.min(5, Math.round(Number(rating || 0))));
-  return '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(safeRating)
-    + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - safeRating);
+  return UTILS.renderRatingStars(rating);
 }
 
 function escapeHtml(value) {
@@ -416,7 +414,7 @@ function renderProductsList(list) {
   list.forEach(product => {
     const colorClass = UTILS.getCategoryColorClass(product.categoryId);
     const categoryName = UTILS.getCategoryName(product.categoryId);
-    const ratingStars = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(Math.round(product.averageRating)) + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - Math.round(product.averageRating));
+    const ratingStars = UTILS.renderRatingStars(product.averageRating);
 
     html += `
       <div class="product-card card cursor-pointer" onclick="openProductDetailModal(${product.id})">
@@ -487,13 +485,13 @@ window.openProductDetailModal = (productId) => {
     modal.className = "modal-overlay";
     modal.onclick = () => closeProductDetailModal();
     modal.innerHTML = `
-      <div class="modal-container p-6 max-w-2xl relative" onclick="event.stopPropagation()">
-        <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1">
+      <div class="modal-container p-6 max-w-[1075px] w-[95%] md:h-[650px] max-h-[95vh] flex flex-col relative" onclick="event.stopPropagation()">
+        <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1 bg-white rounded-full shadow-sm">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="modal-detail-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-y-auto custom-scrollbar pr-2" id="modal-detail-content">
           <!-- Loaded dynamically -->
         </div>
       </div>
@@ -504,7 +502,7 @@ window.openProductDetailModal = (productId) => {
   const modalContent = document.getElementById("modal-detail-content");
   const colorClass = UTILS.getCategoryColorClass(product.categoryId);
   const categoryName = UTILS.getCategoryName(product.categoryId);
-  const ratingStars = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(Math.round(product.averageRating)) + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - Math.round(product.averageRating));
+  const ratingStars = UTILS.renderRatingStars(product.averageRating);
 
   modalContent.innerHTML = `
     <!-- Left: Image -->
@@ -618,7 +616,12 @@ async function loadProductReviews(productId) {
             </div>
             <div class="text-xs whitespace-nowrap">${renderRatingStars(review.rating)}</div>
           </div>
-          ${comment ? `<p class="text-xs text-slate-600 mt-2 leading-relaxed">${comment}</p>` : ""}
+          ${comment ? `
+            <div class="mt-2 ${comment.length > 150 || comment.split('\\n').length > 3 ? 'cursor-pointer' : ''}" onclick="const p = this.querySelector('p'); if(p && this.querySelector('button')) { p.classList.toggle('line-clamp-3'); const b = this.querySelector('button'); if(b) b.textContent = p.classList.contains('line-clamp-3') ? 'Xem thêm' : 'Thu gọn'; }">
+              <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap line-clamp-3 transition-all duration-300">${comment}</p>
+              ${comment.length > 150 || comment.split('\\n').length > 3 ? `<button type="button" class="text-brand-600 text-[10px] font-bold mt-1 hover:underline pointer-events-none">Xem thêm</button>` : ''}
+            </div>
+          ` : ""}
         </div>
       `;
     }).join("");

@@ -327,7 +327,7 @@
           <div class="h-[1px] bg-red-800 w-full"></div>
         </div>
         <h2 class="text-lg md:text-xl font-bold text-slate-800 uppercase tracking-widest text-center px-4">
-          Món ăn bán chạy
+          Đặc Sản Được Yêu Thích Nhất
         </h2>
         <div class="flex-grow flex flex-col justify-center max-w-[200px] hidden sm:flex">
           <div class="h-[1px] bg-red-800 w-full mb-[2px]"></div>
@@ -495,14 +495,14 @@
 
       <!-- PRODUCT DETAIL MODAL -->
       <div id="product-detail-modal" class="modal-overlay" onclick="closeProductModal()">
-        <div class="modal-container p-6 max-w-2xl relative" onclick="event.stopPropagation()">
+        <div class="modal-container p-6 max-w-[1075px] w-[95%] md:h-[650px] max-h-[95vh] flex flex-col relative" onclick="event.stopPropagation()">
           <button onclick="closeProductModal()"
-            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1">
+            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1 bg-white rounded-full shadow-sm">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="modal-detail-content">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-y-auto custom-scrollbar pr-2" id="modal-detail-content">
             <!-- Loaded dynamically by home.js -->
           </div>
         </div>

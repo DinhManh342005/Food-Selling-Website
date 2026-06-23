@@ -209,7 +209,7 @@ function updateCarouselUI(index) {
       }
     }
     if (infoRating) {
-      infoRating.innerHTML = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(itemData.rating);
+      infoRating.innerHTML = UTILS.renderRatingStars(itemData.rating);
     }
 
     // Hiện thẻ thông tin lên
@@ -267,7 +267,7 @@ async function loadFeaturedProducts() {
       return withCat ? { ...p, categoryId: withCat.categoryId } : p;
     });
 
-    // Lọc món ăn bán chạy: sắp xếp theo đánh giá giảm dần và lọc trên 4.7 sao
+    // Lọc "Đặc Sản Được Yêu Thích Nhất": sắp xếp theo đánh giá giảm dần và lọc trên 4.7 sao
     const bestSellers = [...allProducts]
       .sort((a, b) => b.averageRating - a.averageRating)
       .filter(p => p.averageRating >= 4.7)
@@ -318,7 +318,7 @@ function renderSectionSwiper(wrapperId, productsList) {
   productsList.forEach((product) => {
     const colorClass = UTILS.getCategoryColorClass(product.categoryId);
     const categoryName = UTILS.getCategoryName(product.categoryId);
-    const ratingStars = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(Math.round(product.averageRating)) + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - Math.round(product.averageRating));
+    const ratingStars = UTILS.renderRatingStars(product.averageRating);
 
     html += `
       <div class="swiper-slide">
@@ -449,7 +449,7 @@ function openProductModal(productId) {
 
   const colorClass = UTILS.getCategoryColorClass(product.categoryId);
   const categoryName = UTILS.getCategoryName(product.categoryId);
-  const ratingStars = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(Math.round(product.averageRating)) + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - Math.round(product.averageRating));
+  const ratingStars = UTILS.renderRatingStars(product.averageRating);
 
   modalContent.innerHTML = `
     <!-- Left side: Image -->
@@ -563,7 +563,12 @@ async function loadHomeProductReviews(productId) {
             </div>
             <div class="text-xs whitespace-nowrap">${renderHomeRatingStars(review.rating)}</div>
           </div>
-          ${comment ? `<p class="text-xs text-slate-600 mt-2 leading-relaxed">${comment}</p>` : ""}
+          ${comment ? `
+            <div class="mt-2 ${comment.length > 150 || comment.split('\\n').length > 3 ? 'cursor-pointer' : ''}" onclick="const p = this.querySelector('p'); if(p && this.querySelector('button')) { p.classList.toggle('line-clamp-3'); const b = this.querySelector('button'); if(b) b.textContent = p.classList.contains('line-clamp-3') ? 'Xem thêm' : 'Thu gọn'; }">
+              <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap line-clamp-3 transition-all duration-300">${comment}</p>
+              ${comment.length > 150 || comment.split('\\n').length > 3 ? `<button type="button" class="text-brand-600 text-[10px] font-bold mt-1 hover:underline pointer-events-none">Xem thêm</button>` : ''}
+            </div>
+          ` : ""}
         </div>
       `;
     }).join("");

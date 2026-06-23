@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnLogout = document.getElementById("btn-admin-logout");
   const searchInput = document.getElementById("filter-search");
   const statusSelect = document.getElementById("filter-status");
-  const paymentSelect = document.getElementById("filter-payment");
   const btnRefresh = document.getElementById("btn-refresh");
   const modal = document.getElementById("order-modal");
   const btnCloseModal = document.getElementById("btn-close-modal");
@@ -44,7 +43,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   function bindEvents() {
     if (searchInput) searchInput.addEventListener("input", applyFiltersAndRender);
     if (statusSelect) statusSelect.addEventListener("change", applyFiltersAndRender);
-    if (paymentSelect) paymentSelect.addEventListener("change", applyFiltersAndRender);
     if (btnRefresh) btnRefresh.addEventListener("click", refreshOrders);
     if (btnCloseModal) btnCloseModal.addEventListener("click", closeModal);
     if (modal) {
@@ -58,7 +56,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function refreshOrders() {
     if (searchInput) searchInput.value = "";
     if (statusSelect) statusSelect.value = "";
-    if (paymentSelect) paymentSelect.value = "";
     await loadOrders();
   }
 
@@ -116,7 +113,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   function applyFiltersAndRender() {
     const searchTerm = (searchInput?.value || "").toLowerCase();
     const statusVal = (statusSelect?.value || "").toLowerCase();
-    const paymentVal = paymentSelect?.value || "";
 
     let filtered = allOrders;
     if (searchTerm) {
@@ -128,9 +124,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (statusVal) {
       filtered = filtered.filter(order => order.status === statusVal);
-    }
-    if (paymentVal) {
-      filtered = filtered.filter(order => order.paymentMethod === paymentVal);
     }
 
     renderTable(filtered);
@@ -157,7 +150,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td class="py-3 px-4 text-slate-600">${order.customerPhone}</td>
           <td class="py-3 px-4 text-slate-500 text-xs">${UTILS.formatDate(order.orderDate, "DD/MM/YYYY <br/> HH:mm")}</td>
           <td class="py-3 px-4 text-right font-bold text-brand-600">${UTILS.formatCurrency(order.totalAmount)}</td>
-          <td class="py-3 px-4 text-center text-slate-600 font-medium">${order.paymentMethod}</td>
           <td class="py-3 px-4 text-center">
             <span class="px-2 py-1 rounded-full text-[10px] font-bold ${st.class}">${st.text}</span>
           </td>
@@ -182,7 +174,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("modal-customer-phone").textContent = selectedOrder.customerPhone;
     document.getElementById("modal-customer-address").textContent = selectedOrder.receiverAddress;
     document.getElementById("modal-customer-note").textContent = selectedOrder.note || "--";
-    document.getElementById("modal-payment-method").textContent = selectedOrder.paymentMethod;
 
     const statusInput = document.getElementById("modal-status-select");
     if (statusInput) statusInput.value = selectedOrder.status;
