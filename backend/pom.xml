@@ -126,6 +126,12 @@
 			<artifactId>modelmapper</artifactId>
 			<version>3.2.0</version>
 		</dependency>
+		<!-- Cloudinary: upload và quản lý ảnh trên cloud --> 
+		<dependency> 
+		   <groupId>com.cloudinary</groupId> 
+		   <artifactId>cloudinary-http5</artifactId> 
+		   <version>2.4.0</version> 
+		</dependency>
 
 	</dependencies>
 

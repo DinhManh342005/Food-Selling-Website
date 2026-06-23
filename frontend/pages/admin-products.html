@@ -358,9 +358,14 @@
                     <input type="file" id="form-image-file" class="hidden" accept="image/*">
                   </label>
                 </div>
-                <div class="mt-2 w-24 h-24 border rounded bg-slate-50 flex items-center justify-center overflow-hidden">
-                  <img id="form-image-preview" src="" alt="Preview" class="w-full h-full object-cover hidden">
-                  <span id="form-image-placeholder" class="text-xs text-slate-400">Preview</span>
+                <div class="mt-2 flex items-end gap-3">
+                  <div class="w-24 h-24 border rounded bg-slate-50 flex items-center justify-center overflow-hidden">
+                    <img id="form-image-preview" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                    <span id="form-image-placeholder" class="text-xs text-slate-400">Preview</span>
+                  </div>
+                  <button type="button" id="btn-remove-image" class="btn px-3 py-2 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white text-xs font-bold hidden">
+                    Xoa anh
+                  </button>
                 </div>
               </div>
 

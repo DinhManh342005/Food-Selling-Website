@@ -47,6 +47,9 @@ public class Product {
 
     private String imageUrl; // Ảnh đại diện chính
 
+    @Column(name = "image_public_id")
+    private String imagePublicId;
+
     // Dùng Decimal vì price cần precision, Double bị floating point error
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;

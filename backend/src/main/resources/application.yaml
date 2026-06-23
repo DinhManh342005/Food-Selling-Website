@@ -4,9 +4,10 @@ spring:
 
   # 1. Cấu hình database
   datasource:
-    url: jdbc:mysql://localhost:3306/foodshop_db2?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/foodshop_db2?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: Manh3425
+    # password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # 2. Cấu hình JPA / Hibernate
@@ -18,7 +19,7 @@ spring:
       hibernate:
         format-sql: true
 
-  # 4. Cấu hình upload file ảnh (Ảnh sản phẩm, Banner)
+  # 3. Cấu hình upload file ảnh (Ảnh sản phẩm, Banner)
   servlet:
     multipart:
       max-file-size: 5MB
@@ -27,14 +28,21 @@ spring:
     ansi:
       enabled: ALWAYS
 
-# Cấu hình để swagger quét tất cả các api trong controller
+# 4. Cấu hình Cloudinary
+cloudinary:
+  cloud-name: dauqf1ejo
+  # api-key: ${CLOUDINARY_API_KEY}
+  # api-secret: ${CLOUDINARY_API_SECRET}
+  api-key: "854824658373319"
+  api-secret: "xq0QW8brZfURc-Wx98rzKeEx8To"
+
+# 5.Cấu hình để swagger quét tất cả các api trong controller
 springdoc:
   packages_to_scan: vn.manh.FoodSelling.controller
   swagger-ui:
     path: /swagger-ui.html  # Đường dẫn đến trang chứa api docs - swaggerUI
 
-  # Cấu hình JWT (JSON Web Token) cho bảo mật API
+  # 6.Cấu hình JWT (JSON Web Token) cho bảo mật API
 jwt:
   secret: "9a4f2c8d3e1b7a6c5d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c"
   expiration: 86400000 #1 ngày (tính bằng milliseconds)
-

@@ -32,12 +32,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const imgInput = document.getElementById("form-image-file");
   const imgPreview = document.getElementById("form-image-preview");
   const imgPlaceholder = document.getElementById("form-image-placeholder");
+  const btnRemoveImage = document.getElementById("btn-remove-image");
   const btnSaveModal = document.getElementById("btn-save-modal");
 
   // State
   let allProducts = [];
   let currentEditId = null;
   let selectedFile = null;
+  let currentImageUrl = "";
+  let currentImagePublicId = "";
+  let removeCurrentImage = false;
 
   // 3. Bind Events
   if (btnOpenSidebar && sidebar) btnOpenSidebar.addEventListener("click", () => sidebar.classList.add("open"));
@@ -95,6 +99,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  if (btnRemoveImage) btnRemoveImage.addEventListener("click", () => clearImageSelection(true));
 
   // 4. Initial Load
   await loadProducts();
@@ -282,44 +288,41 @@ document.addEventListener("DOMContentLoaded", async () => {
         throw new Error("Vui lòng điền đầy đủ các thông tin bắt buộc (tên, giá, danh mục, số lượng).");
       }
 
-      // Xử lý upload ảnh trước (nếu có chọn file mới)
-      let finalImageUrl = "";
-      let detailImages = [];
+      // Upload or keep the main product image.
+      let finalImageUrl = currentImageUrl;
+      let finalImagePublicId = currentImagePublicId;
+
       if (selectedFile) {
         try {
           const uploadRes = await AdminProductApi.uploadProductImage(selectedFile);
-          // Giả sử API trả về text URL hoặc object { url: ... }
-          finalImageUrl = typeof uploadRes === 'string' ? uploadRes : uploadRes.url || uploadRes.imageUrl;
+          finalImageUrl = typeof uploadRes === "string" ? uploadRes : uploadRes.imageUrl || uploadRes.url || "";
+          finalImagePublicId = typeof uploadRes === "string" ? "" : uploadRes.publicId || uploadRes.imagePublicId || "";
+          if (!finalImageUrl) throw new Error("Upload khong tra ve URL anh.");
         } catch (uploadErr) {
-          console.error("Lỗi upload ảnh:", uploadErr);
-          throw new Error("Tải ảnh lên thất bại: " + uploadErr.message);
+          console.error("Loi upload anh:", uploadErr);
+          throw new Error("Tai anh len that bai: " + uploadErr.message);
         }
-      } else if (imageUrlInput) {
-        // Nếu không có ảnh upload nhưng có nhập URL bằng tay
+      } else if (removeCurrentImage) {
+        finalImageUrl = "";
+        finalImagePublicId = "";
+      } else if (imageUrlInput && imageUrlInput !== currentImageUrl) {
         finalImageUrl = imageUrlInput;
-      } else {
-        // Không chọn file mới, lấy ảnh cũ đang hiển thị ở preview (nếu là edit)
-        if (currentEditId) {
-          const existing = allProducts.find(p => String(p.id) === String(currentEditId));
-          if (existing) {
-            finalImageUrl = existing.imageUrl || (existing.detailImages && existing.detailImages.length > 0 ? existing.detailImages[0] : "");
-          }
-        }
+        finalImagePublicId = "";
       }
 
-      if (finalImageUrl) {
-        detailImages.push(finalImageUrl); // Đưa ảnh chính vào mảng detailImages
+      if (!currentEditId && !finalImageUrl) {
+        throw new Error("Vui long chon anh dai dien cho san pham.");
       }
 
-      // Payload CREATE/UPDATE KHÔNG có status và imageUrl theo BE ProductCreateDTO
-      // ProductCreateDTO { name, description, price, stockQuantity, categoryId, detailImages[] }
       const payload = {
         name,
         price,
         categoryId,
         stockQuantity,
         description,
-        detailImages
+        imageUrl: finalImageUrl,
+        imagePublicId: finalImagePublicId,
+        detailImages: []
       };
 
       if (currentEditId) {
@@ -390,6 +393,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   function openModal(id = null) {
     currentEditId = id;
     selectedFile = null;
+    removeCurrentImage = false;
+    currentImageUrl = "";
+    currentImagePublicId = "";
 
     if (modalTitle) modalTitle.textContent = id ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm mới";
 
@@ -402,22 +408,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("form-stockQuantity").value = p.stockQuantity;
         document.getElementById("form-description").value = p.description || "";
         const displayImage = p.imageUrl || (p.detailImages && p.detailImages.length > 0 ? p.detailImages[0] : "");
-        document.getElementById("form-imageUrl").value = displayImage;
-        
-        // Show existing image
-        if (imgPreview && displayImage) {
-          imgPreview.src = UTILS.getImageUrl(displayImage);
-          imgPreview.classList.remove("hidden");
-          if (imgPlaceholder) imgPlaceholder.classList.add("hidden");
-        } else {
-          if (imgPreview) imgPreview.classList.add("hidden");
-          if (imgPlaceholder) imgPlaceholder.classList.remove("hidden");
-        }
+        currentImageUrl = displayImage;
+        currentImagePublicId = p.imagePublicId || "";
+        const imageUrlEl = document.getElementById("form-imageUrl");
+        if (imageUrlEl) imageUrlEl.value = displayImage;
+        renderImagePreview(displayImage);
       }
     } else {
       if (productForm) productForm.reset();
-      if (imgPreview) imgPreview.classList.add("hidden");
-      if (imgPlaceholder) imgPlaceholder.classList.remove("hidden");
+      renderImagePreview("");
     }
 
     if (modal) modal.classList.add("active");
@@ -431,6 +430,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (productForm) productForm.reset();
     currentEditId = null;
     selectedFile = null;
+    currentImageUrl = "";
+    currentImagePublicId = "";
+    removeCurrentImage = false;
+    renderImagePreview("");
+  }
+
+  function renderImagePreview(imageUrl) {
+    if (imgPreview && imageUrl) {
+      imgPreview.src = UTILS.getImageUrl(imageUrl);
+      imgPreview.classList.remove("hidden");
+      if (imgPlaceholder) imgPlaceholder.classList.add("hidden");
+      if (btnRemoveImage) btnRemoveImage.classList.remove("hidden");
+    } else {
+      if (imgPreview) {
+        imgPreview.src = "";
+        imgPreview.classList.add("hidden");
+      }
+      if (imgPlaceholder) imgPlaceholder.classList.remove("hidden");
+      if (btnRemoveImage) btnRemoveImage.classList.add("hidden");
+    }
+  }
+
+  function clearImageSelection(markForRemoval = false) {
+    selectedFile = null;
+    if (imgInput) imgInput.value = "";
+    if (markForRemoval) {
+      removeCurrentImage = true;
+      currentImageUrl = "";
+      currentImagePublicId = "";
+      const imageUrlInput = document.getElementById("form-imageUrl");
+      if (imageUrlInput) imageUrlInput.value = "";
+    }
+    renderImagePreview("");
   }
 
   function openViewModal(id) {
@@ -514,6 +546,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     selectedFile = file;
+    removeCurrentImage = false;
     
     // Hiển thị preview
     if (imgPreview) {
@@ -522,6 +555,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         imgPreview.src = e.target.result;
         imgPreview.classList.remove("hidden");
         if (imgPlaceholder) imgPlaceholder.classList.add("hidden");
+        if (btnRemoveImage) btnRemoveImage.classList.remove("hidden");
         
         // Cũng update the input text form-imageUrl để show filename (optional)
         const imageUrlInput = document.getElementById("form-imageUrl");
