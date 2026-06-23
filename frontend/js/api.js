@@ -75,14 +75,17 @@ const ApiClient = {
  * API Gọi sản phẩm cho người dùng
  */
 const ProductApi = {
-  getProducts() {
-    return ApiClient.request("/products");
+  async getProducts() {
+    const products = await ApiClient.request("/products");
+    return Array.isArray(products) ? products.sort((a, b) => (a.description || "").localeCompare(b.description || "")) : products;
   },
-  searchProductsByName(name) {
-    return ApiClient.request(`/products/search?name=${encodeURIComponent(name)}`);
+  async searchProductsByName(name) {
+    const products = await ApiClient.request(`/products/search?name=${encodeURIComponent(name)}`);
+    return Array.isArray(products) ? products.sort((a, b) => (a.description || "").localeCompare(b.description || "")) : products;
   },
-  getProductsByCategory(categoryId) {
-    return ApiClient.request(`/products/category/${categoryId}`);
+  async getProductsByCategory(categoryId) {
+    const products = await ApiClient.request(`/products/category/${categoryId}`);
+    return Array.isArray(products) ? products.sort((a, b) => (a.description || "").localeCompare(b.description || "")) : products;
   },
   getProductById(id) {
     return ApiClient.request(`/products/${id}`);
@@ -111,14 +114,16 @@ const AuthApi = {
  * API Admin quản lý sản phẩm
  */
 const AdminProductApi = {
-  getProducts() {
-    return ApiClient.request("/admin/products");
+  async getProducts() {
+    const products = await ApiClient.request("/admin/products");
+    return Array.isArray(products) ? products.sort((a, b) => (a.description || "").localeCompare(b.description || "")) : products;
   },
   getProductById(id) {
     return ApiClient.request(`/admin/products/${id}`);
   },
-  searchProducts(name) {
-    return ApiClient.request(`/admin/products/search?name=${encodeURIComponent(name)}`);
+  async searchProducts(name) {
+    const products = await ApiClient.request(`/admin/products/search?name=${encodeURIComponent(name)}`);
+    return Array.isArray(products) ? products.sort((a, b) => (a.description || "").localeCompare(b.description || "")) : products;
   },
   createProduct(payload) {
     return ApiClient.request("/admin/products", {

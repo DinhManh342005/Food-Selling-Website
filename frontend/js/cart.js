@@ -265,7 +265,7 @@ const Cart = {
     cart.forEach(item => {
       html += `
         <div class="flex items-center gap-3 p-4 border-b border-slate-100">
-          <img src="${UTILS.getImageUrl(item.imageUrl)}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0 border">
+
           <div class="flex-grow min-w-0">
             <div class="flex justify-between items-start gap-1">
               <h4 class="text-sm font-semibold text-slate-800 truncate" title="${item.name}">${item.name}</h4>

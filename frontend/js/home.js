@@ -18,42 +18,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const HERO_ITEMS = [
   {
-    name: "Phở Bò Hà Nội",
+    name: "Chả Mực",
     region: "Miền Bắc",
     rating: 5,
     categoryId: 1,
-    imageUrl: "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=600&q=80"
+    imageUrl: "https://chamuchalong.com/wp-content/uploads/2024/08/419512207_772232031610613_5630187679851394559_n.jpg"
   },
   {
-    name: "Bún Bò Huế",
+    name: "Trâu Gác Bếp",
+    region: "Miền Bắc",
+    rating: 5,
+    categoryId: 1,
+    imageUrl: "https://cdn.tgdd.vn/Files/2019/09/18/1199538/cach-an-thit-trau-gac-bep-dung-chuan-ngon-tuyet-voi-3-760x367.jpg"
+  },
+  {
+    name: "Tỏi Lý Sơn",
     region: "Miền Trung",
     rating: 5,
     categoryId: 2,
-    //imageUrl: "https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=600&q=80"
-    imageUrl: "https://i2.ex-cdn.com/crystalbay.com/files/content/2024/08/15/bun-bo-hue-6-0935.jpeg"
+    imageUrl: "https://product.hstatic.net/1000178034/product/toi-ly-son-dori-it-tep-500g-5v_a6fb8290d2354cb8a77a4ff12379a8c7.jpg"
   },
   {
-    name: "Cơm Tấm Sườn Bì Chả",
+    name: "Mực Rim Me",
+    region: "Miền Trung",
+    rating: 5,
+    categoryId: 2,
+    imageUrl: "https://vigift.vn/wp-content/uploads/2021/12/muc-rim-me-dac-san-da-nang-lam-qua-3.png"
+  },
+  {
+    name: "Hạt Điều",
     region: "Miền Nam",
     rating: 5,
     categoryId: 3,
-    //imageUrl: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80"
-    imageUrl: "https://cdn.hstatic.net/files/200000700229/article/com-tam-suon-bi-cha-chay-1_99356b3b594740f793b4d570925b0572.jpg"
-  },
-  {
-    name: "Bún Chả Hà Nội",
-    region: "Miền Bắc",
-    rating: 5,
-    categoryId: 1,
-    //imageUrl: "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=600&q=80"
-    imageUrl: "https://nguoiviettaiuc.com/uploads/jg/imgs/202403/1664/bun-cha-ha-noi-thom-ngon-chuan-vi-gia-chi-15-2403071449402.jpg"
-  },
-  {
-    name: "Hủ Tiếu Nam Vang",
-    region: "Miền Nam",
-    rating: 5,
-    categoryId: 3,
-    imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80"
+    imageUrl: "https://cerafoods.com/wp-content/uploads/2023/09/hat-dieu-rang-muoi-binh-phuoc-500g-2.jpg"
   }
 ];
 

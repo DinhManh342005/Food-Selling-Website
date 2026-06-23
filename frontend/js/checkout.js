@@ -90,13 +90,12 @@ async function loadCheckoutData() {
       html += `
         <div class="flex gap-4 py-3 border-b border-slate-100 last:border-0">
           <div class="w-16 h-16 rounded bg-slate-50 border border-slate-200 overflow-hidden shrink-0 relative">
-            <img src="${UTILS.getImageUrl(item.imageUrl)}" alt="${item.productName}" class="w-full h-full object-cover">
-            <span class="absolute -top-2 -right-2 w-5 h-5 bg-slate-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-white">${item.quantity}</span>
+            <img src="${UTILS.getImageUrl(item.imageUrl)}" alt="${item.productName}" class="w-full h-full object-cover" onerror="${UTILS.imageFallbackAttr()}">
           </div>
           <div class="flex-grow flex flex-col justify-center">
             <h4 class="text-sm font-bold text-slate-800 line-clamp-1">${item.productName}</h4>
             <div class="flex justify-between items-center mt-1">
-              <span class="text-xs text-slate-500">${UTILS.formatCurrency(item.price)}</span>
+              <span class="text-xs text-slate-500">${UTILS.formatCurrency(item.price)} x ${item.quantity}</span>
               <span class="text-sm font-bold text-slate-800">${UTILS.formatCurrency(itemTotal)}</span>
             </div>
           </div>

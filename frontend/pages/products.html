@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sản Phẩm Đặc Sản - FreshBite</title>
   <meta name="description" content="Khám phá các sản phẩm đặc sản chọn lọc từ ba miền Bắc - Trung - Nam tại FreshBite.">
-  
+
   <!-- Roboto Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -43,7 +44,7 @@
   <!-- Swiper CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
   <!-- Animate.css -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="../css/base.css">
@@ -51,6 +52,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/products.css">
 </head>
+
 <body>
 
   <!-- TOP BAR & HEADER (Loaded via layout.js) -->
@@ -74,17 +76,22 @@
           <span class="products-hero-label-text">KHÁM PHÁ DI SẢN</span>
         </div>
         <h1 class="products-hero-title">Tất Cả Đặc Sản</h1>
-        <p class="products-hero-desc">Khám phá các món ngon và đặc sản được chọn lọc từ 3 miền Việt Nam. Đảm bảo tinh hoa hương vị truyền thống chính gốc.</p>
+        <p class="products-hero-desc">Khám phá các món ngon và đặc sản được chọn lọc từ 3 miền Việt Nam. Đảm bảo tinh
+          hoa hương vị truyền thống chính gốc.</p>
       </div>
       <div class="products-hero-images">
         <div class="products-hero-circle products-hero-circle--1">
-          <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=300&q=80" alt="Đặc sản Việt Nam">
+          <img src="https://vigift.vn/wp-content/uploads/2021/12/muc-rim-me-dac-san-da-nang-lam-qua-3.png"
+            alt="Đặc sản Việt Nam">
         </div>
         <div class="products-hero-circle products-hero-circle--2">
-          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" alt="Ẩm thực Việt">
+          <img src="https://cerafoods.com/wp-content/uploads/2023/09/hat-dieu-rang-muoi-binh-phuoc-500g-2.jpg"
+            alt="Ẩm thực Việt">
         </div>
         <div class="products-hero-circle products-hero-circle--3">
-          <img src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=300&q=80" alt="Món ngon ba miền">
+          <img
+            src="https://chamuchalong.com/wp-content/uploads/2024/08/419512207_772232031610613_5630187679851394559_n.jpg"
+            alt="Món ngon ba miền">
         </div>
       </div>
     </div>
@@ -93,23 +100,27 @@
   <!-- MAIN LISTING LAYOUT -->
   <section class="py-10">
     <div class="container flex flex-col gap-8 relative">
-      
+
       <!-- Region Tabs (Selection Bar) -->
       <div class="bg-white p-2 rounded-2xl border border-slate-200/80 shadow-sm overflow-x-auto w-full">
         <div id="filter-region-group" class="flex justify-center items-center min-w-max gap-2">
-          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+          <label
+            class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
             <input type="radio" name="regionFilter" value="all" class="hidden" checked>
             Tất cả Đặc Sản
           </label>
-          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+          <label
+            class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
             <input type="radio" name="regionFilter" value="1" class="hidden">
             Miền Bắc
           </label>
-          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+          <label
+            class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
             <input type="radio" name="regionFilter" value="2" class="hidden">
             Miền Trung
           </label>
-          <label class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
+          <label
+            class="cursor-pointer px-6 py-2.5 rounded-xl font-bold text-sm transition-colors text-slate-500 hover:bg-slate-50 has-[:checked]:bg-brand-600 has-[:checked]:text-white">
             <input type="radio" name="regionFilter" value="3" class="hidden">
             Miền Nam
           </label>
@@ -118,19 +129,22 @@
 
       <!-- PRODUCT AREA -->
       <main class="flex-grow flex flex-col space-y-6">
-        
+
         <!-- 5. Toolbar -->
-        <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-2xl border border-slate-200/80 gap-4 shadow-sm">
-          
+        <div
+          class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-2xl border border-slate-200/80 gap-4 shadow-sm">
+
           <div class="text-sm font-bold text-slate-600 w-full sm:w-auto">
-            Hiển thị <span id="count-start" class="text-brand-600">0</span> - <span id="count-end" class="text-brand-600">0</span> / <span id="count-total" class="text-brand-600">0</span> sản phẩm
+            Hiển thị <span id="count-start" class="text-brand-600">0</span> - <span id="count-end"
+              class="text-brand-600">0</span> / <span id="count-total" class="text-brand-600">0</span> sản phẩm
           </div>
-          
+
           <div class="flex items-center gap-4 w-full sm:w-auto justify-end">
             <!-- Sorting dropdown -->
             <div class="flex items-center gap-2">
               <span class="text-xs text-slate-400 font-bold">Sắp xếp:</span>
-              <select id="sort-select" class="bg-slate-50 border border-slate-200 text-xs rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500 cursor-pointer font-semibold">
+              <select id="sort-select"
+                class="bg-slate-50 border border-slate-200 text-xs rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500 cursor-pointer font-semibold">
                 <option value="featured">Mặc định</option>
                 <option value="price-asc">Giá tăng dần</option>
                 <option value="price-desc">Giá giảm dần</option>
@@ -142,10 +156,17 @@
             <!-- View switch buttons (Grid vs List) -->
             <div class="flex border rounded-lg overflow-hidden bg-slate-50 text-slate-400">
               <button id="view-grid-btn" class="p-2 bg-white text-orange-600 font-semibold border-r" title="Lưới">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                  </path>
+                </svg>
               </button>
               <button id="view-list-btn" class="p-2 hover:bg-white transition-colors" title="Danh sách">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                  </path>
+                </svg>
               </button>
             </div>
           </div>
@@ -157,15 +178,19 @@
           <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             <!-- Rendered by products.js -->
           </div>
-          
+
           <!-- Empty State -->
-          <div id="products-empty" class="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4 hidden">
-            <div class="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center text-3xl mx-auto border shadow-sm">📦</div>
+          <div id="products-empty"
+            class="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4 hidden">
+            <div
+              class="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center text-3xl mx-auto border shadow-sm">
+              📦</div>
             <div class="space-y-1">
               <h3 class="font-bold text-slate-800 text-sm">Không tìm thấy sản phẩm phù hợp.</h3>
               <p class="text-xs text-slate-400">Vui lòng thay đổi từ khóa hoặc xóa các thiết lập bộ lọc hiện tại.</p>
             </div>
-            <button id="btn-empty-clear" class="btn btn-primary px-5 py-2 text-xs font-semibold shadow-md">Xóa bộ lọc</button>
+            <button id="btn-empty-clear" class="btn btn-primary px-5 py-2 text-xs font-semibold shadow-md">Xóa bộ
+              lọc</button>
           </div>
         </div>
 
@@ -181,7 +206,8 @@
   <!-- PRODUCT DETAIL MODAL (Reused template) -->
   <div id="product-detail-modal" class="modal-overlay" onclick="closeProductDetailModal()">
     <div class="modal-container p-6 max-w-2xl relative" onclick="event.stopPropagation()">
-      <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1">
+      <button onclick="closeProductDetailModal()"
+        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -220,4 +246,5 @@
   <script src="../js/layout.js"></script>
   <script src="../js/products.js"></script>
 </body>
+
 </html>

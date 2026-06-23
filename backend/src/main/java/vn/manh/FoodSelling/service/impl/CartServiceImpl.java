@@ -62,6 +62,7 @@ public class CartServiceImpl implements CartService {
             itemDTO.setCartItemId(item.getId());
             itemDTO.setProductId(item.getProduct().getId());
             itemDTO.setProductName(item.getProduct().getName());
+            itemDTO.setProductImageUrl(item.getProduct().getImageUrl());
             itemDTO.setQuantity(item.getQuantity());
             itemDTO.setUnitPrice(item.getUnitPrice());
             itemDTO.setTotalPrice(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
