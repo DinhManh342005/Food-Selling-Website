@@ -1,5 +1,46 @@
-// Script xử lý Trang chủ (index.html)
+﻿// Script xử lý Trang chủ (index.html)
 let allProducts = [];
+
+function escapeHomeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderHomeRatingStars(rating) {
+  const safeRating = Math.max(0, Math.min(5, Math.round(Number(rating || 0))));
+  return '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(safeRating)
+    + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - safeRating);
+}
+
+function formatHomeRatingValue(rating) {
+  return Number(rating || 0).toFixed(1).replace(".0", "");
+}
+
+function renderHomeSelectableReviewStars(selectedRating) {
+  const selected = Math.max(1, Math.min(5, Number(selectedRating || 5)));
+  return Array.from({ length: 5 }, (_, index) => {
+    const rating = index + 1;
+    const filled = rating <= selected;
+    return `
+      <button type="button" class="home-review-star-btn text-xl leading-none transition-transform hover:scale-110 ${filled ? 'text-amber-400' : 'text-slate-300'}" onclick="setHomeSelectedReviewRating(${rating})" aria-label="${rating} sao" aria-pressed="${filled}">
+        <i class="${filled ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+      </button>
+    `;
+  }).join("");
+}
+
+window.setHomeSelectedReviewRating = (rating) => {
+  const input = document.getElementById("home-review-rating-input");
+  const stars = document.getElementById("home-review-star-selector");
+  const value = Math.max(1, Math.min(5, Number(rating || 5)));
+
+  if (input) input.value = value;
+  if (stars) stars.innerHTML = renderHomeSelectableReviewStars(value);
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   // Khởi tạo AOS
@@ -65,7 +106,7 @@ function initCircularCarousel() {
   const dotsContainer = document.getElementById("carousel-dots");
   if (!ring) return;
 
-  // 1. Tạo các item món ăn xung quanh vòng tròn
+  // 1. Tạo các item món Ēn xung quanh vòng tròn
   ring.innerHTML = "";
   HERO_ITEMS.forEach((item, k) => {
     const el = document.createElement("div");
@@ -253,7 +294,7 @@ async function loadFeaturedProducts() {
       if (el) {
         el.innerHTML = `
           <div class="swiper-slide text-center py-6 text-slate-500 font-semibold">
-            Không thể tải sản phẩm. <button onclick="loadFeaturedProducts()" class="text-brand-600 underline">Thử lại</button>
+            Không thỒ tải sản phẩm. <button onclick="loadFeaturedProducts()" class="text-brand-600 underline">Thử lại</button>
           </div>
         `;
       }
@@ -285,7 +326,7 @@ function renderSectionSwiper(wrapperId, productsList) {
 
     html += `
       <div class="swiper-slide">
-        <div class="product-card card cursor-pointer h-full flex flex-col justify-between" onclick="openProductModal(${product.id})">
+        <div class="product-card card cursor-pointer h-full flex flex-col justify-between" data-product-id="${product.id}" onclick="openProductModal(${product.id})">
           <!-- Badge vùng miền & Ảnh -->
           <div class="img-wrapper relative overflow-hidden aspect-video">
             <span class="absolute top-3.5 left-3.5 z-10 badge ${colorClass} shadow-sm">${categoryName}</span>
@@ -295,9 +336,9 @@ function renderSectionSwiper(wrapperId, productsList) {
           <!-- Thông tin chi tiết -->
           <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
             <div class="space-y-1">
-              <div class="flex items-center text-xs font-bold gap-0.5">
-                ${ratingStars}
-                <span class="text-slate-400 font-medium text-[10px] ml-1">(${product.averageRating})</span>
+              <div class="product-card-rating flex items-center text-xs font-bold gap-0.5">
+                <span class="product-card-rating-stars">${ratingStars}</span>
+                <span class="product-card-rating-value text-slate-400 font-medium text-[10px] ml-1">(${formatHomeRatingValue(product.averageRating)})</span>
               </div>
               <h3 class="font-bold text-slate-800 text-sm hover:text-brand-600 transition-colors line-clamp-2" title="${product.name}">
                 ${product.name}
@@ -410,30 +451,38 @@ function openProductModal(productId) {
 
   if (!modal || !modalContent) return;
 
+  const modalContainer = modal.querySelector(".modal-container");
+  if (modalContainer) {
+    modalContainer.classList.remove("max-w-2xl");
+    modalContainer.classList.add("max-w-3xl");
+  }
+
   const colorClass = UTILS.getCategoryColorClass(product.categoryId);
   const categoryName = UTILS.getCategoryName(product.categoryId);
-  const ratingStars = '<i class="fa-solid fa-star text-amber-400"></i>'.repeat(Math.round(product.averageRating)) + '<i class="fa-regular fa-star text-amber-400"></i>'.repeat(5 - Math.round(product.averageRating));
+  const ratingStars = renderHomeRatingStars(product.averageRating);
+  const safeProductName = escapeHomeHtml(product.name);
+  const safeDescription = escapeHomeHtml(product.description || "Chưa có mô tả chi tiết.");
 
   modalContent.innerHTML = `
     <!-- Left side: Image -->
     <div class="gallery-main relative border rounded-xl overflow-hidden aspect-square flex items-center justify-center bg-slate-50">
-      <img src="${UTILS.getImageUrl(product.imageUrl)}" alt="${product.name}" class="w-full h-full object-cover">
+      <img src="${UTILS.getImageUrl(product.imageUrl)}" alt="${safeProductName}" class="w-full h-full object-cover">
     </div>
 
     <!-- Right side: Details -->
     <div class="flex flex-col justify-between space-y-4">
       <div class="space-y-2">
-        <span class="badge ${colorClass} inline-flex">${categoryName}</span>
-        <h2 class="text-xl md:text-2xl font-bold text-slate-800 leading-tight">${product.name}</h2>
+        <span class="badge ${colorClass} inline-flex">${escapeHomeHtml(categoryName)}</span>
+        <h2 class="text-xl md:text-2xl font-bold text-slate-800 leading-tight">${safeProductName}</h2>
         
-        <div class="flex items-center text-xs font-bold gap-0.5">
+        <div id="home-modal-rating-summary" class="flex items-center text-xs font-bold gap-0.5">
           ${ratingStars}
-          <span class="text-slate-400 font-medium text-xs ml-2">(${product.averageRating} đánh giá)</span>
+          <span class="text-slate-400 font-medium text-xs ml-2">(${formatHomeRatingValue(product.averageRating)})</span>
         </div>
 
         <div class="text-2xl font-extrabold text-brand-600 mt-2">${UTILS.formatCurrency(product.price)}</div>
         
-        <p class="text-sm text-slate-500 leading-relaxed pt-2 border-t">${product.description || "Chưa có mô tả chi tiết."}</p>
+        <p class="text-sm text-slate-500 leading-relaxed pt-2 border-t">${safeDescription}</p>
       </div>
 
       <!-- Quantity & Add to Cart -->
@@ -453,13 +502,167 @@ function openProductModal(productId) {
           </button>
         </div>
       </div>
+
+      <div class="space-y-3 pt-4 border-t">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-800">Đánh giá món ăn</h3>
+          <span id="home-reviews-count" class="text-[11px] font-semibold text-slate-400">Đang tải...</span>
+        </div>
+        <div id="home-review-form-wrapper"></div>
+        <div id="home-product-reviews-list" class="space-y-3 max-h-56 overflow-y-auto pr-1">
+          <div class="text-xs text-slate-400">Đang tải đánh giá...</div>
+        </div>
+      </div>
     </div>
   `;
 
   modal.classList.add("active");
   document.body.style.overflow = "hidden";
+  renderHomeReviewForm(product.id);
+  loadHomeProductReviews(product.id);
 }
 
+function renderHomeReviewForm(productId) {
+  const wrapper = document.getElementById("home-review-form-wrapper");
+  if (!wrapper) return;
+
+  if (!Storage.getToken()) {
+    wrapper.innerHTML = `
+      <div class="rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-500">
+        Đăng nhập để gửi đánh giá cho món ăn này.
+      </div>
+    `;
+    return;
+  }
+
+  wrapper.innerHTML = `
+    <form id="home-product-review-form" class="space-y-2">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <input type="hidden" id="home-review-rating-input" value="5">
+          <div id="home-review-star-selector" class="flex items-center gap-1">
+            ${renderHomeSelectableReviewStars(5)}
+          </div>
+          <span class="text-[11px] font-semibold text-slate-400">Chọn số sao</span>
+        </div>
+        <button type="submit" class="btn btn-primary px-4 py-2 text-xs font-bold">
+          Gửi đánh giá
+        </button>
+      </div>
+      <textarea id="home-review-comment-input" rows="2" maxlength="1000" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:ring-orange-500 focus:border-orange-500" placeholder="Chia sẻ cảm nhận của bạn..."></textarea>
+    </form>
+  `;
+
+  const form = document.getElementById("home-product-review-form");
+  if (form) {
+    form.addEventListener("submit", (event) => submitHomeProductReview(event, productId));
+  }
+}
+
+async function loadHomeProductReviews(productId) {
+  const list = document.getElementById("home-product-reviews-list");
+  const count = document.getElementById("home-reviews-count");
+  if (!list) return;
+
+  try {
+    const reviews = await ReviewApi.getByProduct(productId);
+    const safeReviews = Array.isArray(reviews) ? reviews : [];
+
+    if (count) {
+      count.textContent = `${safeReviews.length} đánh giá`;
+    }
+
+    if (safeReviews.length === 0) {
+      list.innerHTML = `<div class="text-xs text-slate-400">Chưa có đánh giá nào.</div>`;
+      return;
+    }
+
+    list.innerHTML = safeReviews.map(review => {
+      const reviewerName = escapeHomeHtml(review.fullName || review.username || "Người dùng");
+      const comment = escapeHomeHtml(review.comment || "");
+      const dateText = review.createdAt ? UTILS.formatDate(review.createdAt, "DD/MM/YYYY") : "";
+
+      return `
+        <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-slate-700">${reviewerName}</div>
+              <div class="text-[11px] text-slate-400">${escapeHomeHtml(dateText)}</div>
+            </div>
+            <div class="text-xs whitespace-nowrap">${renderHomeRatingStars(review.rating)}</div>
+          </div>
+          ${comment ? `<p class="text-xs text-slate-600 mt-2 leading-relaxed">${comment}</p>` : ""}
+        </div>
+      `;
+    }).join("");
+  } catch (error) {
+    console.error("Lỗi tải đánh giá:", error);
+    if (count) count.textContent = "0 đánh giá";
+    list.innerHTML = `<div class="text-xs text-red-500">Không thể tải đánh giá.</div>`;
+  }
+}
+
+async function submitHomeProductReview(event, productId) {
+  event.preventDefault();
+
+  const ratingInput = document.getElementById("home-review-rating-input");
+  const commentInput = document.getElementById("home-review-comment-input");
+  const submitButton = event.target.querySelector("button[type='submit']");
+
+  const rating = Number(ratingInput ? ratingInput.value : 5);
+  const comment = commentInput ? commentInput.value.trim() : "";
+
+  try {
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Đang gửi...";
+    }
+
+    await ReviewApi.save(productId, rating, comment);
+    UTILS.showToast("Đã lưu đánh giá của bạn.", "success");
+
+    const latestProduct = await ProductApi.getProductById(productId);
+    const normalizedProduct = UTILS.normalizeProduct(latestProduct);
+    const productIndex = allProducts.findIndex(p => p.id === productId);
+    if (normalizedProduct && productIndex >= 0) {
+      allProducts[productIndex] = {
+        ...allProducts[productIndex],
+        averageRating: normalizedProduct.averageRating
+      };
+      updateHomeModalRatingSummary(normalizedProduct.averageRating);
+      updateHomeProductCardsRating(productId, normalizedProduct.averageRating);
+    }
+
+    await loadHomeProductReviews(productId);
+  } catch (error) {
+    console.error("Lỗi gửi đánh giá:", error);
+    UTILS.showToast(error.message || "Không thể gửi đánh giá.", "danger");
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Gửi đánh giá";
+    }
+  }
+}
+
+function updateHomeModalRatingSummary(averageRating) {
+  const summary = document.getElementById("home-modal-rating-summary");
+  if (!summary) return;
+  summary.innerHTML = `
+    ${renderHomeRatingStars(averageRating)}
+    <span class="text-slate-400 font-medium text-xs ml-2">(${formatHomeRatingValue(averageRating)})</span>
+  `;
+}
+
+function updateHomeProductCardsRating(productId, averageRating) {
+  document.querySelectorAll(`.product-card[data-product-id="${productId}"]`).forEach(card => {
+    const stars = card.querySelector(".product-card-rating-stars");
+    const value = card.querySelector(".product-card-rating-value");
+
+    if (stars) stars.innerHTML = renderHomeRatingStars(averageRating);
+    if (value) value.textContent = `(${formatHomeRatingValue(averageRating)})`;
+  });
+}
 function closeProductModal() {
   const modal = document.getElementById("product-detail-modal");
   if (modal) {
@@ -500,3 +703,4 @@ window.addModalProductToCart = (productId) => {
     closeProductModal();
   }
 };
+
