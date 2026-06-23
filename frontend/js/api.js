@@ -93,6 +93,21 @@ const ProductApi = {
 };
 
 /**
+ * API Đánh giá sản phẩm
+ */
+const ReviewApi = {
+  getByProduct(productId) {
+    return ApiClient.request(`/reviews/product/${productId}`);
+  },
+  save(productId, rating, comment = "") {
+    return ApiClient.request("/reviews", {
+      method: "POST",
+      body: JSON.stringify({ productId, rating, comment })
+    });
+  }
+};
+
+/**
  * API Xác thực tài khoản
  */
 const AuthApi = {
