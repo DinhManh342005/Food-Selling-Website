@@ -155,28 +155,33 @@ function injectHeaderFooter() {
                   <div class="bg-white rounded-xl shadow-xl border border-slate-100 py-2 text-slate-700">
                     <div class="px-4 py-2 border-b border-slate-50 flex justify-between items-center">
                       <span class="font-bold text-slate-800 font-semibold">Thông báo mới</span>
-                      <a href="#" class="text-xs text-orange-605 hover:underline">Đánh dấu đã đọc</a>
+                      <a href="#" class="text-xs text-orange-600 hover:underline">Đánh dấu đã đọc</a>
                     </div>
                     <div class="max-h-64 overflow-y-auto font-normal">
-                      <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0">
-                        <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🎉</div>
+                      <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0 bg-orange-50/30">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">🛒</div>
                         <div class="flex-grow">
-                          <p class="text-xs font-semibold text-slate-800">Đăng ký thành viên thành công!</p>
-                          <p class="text-[10px] text-slate-400 mt-0.5">Chào mừng bạn đến với FreshBite.</p>
+                          <p class="text-xs font-semibold text-slate-800">Đã thêm vào giỏ hàng</p>
+                          <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">Bạn vừa thêm 1 x Trà Sen Tây Hồ vào giỏ hàng.</p>
+                          <p class="text-[9px] text-slate-400 mt-1">Vừa xong</p>
                         </div>
+                        <div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>
+                      </a>
+                      <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0 bg-orange-50/30">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">📦</div>
+                        <div class="flex-grow">
+                          <p class="text-xs font-semibold text-slate-800">Đặt hàng thành công!</p>
+                          <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">Đơn hàng #DH1245 của bạn đã được tiếp nhận và đang chờ xử lý.</p>
+                          <p class="text-[9px] text-slate-400 mt-1">2 giờ trước</p>
+                        </div>
+                        <div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>
                       </a>
                       <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0">
-                        <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🚚</div>
+                        <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🎟️</div>
                         <div class="flex-grow">
-                          <p class="text-xs font-semibold text-slate-800">Đơn hàng #DH1002 đã được xác nhận</p>
-                          <p class="text-[10px] text-slate-400 mt-0.5">Đơn hàng của bạn đang được chuẩn bị.</p>
-                        </div>
-                      </a>
-                      <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0">
-                        <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🎁</div>
-                        <div class="flex-grow">
-                          <p class="text-xs font-semibold text-slate-800">Khuyến mãi 10% cho đơn hàng đầu tiên</p>
-                          <p class="text-[10px] text-slate-400 mt-0.5">Sử dụng mã FRESHBITE10 khi thanh toán.</p>
+                          <p class="text-xs font-semibold text-slate-800">Voucher dành riêng cho bạn</p>
+                          <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">Mã <span class="font-bold text-orange-600">FREESHIP</span> giảm 100% phí vận chuyển cho đơn từ 200K.</p>
+                          <p class="text-[9px] text-slate-400 mt-1">1 ngày trước</p>
                         </div>
                       </a>
                     </div>
