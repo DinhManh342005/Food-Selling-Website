@@ -334,7 +334,7 @@ function renderSectionSwiper(wrapperId, productsList) {
             <div class="space-y-1">
               <div class="flex items-center text-xs font-bold gap-0.5">
                 ${ratingStars}
-                <span class="text-slate-400 font-medium text-[10px] ml-1">(${product.averageRating})</span>
+                <span class="text-slate-400 font-medium text-[10px] ml-1">${product.averageRating > 0 ? `(${product.averageRating})` : `<span class="italic">Chưa có đánh giá nào</span>`}</span>
               </div>
               <h3 class="font-bold text-slate-800 text-sm hover:text-brand-600 transition-colors line-clamp-2" title="${product.name}">
                 ${product.name}
@@ -474,7 +474,7 @@ function openProductModal(productId) {
         
         <div class="flex items-center text-xs font-bold gap-0.5">
           ${ratingStars}
-          <span class="text-slate-400 font-medium text-xs ml-2">(${product.averageRating} đánh giá)</span>
+          <span class="text-slate-400 font-medium text-xs ml-2">${product.averageRating > 0 ? `(${product.averageRating} đánh giá)` : `<span class="italic">Chưa có đánh giá nào</span>`}</span>
         </div>
 
         <div class="text-2xl font-extrabold text-brand-600 mt-2">${UTILS.formatCurrency(product.price)}</div>

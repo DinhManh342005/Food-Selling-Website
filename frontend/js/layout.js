@@ -28,6 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3. Xử lý Trạng thái đăng nhập trên Header
   updateHeaderAuthStatus();
 
+  // 4. Khởi tạo UI thông báo
+  if (typeof Storage !== 'undefined' && Storage.getNotifications) {
+    updateNotificationsUI();
+    window.addEventListener('notificationsUpdated', updateNotificationsUI);
+  }
+
   // 4. Tìm kiếm từ Header
   const searchForm = document.getElementById("header-search-form");
   const searchInput = document.getElementById("header-search-input");
@@ -146,44 +152,20 @@ function injectHeaderFooter() {
               </a>
 
               <!-- Notification Icon -->
-              <div class="relative group">
+              <div class="relative group" id="header-notification-wrapper">
                 <a href="#" class="p-2 text-slate-600 hover:text-orange-600 transition-colors flex items-center justify-center" title="Thông báo">
                   <i class="fa-regular fa-bell text-xl"></i>
-                  <span class="absolute top-1.5 right-1.5 bg-orange-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">3</span>
+                  <span id="notification-badge" class="absolute top-1.5 right-1.5 bg-orange-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white hidden">0</span>
                 </a>
                 <div class="absolute right-0 top-full pt-2 w-80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100]">
                   <div class="bg-white rounded-xl shadow-xl border border-slate-100 py-2 text-slate-700">
                     <div class="px-4 py-2 border-b border-slate-50 flex justify-between items-center">
                       <span class="font-bold text-slate-800 font-semibold">Thông báo mới</span>
-                      <a href="#" class="text-xs text-orange-600 hover:underline">Đánh dấu đã đọc</a>
+                      <a href="#" onclick="if(typeof Storage!=='undefined'){Storage.markAllNotificationsAsRead();} return false;" class="text-xs text-orange-600 hover:underline">Đánh dấu đã đọc</a>
                     </div>
-                    <div class="max-h-64 overflow-y-auto font-normal">
-                      <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0 bg-orange-50/30">
-                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">🛒</div>
-                        <div class="flex-grow">
-                          <p class="text-xs font-semibold text-slate-800">Đã thêm vào giỏ hàng</p>
-                          <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-1">Bạn vừa thêm 1 x Trà Sen Tây Hồ vào giỏ hàng.</p>
-                          <p class="text-[9px] text-slate-400 mt-1">Vừa xong</p>
-                        </div>
-                        <div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>
-                      </a>
-                      <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0 bg-orange-50/30">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">📦</div>
-                        <div class="flex-grow">
-                          <p class="text-xs font-semibold text-slate-800">Đặt hàng thành công!</p>
-                          <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">Đơn hàng #DH1245 của bạn đã được tiếp nhận và đang chờ xử lý.</p>
-                          <p class="text-[9px] text-slate-400 mt-1">2 giờ trước</p>
-                        </div>
-                        <div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>
-                      </a>
-                      <a href="#" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0">
-                        <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🎟️</div>
-                        <div class="flex-grow">
-                          <p class="text-xs font-semibold text-slate-800">Voucher dành riêng cho bạn</p>
-                          <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">Mã <span class="font-bold text-orange-600">FREESHIP</span> giảm 100% phí vận chuyển cho đơn từ 200K.</p>
-                          <p class="text-[9px] text-slate-400 mt-1">1 ngày trước</p>
-                        </div>
-                      </a>
+                    <div id="notification-list" class="max-h-64 overflow-y-auto font-normal flex flex-col items-center justify-center py-8">
+                      <i class="fa-regular fa-bell-slash text-4xl text-slate-300 mb-3"></i>
+                      <p class="text-sm text-slate-500 font-medium">Chưa có thông báo mới</p>
                     </div>
                     <div class="px-4 py-2 text-center border-t border-slate-50">
                       <a href="#" class="text-xs text-slate-500 hover:text-orange-600 font-semibold">Xem tất cả thông báo</a>
@@ -423,5 +405,59 @@ function updateHeaderAuthStatus() {
         </div>
       `;
     }
+  }
+}
+
+function updateNotificationsUI() {
+  const badge = document.getElementById("notification-badge");
+  const list = document.getElementById("notification-list");
+  if (!badge || !list || typeof Storage === 'undefined' || !Storage.getNotifications) return;
+
+  const unreadCount = Storage.getUnreadNotificationCount();
+  if (unreadCount > 0) {
+    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+
+  const notifs = Storage.getNotifications();
+  if (notifs.length === 0) {
+    list.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-8">
+        <i class="fa-regular fa-bell-slash text-4xl text-slate-300 mb-3"></i>
+        <p class="text-sm text-slate-500 font-medium">Chưa có thông báo mới</p>
+      </div>
+    `;
+    list.classList.remove("block");
+    list.classList.add("flex");
+  } else {
+    list.classList.remove("flex", "flex-col", "items-center", "justify-center", "py-8");
+    list.classList.add("block");
+    list.innerHTML = notifs.map(n => {
+      let iconHtml = '';
+      if (n.icon === 'cart' || n.type === 'success') {
+        iconHtml = '<div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">🛒</div>';
+      } else if (n.icon === 'box' || n.type === 'info') {
+        iconHtml = '<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">📦</div>';
+      } else {
+        iconHtml = '<div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🔔</div>';
+      }
+      
+      const unreadDot = n.isRead ? '' : '<div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>';
+      const bgClass = n.isRead ? '' : 'bg-orange-50/30';
+      
+      return `
+        <a href="#" onclick="if(typeof Storage !== 'undefined'){Storage.markNotificationAsRead(${n.id});} return false;" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0 ${bgClass}">
+          ${iconHtml}
+          <div class="flex-grow">
+            <p class="text-xs font-semibold text-slate-800">${n.title}</p>
+            <p class="text-[10px] text-slate-500 mt-0.5 line-clamp-2">${n.message}</p>
+            <p class="text-[9px] text-slate-400 mt-1">${new Date(n.createdAt).toLocaleString('vi-VN')}</p>
+          </div>
+          ${unreadDot}
+        </a>
+      `;
+    }).join('');
   }
 }

@@ -4,5 +4,6 @@ const CONFIG = {
   TOKEN_KEY: "accessToken",
   TOKEN_TYPE_KEY: "tokenType",
   CURRENT_USER_KEY: "currentUser",
-  CART_KEY: "foodstore_cart"
+  CART_KEY: "foodstore_cart",
+  NOTIFICATIONS_KEY: "foodstore_notifications"
 };

@@ -187,6 +187,14 @@ async function handleServerCheckout() {
 
     // Thành công
     UTILS.showToast("Đặt hàng thành công!", "success");
+    if (typeof Storage !== 'undefined' && Storage.addNotification) {
+      Storage.addNotification(
+        "Đặt hàng thành công",
+        `Đơn hàng của bạn đã được ghi nhận và đang chờ xử lý.`,
+        "info",
+        "box"
+      );
+    }
     
     // Xóa giỏ hàng local vì API đã clear server cart
     localStorage.removeItem("cart");

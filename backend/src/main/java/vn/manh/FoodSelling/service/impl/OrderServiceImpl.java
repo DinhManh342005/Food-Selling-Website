@@ -264,6 +264,85 @@ public class OrderServiceImpl implements OrderService {
         return orderDTO;
     }
 
+    // Xác nhận đã nhận hàng (chuyển trạng thái sang completed)
+    @Override
+    @Transactional
+    public OrderResponseDTO markOrderAsReceived(Long orderId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User không tồn tại"));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order không tồn tại"));
+
+        if (!order.getUser().equals(user)) {
+            throw new AccessDeniedException("Bạn không có quyền cập nhật đơn hàng này");
+        }
+
+        // Tùy theo nghiệp vụ, thường chỉ đơn hàng đang giao mới được phép nhận
+        if (order.getStatus() == OrderStatus.completed || order.getStatus() == OrderStatus.cancelled) {
+            throw new IllegalArgumentException("Không thể cập nhật trạng thái đơn hàng ở trạng thái hiện tại");
+        }
+
+        order.setStatus(OrderStatus.completed);
+        Order savedOrder = orderRepository.save(order);
+
+        // Map order sang DTO an toàn
+        OrderResponseDTO orderDTO = modelMapper.map(savedOrder, OrderResponseDTO.class);
+
+        // Map cẩn thận từng OrderItem để không bị lỗi tuần tự hóa (serialization)
+        List<OrderPreviewItemDTO> itemDTOs = savedOrder.getOrderItems().stream().map(item -> {
+            OrderPreviewItemDTO itemDTO = modelMapper.map(item, OrderPreviewItemDTO.class);
+            itemDTO.setProductId(item.getProduct().getId());
+            itemDTO.setProductName(item.getProduct().getName());
+            itemDTO.setProductImageUrl(item.getProduct().getImageUrl());
+            return itemDTO;
+        }).toList();
+
+        orderDTO.setOrderItems(itemDTOs);
+
+        return orderDTO;
+    }
+
+    // Hủy đơn hàng (chỉ cho phép khi đơn hàng đang pending)
+    @Override
+    @Transactional
+    public OrderResponseDTO cancelOrder(Long orderId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User không tồn tại"));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order không tồn tại"));
+
+        if (!order.getUser().equals(user)) {
+            throw new AccessDeniedException("Bạn không có quyền hủy đơn hàng này");
+        }
+
+        // Chỉ cho phép hủy khi đang chờ xác nhận
+        if (order.getStatus() != OrderStatus.pending) {
+            throw new IllegalArgumentException("Chỉ có thể hủy đơn hàng khi đang ở trạng thái Chờ xác nhận");
+        }
+
+        order.setStatus(OrderStatus.cancelled);
+        Order savedOrder = orderRepository.save(order);
+
+        // Map order sang DTO an toàn
+        OrderResponseDTO orderDTO = modelMapper.map(savedOrder, OrderResponseDTO.class);
+
+        List<OrderPreviewItemDTO> itemDTOs = savedOrder.getOrderItems().stream().map(item -> {
+            OrderPreviewItemDTO itemDTO = modelMapper.map(item, OrderPreviewItemDTO.class);
+            itemDTO.setProductId(item.getProduct().getId());
+            itemDTO.setProductName(item.getProduct().getName());
+            itemDTO.setProductImageUrl(item.getProduct().getImageUrl());
+            return itemDTO;
+        }).toList();
+
+        orderDTO.setOrderItems(itemDTOs);
+
+        return orderDTO;
+    }
+
     // ==================================================
     // DÀNH CHO ADMIN - ORDER
     // ==================================================

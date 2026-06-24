@@ -158,6 +158,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
 
           UTILS.showToast("Cập nhật thông tin cá nhân thành công.", "success");
+          if (typeof Storage !== 'undefined' && Storage.addNotification) {
+            Storage.addNotification(
+              "Cập nhật tài khoản",
+              "Thông tin cá nhân của bạn đã được cập nhật thành công.",
+              "info",
+              "user"
+            );
+          }
         } catch (error) {
           console.error("Lỗi khi cập nhật thông tin cá nhân:", error);
           UTILS.showToast(error.message || "Không thể cập nhật thông tin cá nhân.", "danger");
@@ -185,6 +193,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           // Gọi API đổi mật khẩu
           await UserApi.changePassword(oldPass, newPass, confirmPass);
           UTILS.showToast("Đổi mật khẩu thành công.", "success");
+          if (typeof Storage !== 'undefined' && Storage.addNotification) {
+            Storage.addNotification(
+              "Đổi mật khẩu",
+              "Mật khẩu của bạn đã được thay đổi thành công để tăng cường bảo mật.",
+              "warning",
+              "user"
+            );
+          }
           passForm.reset();
         } catch (error) {
           console.error("Lỗi đổi mật khẩu:", error);
@@ -299,7 +315,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 shrink-0 w-full md:w-auto mt-4 md:mt-0">
-              <button data-order-id="${order.id}" class="btn-view-order btn btn-primary flex-1 sm:flex-none text-center px-4 py-2 text-sm font-semibold w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white">Chi tiết</button>
+              ${order.status === 'delivering' ? `<button onclick="handleMarkOrderReceived(${order.id || order.orderId})" class="btn flex-1 sm:flex-none text-center px-4 py-2 text-sm font-semibold w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-sm">Đã nhận hàng</button>` : ''}
+              ${order.status === 'pending' ? `<button onclick="handleCancelOrder(${order.id || order.orderId})" class="btn flex-1 sm:flex-none text-center px-4 py-2 text-sm font-semibold w-full sm:w-auto bg-red-100 hover:bg-red-200 text-red-600 rounded-lg shadow-sm">Hủy đơn</button>` : ''}
+              <button data-order-id="${order.id || order.orderId}" class="btn-view-order btn btn-primary flex-1 sm:flex-none text-center px-4 py-2 text-sm font-semibold w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white rounded-lg">Chi tiết</button>
             </div>
           </div>
         </div>
@@ -313,6 +331,95 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", () => openOrderDetailsModal(btn.dataset.orderId));
     });
   }
+
+  // Khai báo hàm xác nhận đã nhận hàng ra biến toàn cục để dùng với onclick
+  window.handleMarkOrderReceived = async (orderId) => {
+    // Ngăn chặn double click
+    if (window.isMarkingOrder) return;
+    window.isMarkingOrder = true;
+
+    try {
+      if (Auth.isLoggedIn() && typeof OrderApi !== 'undefined' && OrderApi.markAsReceived) {
+        // Chờ API thực sự hoàn thành, nếu lỗi thì quăng ra catch bên ngoài
+        await OrderApi.markAsReceived(orderId);
+      } else {
+        // Fallback cho local storage nếu chưa đăng nhập hoặc không có API
+        let localOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+        let order = localOrders.find(o => String(o.id) === String(orderId) || String(o.orderId) === String(orderId));
+        if (order) {
+          order.status = "completed";
+          localStorage.setItem("orders", JSON.stringify(localOrders));
+        }
+      }
+      
+      UTILS.showToast("Xác nhận đã nhận hàng thành công!", "success");
+      if (typeof Storage !== 'undefined' && Storage.addNotification) {
+        Storage.addNotification(
+          "Hoàn thành đơn hàng",
+          `Đơn hàng #${orderId} đã được giao thành công. Cảm ơn bạn đã tin tưởng!`,
+          "success",
+          "box"
+        );
+      }
+      
+      // Load lại danh sách
+      renderUserOrders();
+    } catch (err) {
+      console.error(err);
+      UTILS.showToast(err.message || "Có lỗi xảy ra, vui lòng thử lại.", "error");
+    } finally {
+      window.isMarkingOrder = false;
+    }
+  };
+
+  // Khai báo hàm hủy đơn hàng ra biến toàn cục
+  window.handleCancelOrder = async (orderId) => {
+    const result = await Swal.fire({
+      title: 'Xác nhận hủy đơn',
+      text: "Bạn có chắc chắn muốn hủy đơn hàng này không? Hành động này không thể hoàn tác.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Vâng, hủy đơn hàng',
+      cancelButtonText: 'Không, quay lại'
+    });
+
+    if (!result.isConfirmed) return;
+
+    if (window.isCancellingOrder) return;
+    window.isCancellingOrder = true;
+
+    try {
+      if (Auth.isLoggedIn() && typeof OrderApi !== 'undefined' && OrderApi.cancelOrder) {
+        await OrderApi.cancelOrder(orderId);
+      } else {
+        let localOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+        let order = localOrders.find(o => String(o.id) === String(orderId) || String(o.orderId) === String(orderId));
+        if (order) {
+          order.status = "cancelled";
+          localStorage.setItem("orders", JSON.stringify(localOrders));
+        }
+      }
+      
+      UTILS.showToast("Hủy đơn hàng thành công!", "success");
+      if (typeof Storage !== 'undefined' && Storage.addNotification) {
+        Storage.addNotification(
+          "Đơn hàng đã hủy",
+          `Đơn hàng #${orderId} của bạn đã được hủy thành công.`,
+          "danger",
+          "box"
+        );
+      }
+      
+      renderUserOrders();
+    } catch (err) {
+      console.error(err);
+      UTILS.showToast(err.message || "Có lỗi xảy ra, vui lòng thử lại.", "error");
+    } finally {
+      window.isCancellingOrder = false;
+    }
+  };
 
   // ===== XỬ LÝ MODAL CHI TIẾT ĐƠN HÀNG =====
   const orderModal = document.getElementById("order-detail-modal");

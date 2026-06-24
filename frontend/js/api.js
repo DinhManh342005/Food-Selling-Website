@@ -223,6 +223,16 @@ const OrderApi = {
   },
   getById(orderId) {
     return ApiClient.request(`/orders/${orderId}`);
+  },
+  markAsReceived(orderId) {
+    return ApiClient.request(`/orders/${orderId}/receive`, {
+      method: "PUT"
+    });
+  },
+  cancelOrder(orderId) {
+    return ApiClient.request(`/orders/${orderId}/cancel`, {
+      method: "PUT"
+    });
   }
 };
 

@@ -47,6 +47,8 @@ public class AdminProductController {
                 productService.getProductById(id));
     }
 
+    // USER API: Thêm mới sản phẩm
+    // URL: POST http://localhost:8080/api/v1/admin/products
     @PostMapping
     public ResponseEntity<AdminProductResponseDTO> addProduct(
             @Valid @RequestBody ProductCreateDTO productCreateDTO) {
@@ -57,6 +59,8 @@ public class AdminProductController {
                 HttpStatus.CREATED);
     }
 
+    // USER API: Cập nhật sản phẩm
+    // URL: PUT http://localhost:8080/api/v1/admin/products/{id}
     @PutMapping("/{id}")
     public ResponseEntity<AdminProductResponseDTO> updateProduct(
             @PathVariable Long id,
@@ -65,6 +69,8 @@ public class AdminProductController {
                 productService.updateProduct(id, productCreateDTO));
     }
 
+    // USER API: Xóa sản phẩm
+    // URL: DELETE http://localhost:8080/api/v1/admin/products/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable Long id) {
@@ -72,6 +78,8 @@ public class AdminProductController {
         return ResponseEntity.noContent().build();
     }
 
+    // USER API: Tìm kiếm sản phẩm theo tên
+    // URL: GET http://localhost:8080/api/v1/admin/products/search?name=...
     @GetMapping("/search")
     public ResponseEntity<List<AdminProductResponseDTO>> searchProducts(
             @RequestParam String name) {
@@ -79,6 +87,8 @@ public class AdminProductController {
                 productService.searchProductByName(name));
     }
 
+    // USER API: Cập nhật trạng thái sản phẩm
+    // URL: PUT http://localhost:8080/api/v1/admin/products/{id}/status?status=...
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> updateProductStatus(
             @PathVariable Long id,

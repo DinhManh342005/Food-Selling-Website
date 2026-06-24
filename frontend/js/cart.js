@@ -34,6 +34,14 @@ const Cart = {
       try {
         await CartApi.addItem(normProduct.id, quantity);
         UTILS.showToast(`Đã thêm "${normProduct.name}" vào giỏ hàng!`, "success");
+        if (typeof Storage !== 'undefined' && Storage.addNotification) {
+          Storage.addNotification(
+            "Đã thêm vào giỏ hàng",
+            `Bạn vừa thêm ${quantity} x ${normProduct.name} vào giỏ hàng.`,
+            "success",
+            "cart"
+          );
+        }
         await this._syncAndRender();
       } catch (error) {
         console.error("Lỗi thêm vào giỏ (server):", error);
@@ -52,6 +60,14 @@ const Cart = {
       this.updateCartBadge();
       this.renderCartDrawer();
       UTILS.showToast(`Đã thêm "${normProduct.name}" vào giỏ hàng!`, "success");
+      if (typeof Storage !== 'undefined' && Storage.addNotification) {
+        Storage.addNotification(
+          "Đã thêm vào giỏ hàng",
+          `Bạn vừa thêm ${quantity} x ${normProduct.name} vào giỏ hàng.`,
+          "success",
+          "cart"
+        );
+      }
     }
   },
 

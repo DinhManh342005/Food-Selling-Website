@@ -28,11 +28,15 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
+    // USER API: Lấy danh sách đánh giá theo sản phẩm
+    // URL: GET http://localhost:8080/api/v1/reviews/product/{productId}
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ReviewResponseDTO>> getReviewsByProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(reviewService.getReviewsByProduct(productId));
     }
 
+    // USER API: Thêm đánh giá
+    // URL: POST http://localhost:8080/api/v1/reviews
     @PostMapping
     public ResponseEntity<ReviewResponseDTO> saveReview(
             Authentication authentication,

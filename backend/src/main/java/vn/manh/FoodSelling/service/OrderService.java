@@ -18,6 +18,12 @@ public interface OrderService {
 
     public OrderResponseDTO getMyOrderById(Long orderId);
 
+    // Xác nhận đã nhận hàng (chuyển trạng thái sang completed)
+    public OrderResponseDTO markOrderAsReceived(Long orderId);
+
+    // Hủy đơn hàng (chỉ cho phép khi đơn hàng đang pending)
+    public OrderResponseDTO cancelOrder(Long orderId);
+
     // ADMIN
     public List<AdminOrderResponseDTO> getAllOrdersForAdmin();
 
