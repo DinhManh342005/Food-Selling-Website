@@ -17,10 +17,10 @@ function injectChatboxDOM() {
   wrapper.innerHTML = `
     <!-- Floating Action Buttons -->
     <div class="floating-actions">
-      <a href="tel:19006868" class="fab-btn fab-phone" data-tippy-content-fab="Gọi hotline">
+      <a href="tel:0917274409" class="fab-btn fab-phone" data-tippy-content-fab="Gọi hotline">
         <i class="fa-solid fa-phone"></i>
       </a>
-      <a href="https://zalo.me/19006868" target="_blank" class="fab-btn fab-zalo" data-tippy-content-fab="Chat Zalo">
+      <a href="https://zalo.me/0917274409" target="_blank" class="fab-btn fab-zalo" data-tippy-content-fab="Chat Zalo">
         <div class="fab-zalo-img font-black italic tracking-tighter">Zalo</div>
       </a>
       <button id="fab-chat-btn" class="fab-btn fab-chat" data-tippy-content-fab="Trợ lý AI Gợi ý món ăn">

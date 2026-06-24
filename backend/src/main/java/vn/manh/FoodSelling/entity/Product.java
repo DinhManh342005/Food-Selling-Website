@@ -59,7 +59,7 @@ public class Product {
     @Builder.Default
     private Integer stockQuantity = 0;
 
-    // @Enumerated để sử dụng Enum trong database
+    // @Enumerated để sử dụng Enum trong databaseimageUrl
     @Enumerated(EnumType.STRING) // Nên sử dụng STRING
     @Column(nullable = false)
     private ProductStatus status; // Sử dụng kiểu enum ProductStatus
@@ -83,11 +83,11 @@ public class Product {
 
     // Quan hệ với OrderItem và CartItem để biết sản phẩm này đã được đặt trong đơn
     // hàng nào và có trong giỏ hàng nào
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 
     // Quan hệ với CartItem để biết sản phẩm này có trong giỏ hàng nào
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CartItem> cartItems;
 
     // Danh sách đánh giá của sản phẩm

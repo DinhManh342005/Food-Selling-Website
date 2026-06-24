@@ -253,10 +253,11 @@ function injectHeaderFooter() {
             <div>
               <h3 class="footer-title">Thông Tin Liên Hệ</h3>
               <ul class="footer-links text-sm">
-                <li class="flex items-start gap-2 text-slate-400"><i class="fa-solid fa-location-dot mt-1"></i> <span>Đường Tô Hiến Thành, Quận 10, TP. Hồ Chí Minh</span></li>
+                <li class="flex items-start gap-2 text-slate-400"><i class="fa-solid fa-location-dot mt-1"></i> <span>Liên Bảo - Vụ Bản - Nam Định</span></li>
                 <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-phone"></i> <span>1900 6868</span></li>
                 <li class="flex items-center gap-2 text-slate-400"><i class="fa-solid fa-envelope"></i> <span>hotro@freshbite.vn</span></li>
               </ul>
+    
             </div>
           </div>
           <div class="footer-bottom">
@@ -454,10 +455,10 @@ function updateNotificationsUI() {
       } else {
         iconHtml = '<div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🔔</div>';
       }
-      
+
       const unreadDot = n.isRead ? '' : '<div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>';
       const bgClass = n.isRead ? '' : 'bg-orange-50/30';
-      
+
       return `
         <a href="#" onclick="if(typeof Storage !== 'undefined'){Storage.markNotificationAsRead(${n.id});} return false;" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0 ${bgClass}">
           ${iconHtml}

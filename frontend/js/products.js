@@ -99,8 +99,79 @@ async function initProductsPage() {
     });
   });
 
-  // F. Lắng nghe sự kiện sắp xếp toolbar
-  const sortSelect = document.getElementById("sort-select");
+  // F. Custom Sort Dropdown
+  const sortSelect     = document.getElementById("sort-select");
+  const sortBtn        = document.getElementById("sort-dropdown-btn");
+  const sortPanel      = document.getElementById("sort-dropdown-panel");
+  const sortLabel      = document.getElementById("sort-label");
+  const sortIcon       = document.getElementById("sort-icon");
+  const sortChevron    = document.getElementById("sort-chevron");
+  const sortOptions    = document.querySelectorAll(".sort-option");
+
+  function openSortDropdown() {
+    sortPanel.classList.remove("opacity-0", "invisible", "translate-y-1");
+    sortPanel.classList.add("opacity-100", "visible", "translate-y-0");
+    sortBtn.setAttribute("aria-expanded", "true");
+    sortChevron.style.transform = "rotate(180deg)";
+  }
+
+  function closeSortDropdown() {
+    sortPanel.classList.add("opacity-0", "invisible", "translate-y-1");
+    sortPanel.classList.remove("opacity-100", "visible", "translate-y-0");
+    sortBtn.setAttribute("aria-expanded", "false");
+    sortChevron.style.transform = "rotate(0deg)";
+  }
+
+  if (sortBtn) {
+    sortBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = sortBtn.getAttribute("aria-expanded") === "true";
+      isOpen ? closeSortDropdown() : openSortDropdown();
+    });
+  }
+
+  sortOptions.forEach(option => {
+    option.addEventListener("click", () => {
+      const value   = option.dataset.value;
+      const label   = option.dataset.label;
+      const iconCls = option.dataset.icon;
+
+      // Cập nhật label & icon trên button
+      if (sortLabel) sortLabel.textContent = label;
+      if (sortIcon)  { sortIcon.className = `${iconCls} text-orange-500 text-sm`; }
+
+      // Highlight option được chọn
+      sortOptions.forEach(opt => {
+        const check = opt.querySelector(".sort-check");
+        const icon  = opt.querySelector("i:first-child");
+        opt.classList.remove("sort-active", "bg-orange-50", "text-orange-600");
+        if (check) check.classList.add("hidden");
+        if (icon)  icon.classList.replace("text-orange-500", "text-slate-400");
+      });
+      option.classList.add("bg-orange-50", "text-orange-600");
+      const activeCheck = option.querySelector(".sort-check");
+      const activeIcon  = option.querySelector("i:first-child");
+      if (activeCheck) activeCheck.classList.remove("hidden");
+      if (activeIcon)  activeIcon.classList.replace("text-slate-400", "text-orange-500");
+
+      // Cập nhật hidden native select + trigger applyFilters
+      if (sortSelect) {
+        sortSelect.value = value;
+        sortSelect.dispatchEvent(new Event("change"));
+      }
+
+      closeSortDropdown();
+    });
+  });
+
+  // Đóng dropdown khi click ra ngoài
+  document.addEventListener("click", (e) => {
+    if (sortPanel && !sortPanel.contains(e.target) && !sortBtn?.contains(e.target)) {
+      closeSortDropdown();
+    }
+  });
+
+  // Native select change vẫn trigger applyFilters (tương thích)
   if (sortSelect) {
     sortSelect.addEventListener("change", () => {
       currentPage = 1;
