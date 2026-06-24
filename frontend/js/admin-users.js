@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
         : `<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded-full text-[10px] font-bold">Đã khóa</span>`;
 
       html += `
-        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+        <tr onclick="viewUserDetails(${u.id})" class="hover:bg-slate-50 transition-colors border-b border-slate-100 cursor-pointer">
           <td class="py-3 px-4 text-center font-bold text-slate-700">#${u.id}</td>
           <td class="py-3 px-4 font-medium text-slate-800">${u.fullName || '--'}</td>
           <td class="py-3 px-4 font-semibold text-slate-700 text-sm">${u.username}</td>
@@ -136,13 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <td class="py-3 px-4 text-center">${roleBadge}</td>
           <td class="py-3 px-4 text-center">${statusBadge}</td>
           <td class="py-3 px-4 text-center space-x-2">
-            <button onclick="viewUserDetails(${u.id})" data-tippy-content="Xem chi tiết" class="w-8 h-8 rounded bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors">
-              <i class="fa-solid fa-eye"></i>
-            </button>
-            <button onclick="toggleRole(${u.id})" data-tippy-content="Đổi quyền" class="w-8 h-8 rounded bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white transition-colors">
+
+            <button onclick="event.stopPropagation(); toggleRole(${u.id})" data-tippy-content="Đổi quyền" class="w-8 h-8 rounded bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white transition-colors">
               <i class="fa-solid fa-user-shield"></i>
             </button>
-            <button onclick="toggleLock(${u.id}, '${u.status}')" data-tippy-content="${uStatus === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}" class="w-8 h-8 rounded bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors">
+            <button onclick="event.stopPropagation(); toggleLock(${u.id}, '${u.status}')" data-tippy-content="${uStatus === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa'}" class="w-8 h-8 rounded bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-colors">
               <i class="fa-solid ${uStatus === 'ACTIVE' ? 'fa-lock' : 'fa-unlock'}"></i>
             </button>
           </td>
@@ -165,41 +163,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = allUsers.find(u => u.id === id);
     if (!user) return;
 
-    // Tìm lịch sử mua hàng của user qua localStorage.orders
-    const allOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-    const userOrders = allOrders.filter(o => o.customerInfo && o.customerInfo.phone === user.phone);
 
-    let ordersHtml = `<p class="text-slate-500 text-sm">Chưa có đơn hàng nào.</p>`;
-    if (userOrders.length > 0) {
-      ordersHtml = userOrders.map(o => `
-        <div class="flex justify-between items-center border-b border-slate-100 py-2">
-          <div>
-            <p class="font-bold text-sm text-slate-700">${o.orderCode}</p>
-            <p class="text-[10px] text-slate-500">${UTILS.formatDate(o.createdAt, "DD/MM/YYYY HH:mm")}</p>
-          </div>
-          <div class="text-right">
-            <p class="font-bold text-brand-600 text-sm">${UTILS.formatCurrency(o.total)}</p>
-            <p class="text-[10px] font-bold text-slate-600">${o.status}</p>
-          </div>
-        </div>
-      `).join('');
-    }
 
     Swal.fire({
       title: `Thông tin User #${user.id}`,
       html: `
         <div class="text-left space-y-4">
           <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <p><strong>Họ tên:</strong> ${user.fullName}</p>
-            <p><strong>Email:</strong> ${user.email}</p>
-            <p><strong>SĐT:</strong> ${user.phone}</p>
-            <p><strong>Trạng thái:</strong> ${user.status}</p>
-          </div>
-          <div>
-            <h4 class="font-bold text-slate-800 mb-2">Lịch sử đơn hàng:</h4>
-            <div class="max-h-48 overflow-y-auto pr-2">
-              ${ordersHtml}
-            </div>
+            <p><strong>Username:</strong> ${user.username || '--'}</p>
+            <p><strong>Họ tên:</strong> ${user.fullName || '--'}</p>
+            <p><strong>Email:</strong> ${user.email || '--'}</p>
+            <p><strong>SĐT:</strong> ${user.phone || '--'}</p>
+            <p><strong>Vai trò (Role):</strong> ${String(user.role).toUpperCase()}</p>
+            <p><strong>Trạng thái:</strong> ${String(user.status).toUpperCase()}</p>
           </div>
         </div>
       `,

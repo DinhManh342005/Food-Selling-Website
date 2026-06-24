@@ -152,14 +152,20 @@ public class UserServiceImpl implements UserService {
      public UserResponseDTO getUserById(Long id) {
           User user = userRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
-          return modelMapper.map(user, UserResponseDTO.class);
+          UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+          userResponseDTO.setPhoneNumber(user.getPhone());
+          return userResponseDTO;
      }
 
      @Override
      @Transactional
      public Page<UserResponseDTO> getAllUsers(Pageable pageable) {
           Page<UserResponseDTO> users = userRepository.findAll(pageable)
-                    .map(user -> modelMapper.map(user, UserResponseDTO.class));
+                    .map(user -> {
+                         UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+                         userResponseDTO.setPhoneNumber(user.getPhone());
+                         return userResponseDTO;
+                    });
           return users;
      }
 
@@ -177,7 +183,9 @@ public class UserServiceImpl implements UserService {
           // Lưu user vào database
           userRepository.save(user);
 
-          return modelMapper.map(user, UserResponseDTO.class);
+          UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+          userResponseDTO.setPhoneNumber(user.getPhone());
+          return userResponseDTO;
      }
 
 }
