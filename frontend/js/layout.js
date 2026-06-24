@@ -144,8 +144,8 @@ function injectHeaderFooter() {
 
             <!-- Search Bar -->
             <form id="header-search-form" class="flex-grow max-w-xl hidden md:flex items-center relative">
-              <input type="text" id="header-search-input" placeholder="Tìm kiếm đặc sản miền Bắc, Trung, Nam..." class="w-full bg-slate-50 border border-slate-200 rounded-full px-5 py-2.5 pr-12 text-sm focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all outline-none">
-              <button type="submit" class="absolute right-4 text-slate-400 hover:text-orange-600 transition-colors">
+              <input type="text" id="header-search-input" placeholder="Tìm kiếm đặc sản miền Bắc, Trung, Nam..." class="w-full bg-slate-50 border border-slate-200 rounded-full px-5 py-2.5 pr-12 text-sm focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all outline-none">
+              <button type="submit" class="absolute right-4 text-slate-400 hover:text-brand-600 transition-colors">
                 <i class="fa-solid fa-magnifying-glass"></i>
               </button>
             </form>
@@ -159,31 +159,31 @@ function injectHeaderFooter() {
 
               <!-- Notification Icon -->
               <div class="relative group" id="header-notification-wrapper">
-                <a href="#" class="p-2 text-slate-600 hover:text-orange-600 transition-colors flex items-center justify-center" title="Thông báo">
+                <a href="#" class="p-2 text-slate-600 hover:text-brand-600 transition-colors flex items-center justify-center" title="Thông báo">
                   <i class="fa-regular fa-bell text-xl"></i>
-                  <span id="notification-badge" class="absolute top-1.5 right-1.5 bg-orange-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white hidden">0</span>
+                  <span id="notification-badge" class="absolute top-1.5 right-1.5 bg-brand-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white hidden">0</span>
                 </a>
                 <div class="absolute right-0 top-full pt-2 w-80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100]">
                   <div class="bg-white rounded-xl shadow-xl border border-slate-100 py-2 text-slate-700">
                     <div class="px-4 py-2 border-b border-slate-50 flex justify-between items-center">
                       <span class="font-bold text-slate-800 font-semibold">Thông báo mới</span>
-                      <a href="#" onclick="if(typeof Storage!=='undefined'){Storage.markAllNotificationsAsRead();} return false;" class="text-xs text-orange-600 hover:underline">Đánh dấu đã đọc</a>
+                      <a href="#" onclick="if(typeof Storage!=='undefined'){Storage.markAllNotificationsAsRead();} return false;" class="text-xs text-brand-600 hover:underline">Đánh dấu đã đọc</a>
                     </div>
                     <div id="notification-list" class="max-h-64 overflow-y-auto font-normal flex flex-col items-center justify-center py-8">
                       <i class="fa-regular fa-bell-slash text-4xl text-slate-300 mb-3"></i>
                       <p class="text-sm text-slate-500 font-medium">Chưa có thông báo mới</p>
                     </div>
                     <div class="px-4 py-2 text-center border-t border-slate-50">
-                      <a href="#" class="text-xs text-slate-500 hover:text-orange-600 font-semibold">Xem tất cả thông báo</a>
+                      <a href="#" class="text-xs text-slate-500 hover:text-brand-600 font-semibold">Xem tất cả thông báo</a>
                     </div>
                   </div>
                 </div>
               </div>
 
               <!-- Cart Button -->
-              <a href="#" class="cart-toggle-btn relative p-2 text-slate-600 hover:text-orange-600 transition-colors" title="Giỏ hàng">
+              <a href="#" class="cart-toggle-btn relative p-2 text-slate-600 hover:text-brand-600 transition-colors" title="Giỏ hàng">
                 <i class="fa-solid fa-cart-shopping text-xl"></i>
-                <span class="cart-badge absolute -top-0.5 -right-0.5 bg-orange-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
+                <span class="cart-badge absolute -top-0.5 -right-0.5 bg-brand-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
               </a>
 
               <!-- Dark Mode Toggle -->
@@ -195,7 +195,7 @@ function injectHeaderFooter() {
                 <!-- Rendered by JS -->
               </div>
 
-              <button id="mobile-menu-toggle" class="md:hidden text-slate-600 hover:text-orange-600 p-2">
+              <button id="mobile-menu-toggle" class="md:hidden text-slate-600 hover:text-brand-600 p-2">
                 <i class="fa-solid fa-bars text-xl"></i>
               </button>
             </div>
@@ -205,8 +205,8 @@ function injectHeaderFooter() {
         <!-- Mobile Search Form Row -->
         <div id="mobile-search-row" class="bg-slate-50 border-b p-3 hidden md:hidden">
           <form id="mobile-search-form" class="relative flex items-center w-full">
-            <input type="text" id="mobile-search-input" placeholder="Tìm kiếm món ăn..." class="w-full bg-white border border-slate-200 rounded-full px-4 py-2 pr-10 text-sm focus:border-orange-500 outline-none">
-            <button type="submit" class="absolute right-3.5 text-slate-400 hover:text-orange-600">
+            <input type="text" id="mobile-search-input" placeholder="Tìm kiếm món ăn..." class="w-full bg-white border border-slate-200 rounded-full px-4 py-2 pr-10 text-sm focus:border-brand-500 outline-none">
+            <button type="submit" class="absolute right-3.5 text-slate-400 hover:text-brand-600">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </form>
@@ -356,8 +356,8 @@ function updateHeaderAuthStatus() {
     if (authSection) {
       authSection.innerHTML = `
         <div class="relative group" id="user-menu-container">
-          <a href="${pathPrefix}profile.html" id="header-user-btn" class="p-2 text-slate-600 hover:text-orange-600 transition-colors flex items-center justify-center" title="Tài khoản">
-            <i class="fa-solid fa-user text-xl text-orange-600 animate__animated animate__fadeIn"></i>
+          <a href="${pathPrefix}profile.html" id="header-user-btn" class="p-2 text-slate-600 hover:text-brand-600 transition-colors flex items-center justify-center" title="Tài khoản">
+            <i class="fa-solid fa-user text-xl text-brand-600 animate__animated animate__fadeIn"></i>
           </a>
           <div id="user-dropdown" class="absolute right-0 top-full pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100]">
             <div class="bg-white rounded-lg shadow-lg border border-slate-100 py-1 text-slate-700 font-medium text-sm">
@@ -368,7 +368,7 @@ function updateHeaderAuthStatus() {
                 <i class="fa-solid fa-box w-4 text-center text-slate-400"></i> Đơn hàng của tôi
               </a>
               ${isAdmin ? `
-              <a href="${pathPrefix}admin-dashboard.html" class="flex items-center gap-2 px-4 py-2.5 text-orange-600 font-semibold hover:bg-orange-50">
+              <a href="${pathPrefix}admin-dashboard.html" class="flex items-center gap-2 px-4 py-2.5 text-brand-600 font-semibold hover:bg-brand-50">
                 <i class="fa-solid fa-chart-line w-4 text-center"></i> Quản trị hệ thống
               </a>` : ""}
               <hr class="border-slate-100 my-1">
@@ -385,7 +385,7 @@ function updateHeaderAuthStatus() {
     if (mobileAuthSection) {
       mobileAuthSection.innerHTML = `
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full bg-orange-100 border border-orange-200 text-orange-700 flex items-center justify-center font-bold">
+          <div class="w-10 h-10 rounded-full bg-brand-100 border border-brand-200 text-brand-700 flex items-center justify-center font-bold">
             ${displayName.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -402,7 +402,7 @@ function updateHeaderAuthStatus() {
   } else {
     if (authSection) {
       authSection.innerHTML = `
-        <a href="${pathPrefix}auth.html?action=login" id="header-user-btn" class="p-2 text-slate-600 hover:text-orange-600 transition-colors flex items-center justify-center" title="Đăng nhập / Đăng ký">
+        <a href="${pathPrefix}auth.html?action=login" id="header-user-btn" class="p-2 text-slate-600 hover:text-brand-600 transition-colors flex items-center justify-center" title="Đăng nhập / Đăng ký">
           <i class="fa-regular fa-user text-xl"></i>
         </a>
       `;
@@ -453,11 +453,11 @@ function updateNotificationsUI() {
       } else if (n.icon === 'box' || n.type === 'info') {
         iconHtml = '<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">📦</div>';
       } else {
-        iconHtml = '<div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">🔔</div>';
+        iconHtml = '<div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-sm">🔔</div>';
       }
 
-      const unreadDot = n.isRead ? '' : '<div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>';
-      const bgClass = n.isRead ? '' : 'bg-orange-50/30';
+      const unreadDot = n.isRead ? '' : '<div class="w-2 h-2 rounded-full bg-brand-500 mt-1.5 shrink-0"></div>';
+      const bgClass = n.isRead ? '' : 'bg-brand-50/30';
 
       return `
         <a href="#" onclick="if(typeof Storage !== 'undefined'){Storage.markNotificationAsRead(${n.id});} return false;" class="flex gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-b-0 ${bgClass}">

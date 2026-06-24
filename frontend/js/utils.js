@@ -181,7 +181,13 @@ function normalizeProductDetailImages(product) {
     : (Array.isArray(product?.productImages) ? [...product.productImages] : []);
 
   if (rawImages.length === 0 && Array.isArray(product?.detailImages)) {
-    product.detailImages.forEach((imageUrl) => rawImages.push({ imageUrl }));
+    product.detailImages.forEach((item) => {
+      if (typeof item === "string") {
+        rawImages.push({ imageUrl: item });
+      } else if (item && typeof item === "object") {
+        rawImages.push(item);
+      }
+    });
   }
 
   const normalizedImages = rawImages

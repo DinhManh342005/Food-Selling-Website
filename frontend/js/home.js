@@ -94,8 +94,12 @@ const HERO_ITEMS = [
   }
 ];
 
-let carouselInterval = null;
+let carouselAnimationId = null;
 let carouselIndex = 0;
+let currentAngle = 0;
+let targetAngle = null;
+let isInteracting = false;
+const autoRotateSpeed = 0.45; // Tốc độ quay của vòng ngoài (tăng từ 0.25)
 
 function initCircularCarousel() {
   const ring = document.getElementById("carousel-ring");
@@ -118,6 +122,10 @@ function initCircularCarousel() {
       selectCarouselItem(k);
     });
 
+    // Tạm dừng khi di chuột
+    el.addEventListener("mouseenter", () => isInteracting = true);
+    el.addEventListener("mouseleave", () => isInteracting = false);
+
     ring.appendChild(el);
   });
 
@@ -134,20 +142,71 @@ function initCircularCarousel() {
     });
   }
 
+  // Tạm dừng khi di chuột vào vùng trung tâm
+  const centerRing = document.querySelector(".carousel-center");
+  if (centerRing) {
+    centerRing.addEventListener("mouseenter", () => isInteracting = true);
+    centerRing.addEventListener("mouseleave", () => isInteracting = false);
+  }
+
   // 3. Khởi động vòng xoay ở vị trí đầu tiên
-  updateCarouselUI(0);
+  updateCenterUI(0);
   startCarouselTimer();
 }
 
 function selectCarouselItem(index) {
-  stopCarouselTimer();
+  if (index === carouselIndex) return;
+  targetAngle = -index * 72;
   carouselIndex = index;
-  updateCarouselUI(index);
-  startCarouselTimer();
+  updateCenterUI(index);
 }
 
-function updateCarouselUI(index) {
-  const ring = document.getElementById("carousel-ring");
+function flyItemToCenter(index, callback) {
+  const targetItemImg = document.querySelector(`.carousel-item[data-index="${index}"] img`);
+  const centerContainer = document.querySelector(".carousel-center");
+  const carouselWrapper = document.querySelector(".circular-carousel");
+  
+  if (!targetItemImg || !centerContainer || !carouselWrapper) {
+    if (callback) callback();
+    return;
+  }
+
+  const wrapperRect = carouselWrapper.getBoundingClientRect();
+  const startRect = targetItemImg.getBoundingClientRect();
+  const endRect = centerContainer.getBoundingClientRect();
+
+  const clone = document.createElement("img");
+  clone.src = targetItemImg.src;
+  clone.className = "absolute z-50 rounded-full object-cover shadow-2xl pointer-events-none";
+  
+  const startLeft = startRect.left - wrapperRect.left;
+  const startTop = startRect.top - wrapperRect.top;
+  const endLeft = endRect.left - wrapperRect.left;
+  const endTop = endRect.top - wrapperRect.top;
+
+  clone.style.width = `${startRect.width}px`;
+  clone.style.height = `${startRect.height}px`;
+  clone.style.left = `${startLeft}px`;
+  clone.style.top = `${startTop}px`;
+  clone.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+  
+  carouselWrapper.appendChild(clone);
+
+  void clone.offsetWidth;
+
+  clone.style.width = `${endRect.width}px`;
+  clone.style.height = `${endRect.height}px`;
+  clone.style.left = `${endLeft}px`;
+  clone.style.top = `${endTop}px`;
+  clone.style.transform = "rotate(360deg)";
+
+  setTimeout(() => {
+    if (clone.parentNode) clone.parentNode.removeChild(clone);
+    if (callback) callback();
+  }, 600);
+}
+
+function updateCenterUI(index) {
   const items = document.querySelectorAll(".carousel-item");
   const dots = document.querySelectorAll(".carousel-dot");
   const activeImg = document.getElementById("carousel-active-img");
@@ -157,21 +216,15 @@ function updateCarouselUI(index) {
   const infoTag = document.getElementById("carousel-info-tag");
   const infoRating = document.getElementById("carousel-info-rating");
 
-  if (!ring) return;
-
-  // Xoay vòng ring ngoài và counter-rotate các item con để giữ ảnh thẳng đứng
-  ring.style.transform = `rotate(${-index * 72}deg)`;
+  // Cập nhật dots và active class
   items.forEach((item, k) => {
     item.classList.toggle("active", k === index);
-    item.style.transform = `rotate(${k * 72}deg) translate(var(--translate-dist)) rotate(${-k * 72 + index * 72}deg)`;
   });
 
-  // Cập nhật dots
   dots.forEach((dot, k) => {
     dot.classList.toggle("active", k === index);
   });
 
-  // Hiệu ứng transition đĩa lớn trung tâm & thẻ thông tin
   if (activeImg) {
     activeImg.classList.remove("opacity-100", "scale-100");
     activeImg.classList.add("opacity-0", "scale-90");
@@ -182,56 +235,97 @@ function updateCarouselUI(index) {
     infoCard.classList.add("hidden-card");
   }
 
-  setTimeout(() => {
+  // Chạy hiệu ứng bay vào giữa
+  flyItemToCenter(index, () => {
     const itemData = HERO_ITEMS[index];
 
-    // Cập nhật đĩa lớn
     if (activeImg) {
       activeImg.src = itemData.imageUrl;
-      activeImg.onload = () => {
+      // Dùng onload hoặc kiểm tra complete
+      const showActiveImg = () => {
         activeImg.classList.remove("opacity-0", "scale-90");
         activeImg.classList.add("opacity-100", "scale-100");
       };
+      if (activeImg.complete) showActiveImg();
+      else activeImg.onload = showActiveImg;
     }
 
-    // Cập nhật thẻ thông tin
     if (infoTitle) infoTitle.textContent = itemData.name;
     if (infoTag) {
       infoTag.textContent = itemData.region;
-      // Đổi class màu vùng miền
       infoTag.className = "info-tag badge text-[10px] inline-block mb-1.5 ";
-      if (itemData.categoryId === 1) {
-        infoTag.classList.add("badge-region-north");
-      } else if (itemData.categoryId === 2) {
-        infoTag.classList.add("badge-region-central");
-      } else {
-        infoTag.classList.add("badge-region-south");
-      }
+      if (itemData.categoryId === 1) infoTag.classList.add("badge-region-north");
+      else if (itemData.categoryId === 2) infoTag.classList.add("badge-region-central");
+      else infoTag.classList.add("badge-region-south");
     }
     if (infoRating) {
       infoRating.innerHTML = UTILS.renderRatingStars(itemData.rating);
     }
 
-    // Hiện thẻ thông tin lên
     if (infoCard) {
       infoCard.classList.remove("hidden-card");
       infoCard.classList.add("visible");
     }
-  }, 300);
+  });
 }
 
 function startCarouselTimer() {
-  carouselInterval = setInterval(() => {
-    carouselIndex = (carouselIndex + 1) % HERO_ITEMS.length;
-    updateCarouselUI(carouselIndex);
-  }, 4000);
+  if (!carouselAnimationId) {
+    carouselAnimationId = requestAnimationFrame(animateCarousel);
+  }
 }
 
 function stopCarouselTimer() {
-  if (carouselInterval) {
-    clearInterval(carouselInterval);
-    carouselInterval = null;
+  if (carouselAnimationId) {
+    cancelAnimationFrame(carouselAnimationId);
+    carouselAnimationId = null;
   }
+}
+
+function animateCarousel() {
+  if (targetAngle !== null) {
+    // Smooth interpolation towards target
+    let diff = targetAngle - currentAngle;
+    let shortestDiff = ((diff % 360) + 540) % 360 - 180;
+
+    currentAngle += shortestDiff * 0.08;
+
+    if (Math.abs(shortestDiff) < 0.5) {
+      currentAngle = targetAngle;
+      targetAngle = null;
+    }
+  } else if (!isInteracting) {
+    // Continuous rotation
+    currentAngle -= autoRotateSpeed;
+  }
+
+  const ring = document.getElementById("carousel-ring");
+  const items = document.querySelectorAll(".carousel-item");
+
+  if (ring) {
+    ring.style.transform = `rotate(${currentAngle}deg)`;
+  }
+
+  items.forEach((item, k) => {
+    item.style.transform = `rotate(${k * 72}deg) translate(var(--translate-dist)) rotate(${-k * 72 - currentAngle}deg)`;
+  });
+
+  let normalizedAngle = -currentAngle % 360;
+  if (normalizedAngle < 0) normalizedAngle += 360;
+
+  let nearestIndex = Math.round(normalizedAngle / 72) % HERO_ITEMS.length;
+
+  if (nearestIndex !== carouselIndex && targetAngle === null) {
+    let distanceToExact = Math.abs(normalizedAngle - nearestIndex * 72);
+    if (distanceToExact > 180) distanceToExact = 360 - distanceToExact;
+
+    if (distanceToExact < 5) {
+      carouselIndex = nearestIndex;
+      updateCenterUI(carouselIndex);
+    }
+  }
+
+  carouselAnimationId = requestAnimationFrame(animateCarousel);
 }
 
 /**
@@ -379,29 +473,8 @@ function initHomeSwipers() {
     });
   });
 
-  // Khởi tạo Swiper cho phần "Vì sao chọn chúng tôi"
-  const chooseSwiperEl = document.querySelector('.choose-swiper');
-  if (chooseSwiperEl) {
-    const section = chooseSwiperEl.closest('section');
-    new Swiper(chooseSwiperEl, {
-      slidesPerView: 1,
-      spaceBetween: 16,
-      loop: true,
-      autoplay: {
-        delay: 2000,
-        disableOnInteraction: false,
-      },
-      navigation: {
-        nextEl: section.querySelector('.swiper-button-next'),
-        prevEl: section.querySelector('.swiper-button-prev'),
-      },
-      breakpoints: {
-        480: { slidesPerView: 2, spaceBetween: 16 },
-        768: { slidesPerView: 3, spaceBetween: 20 },
-        1024: { slidesPerView: 4, spaceBetween: 24 },
-      }
-    });
-  }
+
+
 
   // Khởi tạo tooltip Tippy
   tippy('[data-tippy-content]', {
@@ -482,13 +555,13 @@ function openProductModal(productId) {
 
         <!-- Stock Info Badge -->
         ${(() => {
-          const stock = product.stockQuantity ?? null;
-          if (stock === null) return '';
-          if (stock <= 0)     return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-200"><i class="fa-solid fa-circle-xmark"></i>Hết hàng</span></div>`;
-          if (stock <= 5)     return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200"><i class="fa-solid fa-triangle-exclamation"></i>Còn ${stock} sản phẩm — Sắp hết!</span></div>`;
-          if (stock <= 20)    return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200"><i class="fa-solid fa-box"></i>Còn ${stock} sản phẩm</span></div>`;
-          return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200"><i class="fa-solid fa-circle-check"></i>Còn hàng (${stock} sản phẩm)</span></div>`;
-        })()}
+      const stock = product.stockQuantity ?? null;
+      if (stock === null) return '';
+      if (stock <= 0) return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-200"><i class="fa-solid fa-circle-xmark"></i>Hết hàng</span></div>`;
+      if (stock <= 5) return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200"><i class="fa-solid fa-triangle-exclamation"></i>Còn ${stock} sản phẩm — Sắp hết!</span></div>`;
+      if (stock <= 20) return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200"><i class="fa-solid fa-box"></i>Còn ${stock} sản phẩm</span></div>`;
+      return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200"><i class="fa-solid fa-circle-check"></i>Còn hàng (${stock} sản phẩm)</span></div>`;
+    })()}
       </div>
 
       <!-- Quantity & Add to Cart -->

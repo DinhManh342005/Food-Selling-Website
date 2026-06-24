@@ -48,7 +48,7 @@ function injectChatboxDOM() {
       <div id="chatbox-body" class="chatbox-body">
         <!-- Lời chào đầu tiên -->
         <div class="chat-msg bot animate__animated animate__fadeInUp animate__faster">
-          Xin chào! Bạn thích món miền nào và hương vị ra sao? (VD: Mình thích ăn đồ chua miền Nam)
+          Xin chào! Mình là Trợ lý AI Ẩm Thực. Mình có thể giúp bạn tìm những món ăn phù hợp nhất. Bạn đang muốn thưởng thức hương vị đặc trưng của miền nào, hay thích đồ chua, cay, mặn, ngọt?
         </div>
       </div>
 
@@ -181,18 +181,39 @@ async function processBotResponse(userText) {
     });
   }
 
-  // Nếu người dùng không nhập gì liên quan đến miền hay vị, trả về random
+  // Nếu người dùng không nhập gì liên quan đến miền hay vị, trả về ngẫu nhiên
   if (!targetCategoryId && flavors.length === 0) {
-    // Không lọc gì cả, random lấy 3-5 cái dưới đây
+    matches = matches.sort(() => 0.5 - Math.random()).slice(0, 3);
+    if (matches.length > 0) {
+      appendMessage("Dạ, mình chưa nhận diện rõ yêu cầu của bạn, nhưng đây là một số món ngon nổi bật bạn có thể thử nhé! 👇", "bot");
+      appendProductCards(matches);
+    } else {
+      appendMessage("Hiện tại nhà hàng đang cập nhật thêm thực đơn, bạn quay lại sau nhé.", "bot");
+    }
+    return;
   }
 
   // Shuffle and Limit (3 - 5 sản phẩm)
   matches = matches.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 3) + 3); // 3 đến 5
 
   if (matches.length === 0) {
-    appendMessage("Mình chưa tìm thấy món thật khớp, bạn có thể thử chọn miền hoặc hương vị khác nhé.", "bot");
+    // Fallback khi không tìm thấy đúng món
+    matches = allProducts.filter(p => p.status === 'available').sort(() => 0.5 - Math.random()).slice(0, 3);
+    if (matches.length > 0) {
+      appendMessage("Rất tiếc mình chưa tìm thấy món ăn chính xác với yêu cầu của bạn. Nhưng bạn có thể tham khảo các món đặc sắc này nhé! 👇", "bot");
+      appendProductCards(matches);
+    } else {
+      appendMessage("Mình chưa tìm thấy món thật khớp, bạn có thể thử chọn miền hoặc hương vị khác nhé.", "bot");
+    }
   } else {
-    appendMessage("Đây là những món ngon mình gợi ý cho bạn nhé! 👇", "bot");
+    const msgs = [
+      "Dựa trên yêu cầu của bạn, mình xin gợi ý những món ngon này nhé! 👇",
+      "Tuyệt vời! Đây là những lựa chọn phù hợp nhất dành cho bạn: 👇",
+      "Bạn tham khảo qua các món đặc sản dưới đây nhé! Đảm bảo rất ngon miệng. 👇",
+      "Mình đã tìm thấy vài món đúng ý bạn rồi đây. Mời bạn xem thử nhé! 👇"
+    ];
+    const botMsg = msgs[Math.floor(Math.random() * msgs.length)];
+    appendMessage(botMsg, "bot");
     appendProductCards(matches);
   }
 }
