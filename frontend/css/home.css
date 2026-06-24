@@ -16,7 +16,7 @@
 .hero-section {
   position: relative;
   overflow: hidden;
-  background-color: #f8fafc;
+  background-color: var(--color-bg);
 }
 
 .circular-carousel {
@@ -27,14 +27,14 @@
 }
 
 .carousel-center {
-  box-shadow: 0 15px 45px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--shadow-lg);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
   cursor: pointer;
 }
 
 .carousel-center:hover {
   transform: scale(1.08);
-  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.18);
+  box-shadow: var(--shadow-xl);
 }
 
 .carousel-center img {
@@ -42,9 +42,7 @@
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
 }
 
-.carousel-ring {
-  pointer-events: none;
-}
+.carousel-ring { pointer-events: none; }
 
 .carousel-item {
   position: absolute;
@@ -55,9 +53,9 @@
   margin-top: calc(-1 * var(--item-size) / 2);
   margin-left: calc(-1 * var(--item-size) / 2);
   border-radius: 50%;
-  border: 3px solid #ffffff;
-  background-color: #ffffff;
-  box-shadow: 0 6px 15px rgba(15, 23, 42, 0.08);
+  border: 3px solid var(--color-surface);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
   overflow: hidden;
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s, box-shadow 0.3s;
@@ -67,12 +65,12 @@
 .carousel-item:hover {
   transform: scale(1.15) !important;
   border-color: #16a34a;
-  box-shadow: 0 0 20px rgba(22, 163, 74, 0.3);
+  box-shadow: 0 0 20px rgba(22, 163, 74, 0.35);
 }
 
 .carousel-item.active {
   border-color: #16a34a;
-  box-shadow: 0 0 25px rgba(22, 163, 74, 0.45);
+  box-shadow: 0 0 25px rgba(22, 163, 74, 0.5);
   transform: scale(1.1) !important;
   z-index: 10;
 }
@@ -85,9 +83,7 @@
   transition: transform 0.3s ease;
 }
 
-.carousel-item:hover img {
-  transform: scale(1.1);
-}
+.carousel-item:hover img { transform: scale(1.1); }
 
 .carousel-info-card {
   transition: opacity 0.4s ease, transform 0.4s ease;
@@ -107,14 +103,12 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: #cbd5e1;
+  background-color: var(--color-surface-3);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.carousel-dot:hover {
-  background-color: #94a3b8;
-}
+.carousel-dot:hover { background-color: var(--color-text-4); }
 
 .carousel-dot.active {
   background-color: #16a34a;
@@ -125,12 +119,17 @@
 /* Tab lọc sản phẩm */
 .filter-tab {
   transition: all 0.25s ease;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-3);
+  background: var(--color-surface);
 }
 
+.filter-tab:hover { background-color: var(--color-surface-2); }
+
 .filter-tab.active {
-  background-color: #ea580c !important;
+  background-color: var(--color-brand) !important;
   color: #ffffff !important;
-  border-color: #ea580c !important;
+  border-color: var(--color-brand) !important;
   box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
 }
 
@@ -140,8 +139,6 @@
   overflow-x: auto;
   gap: 1.5rem;
   padding: 1rem 0;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
-.category-container::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
-}
+.category-container::-webkit-scrollbar { display: none; }

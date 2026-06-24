@@ -471,7 +471,6 @@ window.handleProductsAddToCart = (productId) => {
 
 /**
  * Mở modal xem chi tiết sản phẩm trên trang Danh sách sản phẩm
- * UserProductResponseDTO không có stockQuantity → ẩn thông tin kho
  */
 window.openProductDetailModal = (productId) => {
   const product = rawAllProducts.find(p => p.id === productId);
@@ -533,16 +532,31 @@ window.openProductDetailModal = (productId) => {
         <div class="text-2xl font-extrabold text-brand-600 mt-2">${UTILS.formatCurrency(product.price)}</div>
         
         <p class="text-sm text-slate-500 leading-relaxed pt-2 border-t">${product.description || "Chưa có mô tả chi tiết."}</p>
+
+        <!-- Stock Info Badge -->
+        ${(() => {
+          const stock = product.stockQuantity ?? null;
+          if (stock === null) return '';
+          if (stock <= 0)     return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-200"><i class="fa-solid fa-circle-xmark"></i>Hết hàng</span></div>`;
+          if (stock <= 5)     return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200"><i class="fa-solid fa-triangle-exclamation"></i>Còn ${stock} sản phẩm — Sắp hết!</span></div>`;
+          if (stock <= 20)    return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200"><i class="fa-solid fa-box"></i>Còn ${stock} sản phẩm</span></div>`;
+          return `<div class="flex items-center gap-2 mt-2"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200"><i class="fa-solid fa-circle-check"></i>Còn hàng (${stock} sản phẩm)</span></div>`;
+        })()}
       </div>
 
       <!-- Quantity & Add to Cart -->
       <div class="space-y-3 pt-4 border-t">
+        ${(product.stockQuantity ?? 1) <= 0 ? `
+        <div class="text-center py-3 px-4 rounded-xl bg-red-50 border border-red-200">
+          <p class="text-sm font-bold text-red-600"><i class="fa-solid fa-circle-xmark mr-2"></i>Sản phẩm này hiện đã hết hàng</p>
+        </div>
+        ` : `
         <div class="flex items-center gap-3">
           <span class="text-xs font-bold text-slate-600">Số lượng:</span>
           <div class="flex items-center border border-slate-200 rounded-lg">
             <button onclick="decrementProductsModalQty()" class="px-3 py-1 hover:bg-slate-50 font-bold text-slate-500 text-sm">-</button>
-            <input type="number" id="products-modal-qty-input" value="1" min="1" max="99" class="w-12 text-center text-sm font-bold text-slate-700 bg-transparent" readonly>
-            <button onclick="incrementProductsModalQty(99)" class="px-3 py-1 hover:bg-slate-50 font-bold text-slate-500 text-sm">+</button>
+            <input type="number" id="products-modal-qty-input" value="1" min="1" max="${product.stockQuantity ?? 99}" class="w-12 text-center text-sm font-bold text-slate-700 bg-transparent" readonly>
+            <button onclick="incrementProductsModalQty(${product.stockQuantity ?? 99})" class="px-3 py-1 hover:bg-slate-50 font-bold text-slate-500 text-sm">+</button>
           </div>
         </div>
 
@@ -551,6 +565,7 @@ window.openProductDetailModal = (productId) => {
             <i class="fa-solid fa-cart-arrow-down mr-2"></i>THÊM VÀO GIỎ HÀNG
           </button>
         </div>
+        `}
       </div>
 
       <div class="space-y-3 pt-4 border-t">

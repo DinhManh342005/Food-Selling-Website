@@ -1,0 +1,460 @@
+/* ==========================================
+   DARK MODE — COMPREHENSIVE OVERRIDES
+   Toàn bộ Tailwind utility classes + custom components
+   Được áp dụng khi <html class="dark">
+   ========================================== */
+
+/* ==========================================
+   DARK MODE TOGGLE BUTTON
+   ========================================== */
+#theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-3);
+  flex-shrink: 0;
+}
+#theme-toggle-btn:hover {
+  background-color: var(--color-hover-bg);
+  color: var(--color-text);
+  transform: rotate(15deg) scale(1.1);
+}
+#theme-toggle-btn i {
+  font-size: 1.15rem;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* ==========================================
+   TAILWIND BACKGROUND COLOR OVERRIDES
+   ========================================== */
+html.dark .bg-white           { background-color: var(--color-surface)  !important; }
+html.dark .bg-slate-50        { background-color: var(--color-bg)        !important; }
+html.dark .bg-slate-100       { background-color: var(--color-surface-2) !important; }
+html.dark .bg-slate-200       { background-color: var(--color-surface-3) !important; }
+html.dark .bg-slate-800       { background-color: #cbd5e1                !important; } /* invert for dark admin labels */
+html.dark .bg-slate-900       { background-color: #e2e8f0                !important; }
+
+/* Orange brand backgrounds */
+html.dark .bg-orange-50       { background-color: var(--color-brand-light)  !important; }
+html.dark .bg-orange-100      { background-color: #2d1a08                   !important; }
+html.dark .bg-orange-600      { background-color: var(--color-brand)        !important; }
+
+/* Green backgrounds */
+html.dark .bg-emerald-100     { background-color: #052e1c !important; }
+html.dark .bg-green-100       { background-color: #052e1c !important; }
+
+/* Blue backgrounds */
+html.dark .bg-blue-100        { background-color: #0c1f3d !important; }
+html.dark .bg-sky-100         { background-color: #0c1f3d !important; }
+
+/* ==========================================
+   TAILWIND TEXT COLOR OVERRIDES
+   ========================================== */
+html.dark .text-slate-900     { color: var(--color-text)   !important; }
+html.dark .text-slate-800     { color: var(--color-text)   !important; }
+html.dark .text-slate-700     { color: var(--color-text-2) !important; }
+html.dark .text-slate-600     { color: var(--color-text-2) !important; }
+html.dark .text-slate-500     { color: var(--color-text-3) !important; }
+html.dark .text-slate-400     { color: var(--color-text-4) !important; }
+html.dark .text-slate-300     { color: var(--color-text-4) !important; }
+
+/* Keep brand colors as-is but slightly brighter */
+html.dark .text-orange-600    { color: var(--color-brand) !important; }
+html.dark .text-orange-700    { color: var(--color-brand) !important; }
+
+/* Status colors - keep readable on dark */
+html.dark .text-emerald-600,
+html.dark .text-green-600     { color: #34d399 !important; } /* emerald-400 */
+html.dark .text-blue-600      { color: #60a5fa !important; } /* blue-400 */
+html.dark .text-red-600,
+html.dark .text-rose-600      { color: #f87171 !important; } /* red-400 */
+html.dark .text-yellow-600,
+html.dark .text-amber-600     { color: #fbbf24 !important; } /* amber-400 */
+html.dark .text-purple-600    { color: #c084fc !important; } /* purple-400 */
+
+/* Region badge text */
+html.dark .text-sky-700       { color: #38bdf8 !important; }
+html.dark .text-amber-700     { color: #fbbf24 !important; }
+html.dark .text-green-700     { color: #4ade80 !important; }
+
+/* ==========================================
+   TAILWIND BORDER COLOR OVERRIDES
+   ========================================== */
+html.dark .border-slate-50    { border-color: var(--color-border-2) !important; }
+html.dark .border-slate-100   { border-color: var(--color-border-2) !important; }
+html.dark .border-slate-200   { border-color: var(--color-border)   !important; }
+html.dark .border-slate-300   { border-color: var(--color-border-3) !important; }
+html.dark .border-orange-200  { border-color: var(--color-brand-border) !important; }
+
+/* Default border (border, border-b, border-t, etc.) */
+html.dark .border   { border-color: var(--color-border) !important; }
+html.dark .border-b { border-bottom-color: var(--color-border) !important; }
+html.dark .border-t { border-top-color: var(--color-border) !important; }
+html.dark .border-l { border-left-color: var(--color-border) !important; }
+html.dark .border-r { border-right-color: var(--color-border) !important; }
+
+/* ==========================================
+   TAILWIND RING/FOCUS OVERRIDES
+   ========================================== */
+html.dark .focus\:ring-orange-100:focus { --tw-ring-color: var(--color-focus-ring) !important; }
+
+/* ==========================================
+   TAILWIND HOVER STATE OVERRIDES
+   ========================================== */
+html.dark .hover\:bg-slate-50:hover   { background-color: var(--color-surface-2) !important; }
+html.dark .hover\:bg-slate-100:hover  { background-color: var(--color-surface-3) !important; }
+html.dark .hover\:bg-orange-50:hover  { background-color: var(--color-brand-light) !important; }
+html.dark .hover\:bg-rose-50:hover    { background-color: #2d0a0a !important; }
+
+/* ==========================================
+   HEADER
+   ========================================== */
+html.dark header {
+  background-color: var(--color-surface);
+  border-bottom-color: var(--color-border);
+}
+html.dark header.scrolled {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border-bottom-color: var(--color-border);
+}
+html.dark .main-header {
+  border-bottom-color: var(--color-border);
+}
+html.dark .nav-bar {
+  background-color: var(--color-surface);
+  border-bottom-color: var(--color-border);
+}
+/* Search input */
+html.dark #header-search-input,
+html.dark #mobile-search-input {
+  background-color: var(--color-surface-2) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+html.dark #header-search-input::placeholder,
+html.dark #mobile-search-input::placeholder {
+  color: var(--color-text-4) !important;
+}
+html.dark #header-search-input:focus,
+html.dark #mobile-search-input:focus {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-brand) !important;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+html.dark footer {
+  background-color: var(--color-surface-2);
+  color: var(--color-text-3);
+  border-top-color: var(--color-border);
+}
+html.dark .footer-title  { color: var(--color-text-2); }
+html.dark .footer-links a { color: var(--color-text-3); }
+html.dark .footer-links a:hover { color: var(--color-brand); }
+html.dark .footer-bottom  { border-top-color: var(--color-border); color: var(--color-text-4); }
+
+/* ==========================================
+   MOBILE MENU DRAWER
+   ========================================== */
+html.dark .mobile-menu {
+  background-color: var(--color-surface);
+}
+html.dark .mobile-menu-links a { color: var(--color-text-2); }
+html.dark .mobile-menu-links a:hover { color: var(--color-brand); }
+
+/* ==========================================
+   CARDS
+   ========================================== */
+html.dark .card {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+html.dark .product-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+html.dark .product-card .img-wrapper {
+  background-color: var(--color-surface-3);
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+html.dark .btn-outline {
+  border-color: var(--color-border-3);
+  color: var(--color-text-2);
+}
+html.dark .btn-outline:hover {
+  background-color: var(--color-hover-bg);
+  border-color: var(--color-text-3);
+  color: var(--color-text);
+}
+html.dark .btn-ghost {
+  color: var(--color-text-3);
+}
+html.dark .btn-ghost:hover {
+  background-color: var(--color-hover-bg);
+  color: var(--color-text);
+}
+
+/* ==========================================
+   GLOBAL INPUT / SELECT / TEXTAREA
+   ========================================== */
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark textarea,
+html.dark select {
+  background-color: var(--color-surface-2) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--color-text-4) !important;
+}
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-brand) !important;
+  box-shadow: 0 0 0 3px var(--color-focus-ring) !important;
+}
+
+/* ==========================================
+   BADGES
+   ========================================== */
+html.dark .badge-success      { background-color: #052e1c; color: #34d399; }
+html.dark .badge-warning      { background-color: #1f1507; color: #fbbf24; }
+html.dark .badge-danger       { background-color: #2d0a0a; color: #f87171; }
+html.dark .badge-region-north { background-color: #0c1f3d; color: #38bdf8; border-color: #1e3a5f; }
+html.dark .badge-region-central { background-color: #1f1507; color: #fbbf24; border-color: #3d2a0e; }
+html.dark .badge-region-south { background-color: #052e1c; color: #4ade80; border-color: #0f4c2a; }
+
+/* ==========================================
+   MODALS
+   ========================================== */
+html.dark .modal-overlay { background-color: rgba(0, 0, 0, 0.7); }
+html.dark .modal-container {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-xl);
+}
+/* Modal headers/footers */
+html.dark .modal-container .border-b { border-color: var(--color-border) !important; }
+html.dark .modal-container .border-t { border-color: var(--color-border) !important; }
+
+/* ==========================================
+   CART DRAWER
+   ========================================== */
+html.dark .cart-drawer-overlay { background-color: rgba(0, 0, 0, 0.65); }
+html.dark .cart-drawer {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-xl);
+}
+html.dark #cart-items-wrapper {
+  background-color: var(--color-surface-2);
+}
+
+/* ==========================================
+   TOASTS
+   ========================================== */
+html.dark .toast {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-left-color: var(--color-border-3);
+  box-shadow: var(--shadow-lg);
+}
+html.dark .toast-success  { border-left-color: #10b981; }
+html.dark .toast-warning  { border-left-color: #f59e0b; }
+html.dark .toast-danger   { border-left-color: #ef4444; }
+html.dark .toast-info     { border-left-color: #3b82f6; }
+
+/* ==========================================
+   NOTIFICATION DROPDOWN
+   ========================================== */
+html.dark #notification-list .bg-white,
+html.dark [id="header-notification-wrapper"] .bg-white {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+}
+html.dark .bg-orange-50\/30 { background-color: rgba(28, 18, 10, 0.5) !important; }
+
+/* ==========================================
+   USER DROPDOWN
+   ========================================== */
+html.dark #user-dropdown > div {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* ==========================================
+   PROFILE PAGE
+   ========================================== */
+html.dark .profile-sidebar {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+html.dark .profile-menu-item {
+  color: var(--color-text-3);
+}
+html.dark .profile-menu-item:hover,
+html.dark .profile-menu-item.active {
+  background-color: var(--color-brand-light);
+  color: var(--color-brand);
+}
+
+/* ==========================================
+   AUTH PAGE
+   ========================================== */
+html.dark .auth-section      { background-color: var(--color-bg); }
+html.dark .auth-container    { background-color: var(--color-surface); border-color: var(--color-border); }
+
+/* ==========================================
+   PRODUCTS PAGE
+   ========================================== */
+html.dark .products-hero-banner {
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-2) 100%);
+  border-color: var(--color-border);
+}
+html.dark .products-hero-title { color: var(--color-text); }
+html.dark .products-hero-desc  { color: var(--color-text-3); }
+html.dark .gallery-main        { background-color: var(--color-surface-3); }
+html.dark .thumb-item          { background-color: var(--color-surface-3); }
+html.dark .filter-sidebar .bg-white { background-color: var(--color-surface) !important; }
+
+/* ==========================================
+   HOME PAGE
+   ========================================== */
+html.dark .hero-section      { background-color: var(--color-bg); }
+html.dark .carousel-item {
+  background-color: var(--color-surface);
+  border-color: var(--color-surface);
+}
+
+/* ==========================================
+   CHATBOX
+   ========================================== */
+html.dark .chatbox-window {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-xl);
+}
+html.dark .chatbox-body   { background-color: var(--color-surface-2); }
+html.dark .chatbox-footer {
+  background-color: var(--color-surface);
+  border-top-color: var(--color-border);
+}
+html.dark .chatbox-input {
+  background-color: var(--color-surface-2) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+html.dark .chat-msg.bot {
+  background-color: var(--color-surface);
+  color: var(--color-text-2);
+}
+html.dark .chat-product-card {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+html.dark .chat-product-name { color: var(--color-text); }
+html.dark .chat-product-add  {
+  background-color: var(--color-brand-light);
+  border-color: var(--color-brand-border);
+}
+html.dark .typing-indicator {
+  background-color: var(--color-surface);
+}
+
+/* ==========================================
+   ADMIN PANEL
+   ========================================== */
+html.dark .admin-sidebar {
+  background-color: #020617; /* Slate 950 */
+  color: #94a3b8;
+}
+html.dark .admin-sidebar-item:hover,
+html.dark .admin-sidebar-item.active {
+  background-color: #0f172a;
+}
+html.dark .product-image-upload {
+  background-color: var(--color-surface-2);
+  border-color: var(--color-border);
+}
+html.dark .product-image-card {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+html.dark .product-image-card__preview { background-color: var(--color-surface-3); }
+html.dark .product-image-card__name    { color: var(--color-text-3); }
+html.dark .image-upload-trigger {
+  background-color: #052e1c;
+  border-color: #0f4c2a;
+  color: #34d399;
+}
+html.dark .image-upload-trigger:hover {
+  background-color: #073d25;
+  border-color: #166534;
+}
+
+/* ==========================================
+   TABLES (Admin tables)
+   ========================================== */
+html.dark table                    { color: var(--color-text); }
+html.dark thead                    { background-color: var(--color-surface-2) !important; }
+html.dark thead th                 { color: var(--color-text-3) !important; border-bottom-color: var(--color-border) !important; }
+html.dark tbody tr                 { border-bottom-color: var(--color-border) !important; }
+html.dark tbody tr:hover           { background-color: var(--color-surface-2) !important; }
+html.dark tbody td                 { color: var(--color-text-2) !important; }
+html.dark .divide-y > * + *       { border-top-color: var(--color-border) !important; }
+
+/* ==========================================
+   PAGINATION
+   ========================================== */
+html.dark [class*="pagination"] a,
+html.dark [class*="page-"] {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-2);
+}
+
+/* ==========================================
+   MISC UTILITY OVERRIDES
+   ========================================== */
+/* Divider lines */
+html.dark hr { border-color: var(--color-border) !important; }
+
+/* Shadow overrides */
+html.dark .shadow-sm   { box-shadow: var(--shadow-sm) !important; }
+html.dark .shadow      { box-shadow: var(--shadow-md) !important; }
+html.dark .shadow-md   { box-shadow: var(--shadow-md) !important; }
+html.dark .shadow-lg   { box-shadow: var(--shadow-lg) !important; }
+html.dark .shadow-xl   { box-shadow: var(--shadow-xl) !important; }
+
+/* Ring (focus) */
+html.dark .ring-1,
+html.dark .ring-2 { --tw-ring-color: var(--color-border); }
+
+/* ==========================================
+   LAYOUT CSS — Custom class variable updates
+   ========================================== */
+html.dark .top-bar           { background-color: #020617; border-color: #0f172a; }
+html.dark .nav-menu          { color: var(--color-text-2); }
+html.dark .nav-menu-item a:hover,
+html.dark .nav-menu-item.active a { color: var(--color-brand); }
+
+html.dark .filter-tab        { border-color: var(--color-border); color: var(--color-text-3); }
+html.dark .filter-tab:hover  { background-color: var(--color-surface-2); }
+
+/* ==========================================
+   CUSTOM SCROLLBAR IN DARK
+   ========================================== */
+html.dark ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+html.dark ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); }
+html.dark ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }

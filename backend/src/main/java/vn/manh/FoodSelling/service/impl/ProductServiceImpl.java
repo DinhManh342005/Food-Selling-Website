@@ -32,6 +32,9 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final StorageService storageService;
 
+    // ===========================================================
+    // DÀNH CHO ADMIN
+    // ===========================================================
     private AdminProductResponseDTO convertToDTO_Admin(Product product) {
         if (product == null) {
             return null;
@@ -50,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
         dto.setCategoryId(product.getCategory().getId());
         dto.setDetailImages(toDetailImageUrls(product));
         dto.setDetailImagePublicIds(toDetailImagePublicIds(product));
+        dto.setAverageRating(product.getAverageRating());
         return dto;
     }
 
@@ -168,6 +172,9 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    // ===========================================================
+    // DÀNH CHO USER
+    // ===========================================================
     private UserProductResponseDTO convertToDTO_User(Product product) {
         if (product == null) {
             return null;
@@ -180,6 +187,7 @@ public class ProductServiceImpl implements ProductService {
         dto.setImageUrl(product.getImageUrl());
         dto.setPrice(product.getPrice());
         dto.setAverageRating(product.getAverageRating());
+        dto.setStockQuantity(product.getStockQuantity());
         dto.setDetailImages(toDetailImageUrls(product));
         return dto;
     }
@@ -240,7 +248,8 @@ public class ProductServiceImpl implements ProductService {
 
     private List<ProductImage> toProductImages(ProductCreateDTO dto, Product product) {
         List<String> urls = dto.getDetailImages() == null ? new ArrayList<>() : dto.getDetailImages();
-        List<String> publicIds = dto.getDetailImagePublicIds() == null ? new ArrayList<>() : dto.getDetailImagePublicIds();
+        List<String> publicIds = dto.getDetailImagePublicIds() == null ? new ArrayList<>()
+                : dto.getDetailImagePublicIds();
         List<ProductImage> productImages = new ArrayList<>();
 
         for (int i = 0; i < urls.size(); i++) {

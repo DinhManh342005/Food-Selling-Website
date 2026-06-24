@@ -13,5 +13,6 @@ public class UserProductResponseDTO {
     private String imageUrl;
     private BigDecimal price;
     private Double averageRating;
+    private Integer stockQuantity;
     private List<String> detailImages;
 }

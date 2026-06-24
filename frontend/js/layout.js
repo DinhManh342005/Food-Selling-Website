@@ -1,6 +1,12 @@
+// Khởi tạo theme ngay lập tức để tránh FOUC (Flash of Unstyled Content)
+initTheme();
+
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Tự động tiêm Header và Footer nếu có placeholder
   injectHeaderFooter();
+
+  // Cập nhật icon theme sau khi Header được inject vào DOM
+  updateThemeIcon();
 
   // 1b. Tự động tiêm Cart Drawer và Mobile Menu vào Body nếu chưa tồn tại
   injectCommonComponents();
@@ -179,6 +185,11 @@ function injectHeaderFooter() {
                 <i class="fa-solid fa-cart-shopping text-xl"></i>
                 <span class="cart-badge absolute -top-0.5 -right-0.5 bg-orange-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
               </a>
+
+              <!-- Dark Mode Toggle -->
+              <button id="theme-toggle-btn" onclick="toggleTheme()" title="Chuyển giao diện tối/sáng" aria-label="Toggle dark mode">
+                <i class="fa-solid fa-moon" id="theme-icon"></i>
+              </button>
 
               <div id="header-auth-section" class="relative">
                 <!-- Rendered by JS -->
@@ -459,5 +470,47 @@ function updateNotificationsUI() {
         </a>
       `;
     }).join('');
+  }
+}
+
+/**
+ * Khởi tạo theme từ localStorage khi trang load
+ * Gọi trước DOMContentLoaded để tránh FOUC
+ */
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+  updateThemeIcon();
+}
+
+/**
+ * Chuyển đổi giữa light / dark mode
+ */
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateThemeIcon();
+}
+
+/**
+ * Cập nhật icon của nút toggle theo theme hiện tại
+ */
+function updateThemeIcon() {
+  const icon = document.getElementById('theme-icon');
+  if (!icon) return;
+
+  const isDark = document.documentElement.classList.contains('dark');
+  if (isDark) {
+    icon.classList.remove('fa-moon');
+    icon.classList.add('fa-sun');
+  } else {
+    icon.classList.remove('fa-sun');
+    icon.classList.add('fa-moon');
   }
 }

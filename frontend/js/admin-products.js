@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function loadProducts() {
     const tbody = document.getElementById("products-table-body");
     if (tbody) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-500">Đang tải dữ liệu...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-500">Đang tải dữ liệu...</td></tr>`;
     }
 
     try {
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!tbody) return;
 
     if (products.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-500 font-medium">Không tìm thấy sản phẩm nào.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-500 font-medium">Không tìm thấy sản phẩm nào.</td></tr>`;
       if (stats) stats.textContent = "Đang hiển thị 0 sản phẩm";
       return;
     }
@@ -213,6 +213,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td class="py-3 px-4 text-slate-600 text-sm">${categoryName}</td>
           <td class="py-3 px-4 text-right font-bold text-brand-600">${UTILS.formatCurrency(p.price)}</td>
           <td class="py-3 px-4 text-center ${stockClass}">${p.stockQuantity}</td>
+          <td class="py-3 px-4 text-center text-amber-500 text-sm font-semibold"><i class="fa-solid fa-star mr-1"></i>${p.averageRating > 0 ? Number(p.averageRating).toFixed(1) : "Chưa có"}</td>
+          <td class="py-3 px-4 text-center text-slate-500 text-xs">${p.createdAt ? UTILS.formatDate(p.createdAt, "DD/MM/YYYY") : "N/A"}</td>
           <td class="py-3 px-4 text-center">${statusBadge}</td>
           <td class="py-3 px-4 text-center">
             <div class="flex items-center justify-center gap-2">
@@ -625,7 +627,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
           </div>
           
-          <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
             <div>
               <p class="text-xs text-slate-500 font-semibold mb-1">Giá bán</p>
               <p class="text-lg font-bold text-brand-600">${UTILS.formatCurrency(p.price)}</p>
@@ -640,7 +642,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
             <div>
               <p class="text-xs text-slate-500 font-semibold mb-1">Đánh giá trung bình</p>
-              <p class="text-sm font-semibold text-amber-500"><i class="fa-solid fa-star mr-1"></i>${p.averageRating || "Chưa có"}</p>
+              <p class="text-sm font-semibold text-amber-500"><i class="fa-solid fa-star mr-1"></i>${p.averageRating > 0 ? Number(p.averageRating).toFixed(1) : "Chưa có"}</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 font-semibold mb-1">Ngày tạo</p>
+              <p class="text-sm font-semibold text-slate-700">${p.createdAt ? UTILS.formatDate(p.createdAt, "DD/MM/YYYY HH:mm") : "N/A"}</p>
             </div>
           </div>
 

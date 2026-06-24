@@ -12,21 +12,136 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* ==========================================
+   CSS VARIABLES — DESIGN TOKEN SYSTEM
+   Light mode (default) + Dark mode override
+   ========================================== */
+:root {
+  /* === Backgrounds === */
+  --color-bg:           #f8fafc;   /* slate-50 — page background */
+  --color-surface:      #ffffff;   /* white — cards, panels */
+  --color-surface-2:    #f1f5f9;   /* slate-100 — subtle areas */
+  --color-surface-3:    #e2e8f0;   /* slate-200 — inputs, borders */
+
+  /* === Text === */
+  --color-text:         #0f172a;   /* slate-900 — primary text */
+  --color-text-2:       #334155;   /* slate-700 — secondary text */
+  --color-text-3:       #64748b;   /* slate-500 — muted text */
+  --color-text-4:       #94a3b8;   /* slate-400 — faint text */
+
+  /* === Borders === */
+  --color-border:       #e2e8f0;   /* slate-200 */
+  --color-border-2:     #f1f5f9;   /* slate-100 — very subtle */
+  --color-border-3:     #cbd5e1;   /* slate-300 — strong border */
+
+  /* === Brand === */
+  --color-brand:        #ea580c;   /* orange-600 */
+  --color-brand-hover:  #c2410c;   /* orange-700 */
+  --color-brand-light:  #fff7ed;   /* orange-50 */
+  --color-brand-border: #fed7aa;   /* orange-200 */
+
+  /* === Interactive === */
+  --color-hover-bg:     #f1f5f9;   /* slate-100 */
+  --color-focus-ring:   rgba(234, 88, 12, 0.15);
+
+  /* === Shadows === */
+  --shadow-sm:  0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md:  0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg:  0 10px 30px rgba(15, 23, 42, 0.10);
+  --shadow-xl:  0 20px 40px rgba(15, 23, 42, 0.12);
+
+  /* === Scrollbar === */
+  --scrollbar-track:  #f1f5f9;
+  --scrollbar-thumb:  #cbd5e1;
+  --scrollbar-hover:  #94a3b8;
+}
+
+html.dark {
+  /* === Backgrounds === */
+  --color-bg:           #0f172a;   /* slate-900 */
+  --color-surface:      #1e293b;   /* slate-800 */
+  --color-surface-2:    #162032;   /* between 900/800 */
+  --color-surface-3:    #334155;   /* slate-700 */
+
+  /* === Text === */
+  --color-text:         #f1f5f9;   /* slate-100 */
+  --color-text-2:       #cbd5e1;   /* slate-300 */
+  --color-text-3:       #94a3b8;   /* slate-400 */
+  --color-text-4:       #64748b;   /* slate-500 */
+
+  /* === Borders === */
+  --color-border:       #334155;   /* slate-700 */
+  --color-border-2:     #1e293b;   /* slate-800 */
+  --color-border-3:     #475569;   /* slate-600 */
+
+  /* === Brand === */
+  --color-brand:        #f97316;   /* orange-500 (brighter on dark) */
+  --color-brand-hover:  #ea580c;   /* orange-600 */
+  --color-brand-light:  #1c120a;   /* very dark orange tint */
+  --color-brand-border: #431407;   /* dark orange border */
+
+  /* === Interactive === */
+  --color-hover-bg:     #334155;   /* slate-700 */
+  --color-focus-ring:   rgba(249, 115, 22, 0.2);
+
+  /* === Shadows === */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg:  0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-xl:  0 20px 40px rgba(0, 0, 0, 0.6);
+
+  /* === Scrollbar === */
+  --scrollbar-track:  #1e293b;
+  --scrollbar-thumb:  #334155;
+  --scrollbar-hover:  #475569;
+}
+
+/* ==========================================
+   SMOOTH THEME TRANSITION
+   ========================================== */
+*,
+*::before,
+*::after {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.2s ease,
+    box-shadow 0.25s ease,
+    fill 0.2s ease;
+}
+
+/* Không áp transition cho những gì không cần */
+img, svg, video, canvas, iframe,
+input[type="range"],
+*[class*="animate__"],
+.circular-carousel *,
+.product-detail-carousel * {
+  transition: none !important;
+}
+
+/* ==========================================
+   BODY
+   ========================================== */
 body {
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   line-height: 1.5;
   overflow-x: clip;
 }
 
-/* Link mặc định không gạch chân */
+/* ==========================================
+   LINKS
+   ========================================== */
 a {
   color: inherit;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
+/* ==========================================
+   FORM ELEMENTS
+   ========================================== */
 button, input, textarea, select {
   font-family: inherit;
   font-size: inherit;
@@ -36,9 +151,7 @@ button, input, textarea, select {
   outline: none;
 }
 
-button {
-  cursor: pointer;
-}
+button { cursor: pointer; }
 
 img {
   max-width: 100%;
@@ -46,21 +159,10 @@ img {
   display: block;
 }
 
-/* Scrollbar Custom */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
+/* ==========================================
+   SCROLLBAR
+   ========================================== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
