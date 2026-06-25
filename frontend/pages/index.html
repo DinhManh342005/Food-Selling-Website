@@ -56,6 +56,7 @@
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/home.css">
+  <link rel="stylesheet" href="../css/ai-assistant.css">
 </head>
 
 <body>
@@ -84,7 +85,8 @@
           giao tận tay bạn
         </h1>
         <p class="text-slate-600 text-sm md:text-base leading-relaxed max-w-lg mx-auto lg:mx-0">
-          FreshBite tự hào là cầu nối đưa những đặc sản vùng miền chính gốc — từ núi rừng Tây Bắc, miền Trung nắng gió đến đồng bằng phương Nam — đến tận tay bạn, nguyên vẹn hương vị quê nhà.
+          FreshBite tự hào là cầu nối đưa những đặc sản vùng miền chính gốc — từ núi rừng Tây Bắc, miền Trung nắng gió
+          đến đồng bằng phương Nam — đến tận tay bạn, nguyên vẹn hương vị quê nhà.
         </p>
         <div class="flex flex-wrap justify-center lg:justify-start gap-4 pt-2">
           <a href="#section-north"
@@ -112,7 +114,7 @@
           </div>
 
           <!-- Rotating outer ring -->
-          <div class="carousel-ring absolute inset-0 transition-transform duration-1000" id="carousel-ring">
+          <div class="carousel-ring absolute inset-0" id="carousel-ring">
             <!-- Dishes nodes placed absolutely via JS -->
           </div>
         </div>
@@ -356,8 +358,8 @@
           Xem tất cả
         </a>
       </div>
-      <!-- WHY CHOOSE US SECTION WITH SWIPER -->
-      <section class="py-16 bg-slate-50 border-b border-slate-100">
+      <!-- WHY CHOOSE US SECTION WITH MARQUEE -->
+      <section class="py-16 bg-slate-50 border-b border-slate-100" id="why-choose-section">
         <div class="container">
           <!-- Decorative Title -->
           <div class="flex items-center justify-center gap-4 mb-10">
@@ -373,121 +375,111 @@
               <div class="h-[1px] bg-red-800 w-full"></div>
             </div>
           </div>
+        </div>
 
-          <!-- Swiper Carousel -->
-          <div class="swiper choose-swiper relative group px-1">
-            <div class="swiper-wrapper py-4">
-              <!-- Slide 1 -->
-              <div class="swiper-slide h-auto">
-                <div
-                  class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-3 h-full flex flex-col justify-between">
-                  <div
-                    class="w-14 h-14 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-sm">
-                    🏆</div>
-                  <div class="space-y-1">
-                    <h3 class="font-bold text-slate-800 text-base">Đặc sản chọn lọc</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Sản phẩm tuyển chọn kỹ càng từ các làng nghề nổi
-                      tiếng chính gốc 100%.</p>
-                  </div>
-                </div>
+        <!-- Marquee Infinite Scroll -->
+        <div class="marquee-container">
+          <div class="marquee-track">
+            <!-- Original set -->
+            <div class="marquee-card">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/food-selection.png" alt="Đặc sản chọn lọc" loading="lazy">
               </div>
-
-              <!-- Slide 2 -->
-              <div class="swiper-slide h-auto">
-                <div
-                  class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-3 h-full flex flex-col justify-between">
-                  <div
-                    class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-sm">
-                    📦</div>
-                  <div class="space-y-1">
-                    <h3 class="font-bold text-slate-800 text-base">Đóng gói kỹ càng</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Đóng gói hút chân không, bảo quản nhiệt độ chuẩn
-                      để giữ nguyên hương vị.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 3 -->
-              <div class="swiper-slide h-auto">
-                <div
-                  class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-3 h-full flex flex-col justify-between">
-                  <div
-                    class="w-14 h-14 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-sm">
-                    🚚</div>
-                  <div class="space-y-1">
-                    <h3 class="font-bold text-slate-800 text-base">Giao hàng toàn quốc</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Hợp tác các đơn vị vận chuyển uy tín, giao hàng
-                      siêu tốc và toàn vẹn.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 4 -->
-              <div class="swiper-slide h-auto">
-                <div
-                  class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-3 h-full flex flex-col justify-between">
-                  <div
-                    class="w-14 h-14 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-sm">
-                    📞</div>
-                  <div class="space-y-1">
-                    <h3 class="font-bold text-slate-800 text-base">Hỗ trợ tận tâm</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Đội ngũ CSKH hỗ trợ tư vấn 24/7 nhiệt tình, đổi
-                      trả uy tín nếu có lỗi sản xuất.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 5 -->
-              <div class="swiper-slide h-auto">
-                <div
-                  class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-3 h-full flex flex-col justify-between">
-                  <div
-                    class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-sm">
-                    🏷️</div>
-                  <div class="space-y-1">
-                    <h3 class="font-bold text-slate-800 text-base">Giá cả hợp lý</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Đặc sản chính gốc với mức giá cạnh tranh và nhiều
-                      chương trình ưu đãi hấp dẫn.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 6 -->
-              <div class="swiper-slide h-auto">
-                <div
-                  class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-3 h-full flex flex-col justify-between">
-                  <div
-                    class="w-14 h-14 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-sm">
-                    🌿</div>
-                  <div class="space-y-1">
-                    <h3 class="font-bold text-slate-800 text-base">Nguyên liệu sạch 100%</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Cam kết nguồn gốc rõ ràng, đạt chuẩn an toàn vệ
-                      sinh thực phẩm quốc gia.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 7 -->
-              <div class="swiper-slide h-auto">
-                <div
-                  class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all text-center space-y-3 h-full flex flex-col justify-between">
-                  <div
-                    class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl mx-auto shadow-sm">
-                    💳</div>
-                  <div class="space-y-1">
-                    <h3 class="font-bold text-slate-800 text-base">Thanh toán linh hoạt</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Hỗ trợ đa dạng phương thức thanh toán an toàn,
-                      nhanh chóng và bảo mật.</p>
-                  </div>
-                </div>
-              </div>
+              <h3 class="marquee-card__title">Đặc sản chọn lọc</h3>
+              <p class="marquee-card__desc">Sản phẩm tuyển chọn kỹ càng từ các làng nghề nổi tiếng chính gốc 100%.</p>
             </div>
-            <!-- Navigation Buttons -->
-            <div
-              class="swiper-button-prev !w-10 !h-10 !bg-white !text-brand-600 rounded-full shadow-md after:!text-xs hover:!bg-brand-600 hover:!text-white transition-all opacity-0 group-hover:opacity-100 -left-2 sm:-left-4">
+            <div class="marquee-card">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/packaging.png" alt="Đóng gói kỹ càng" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Đóng gói kỹ càng</h3>
+              <p class="marquee-card__desc">Đóng gói hút chân không, bảo quản nhiệt độ chuẩn để giữ nguyên hương vị.</p>
             </div>
-            <div
-              class="swiper-button-next !w-10 !h-10 !bg-white !text-brand-600 rounded-full shadow-md after:!text-xs hover:!bg-brand-600 hover:!text-white transition-all opacity-0 group-hover:opacity-100 -right-2 sm:-right-4">
+            <div class="marquee-card">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/delivery.png" alt="Giao hàng toàn quốc" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Giao hàng toàn quốc</h3>
+              <p class="marquee-card__desc">Hợp tác các đơn vị vận chuyển uy tín, giao hàng siêu tốc và toàn vẹn.</p>
+            </div>
+            <div class="marquee-card">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/support.png" alt="Hỗ trợ tận tâm" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Hỗ trợ tận tâm</h3>
+              <p class="marquee-card__desc">Đội ngũ CSKH hỗ trợ tư vấn 24/7 nhiệt tình, đổi trả uy tín nếu có lỗi sản xuất.</p>
+            </div>
+            <div class="marquee-card">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/pricing.png" alt="Giá cả hợp lý" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Giá cả hợp lý</h3>
+              <p class="marquee-card__desc">Đặc sản chính gốc với mức giá cạnh tranh và nhiều chương trình ưu đãi hấp dẫn.</p>
+            </div>
+            <div class="marquee-card">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/organic.png" alt="Nguyên liệu sạch 100%" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Nguyên liệu sạch 100%</h3>
+              <p class="marquee-card__desc">Cam kết nguồn gốc rõ ràng, đạt chuẩn an toàn vệ sinh thực phẩm quốc gia.</p>
+            </div>
+            <div class="marquee-card">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/payment.png" alt="Thanh toán linh hoạt" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Thanh toán linh hoạt</h3>
+              <p class="marquee-card__desc">Hỗ trợ đa dạng phương thức thanh toán an toàn, nhanh chóng và bảo mật.</p>
+            </div>
+
+            <!-- Duplicate set for seamless loop -->
+            <div class="marquee-card" aria-hidden="true">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/food-selection.png" alt="Đặc sản chọn lọc" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Đặc sản chọn lọc</h3>
+              <p class="marquee-card__desc">Sản phẩm tuyển chọn kỹ càng từ các làng nghề nổi tiếng chính gốc 100%.</p>
+            </div>
+            <div class="marquee-card" aria-hidden="true">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/packaging.png" alt="Đóng gói kỹ càng" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Đóng gói kỹ càng</h3>
+              <p class="marquee-card__desc">Đóng gói hút chân không, bảo quản nhiệt độ chuẩn để giữ nguyên hương vị.</p>
+            </div>
+            <div class="marquee-card" aria-hidden="true">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/delivery.png" alt="Giao hàng toàn quốc" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Giao hàng toàn quốc</h3>
+              <p class="marquee-card__desc">Hợp tác các đơn vị vận chuyển uy tín, giao hàng siêu tốc và toàn vẹn.</p>
+            </div>
+            <div class="marquee-card" aria-hidden="true">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/support.png" alt="Hỗ trợ tận tâm" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Hỗ trợ tận tâm</h3>
+              <p class="marquee-card__desc">Đội ngũ CSKH hỗ trợ tư vấn 24/7 nhiệt tình, đổi trả uy tín nếu có lỗi sản xuất.</p>
+            </div>
+            <div class="marquee-card" aria-hidden="true">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/pricing.png" alt="Giá cả hợp lý" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Giá cả hợp lý</h3>
+              <p class="marquee-card__desc">Đặc sản chính gốc với mức giá cạnh tranh và nhiều chương trình ưu đãi hấp dẫn.</p>
+            </div>
+            <div class="marquee-card" aria-hidden="true">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/organic.png" alt="Nguyên liệu sạch 100%" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Nguyên liệu sạch 100%</h3>
+              <p class="marquee-card__desc">Cam kết nguồn gốc rõ ràng, đạt chuẩn an toàn vệ sinh thực phẩm quốc gia.</p>
+            </div>
+            <div class="marquee-card" aria-hidden="true">
+              <div class="marquee-card__img-wrapper">
+                <img src="../assets/features/payment.png" alt="Thanh toán linh hoạt" loading="lazy">
+              </div>
+              <h3 class="marquee-card__title">Thanh toán linh hoạt</h3>
+              <p class="marquee-card__desc">Hỗ trợ đa dạng phương thức thanh toán an toàn, nhanh chóng và bảo mật.</p>
             </div>
           </div>
         </div>
@@ -495,14 +487,16 @@
 
       <!-- PRODUCT DETAIL MODAL -->
       <div id="product-detail-modal" class="modal-overlay" onclick="closeProductModal()">
-        <div class="modal-container p-6 max-w-[1075px] w-[95%] md:h-[650px] max-h-[95vh] flex flex-col relative" onclick="event.stopPropagation()">
+        <div class="modal-container p-6 max-w-[1075px] w-[95%] md:h-[650px] max-h-[95vh] flex flex-col relative"
+          onclick="event.stopPropagation()">
           <button onclick="closeProductModal()"
             class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 p-1 bg-white rounded-full shadow-sm">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-y-auto custom-scrollbar pr-2" id="modal-detail-content">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-y-auto custom-scrollbar pr-2"
+            id="modal-detail-content">
             <!-- Loaded dynamically by home.js -->
           </div>
         </div>
@@ -537,6 +531,7 @@
       <script src="../js/auth.js"></script>
       <script src="../js/layout.js"></script>
       <script src="../js/home.js"></script>
+      <script src="../js/product-ai-assistant.js"></script>
       <!-- Chatbox AI -->
       <script src="../js/chatbox.js"></script>
 </body>

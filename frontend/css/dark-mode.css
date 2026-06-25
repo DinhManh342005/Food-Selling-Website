@@ -37,8 +37,8 @@ html.dark .bg-white           { background-color: var(--color-surface)  !importa
 html.dark .bg-slate-50        { background-color: var(--color-bg)        !important; }
 html.dark .bg-slate-100       { background-color: var(--color-surface-2) !important; }
 html.dark .bg-slate-200       { background-color: var(--color-surface-3) !important; }
-html.dark .bg-slate-800       { background-color: #cbd5e1                !important; } /* invert for dark admin labels */
-html.dark .bg-slate-900       { background-color: #e2e8f0                !important; }
+html.dark .bg-slate-800       { background-color: #d4d4d8                !important; } /* invert for dark admin labels */
+html.dark .bg-slate-900       { background-color: #e4e4e7                !important; }
 
 /* Orange brand backgrounds */
 html.dark .bg-orange-50       { background-color: var(--color-brand-light)  !important; }
@@ -187,6 +187,14 @@ html.dark .product-card .img-wrapper {
 /* ==========================================
    BUTTONS
    ========================================== */
+html.dark .btn-primary {
+  box-shadow: 0 4px 14px rgba(255, 107, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+html.dark .btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.2);
+}
 html.dark .btn-outline {
   border-color: var(--color-border-3);
   color: var(--color-text-2);
@@ -336,6 +344,24 @@ html.dark .hero-section      { background-color: var(--color-bg); }
 html.dark .carousel-item {
   background-color: var(--color-surface);
   border-color: var(--color-surface);
+}
+/* Marquee cards */
+html.dark .marquee-card {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+html.dark .marquee-card:hover {
+  border-color: #22c55e;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+html.dark .marquee-card__img-wrapper {
+  background: linear-gradient(135deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%);
+}
+html.dark .marquee-card__title {
+  color: var(--color-text);
+}
+html.dark .marquee-card__desc {
+  color: var(--color-text-3);
 }
 
 /* ==========================================
